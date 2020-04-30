@@ -1,0 +1,64 @@
+.StartView {
+  overflow: hidden;
+}
+.StartView .Gallery__bullets {
+  margin-bottom: 20px;
+}
+.StartView--iconGroup {
+  position: absolute;
+  top: -310px;
+  right: -150px;
+  z-index: -1;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.StartView--iconGroup_line {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.StartView--iconGroup_line:nth-child(2) {
+  margin-left: -50px;
+}
+.StartView--content {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.StartView--title {
+  position: relative;
+}
+.StartView--text {
+  margin: 20px 0;
+  text-align: center;
+  max-width: 325px;
+}
+.StartView--time {
+  position: relative;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.StartView--time_colon {
+  font-size: 52px;
+  margin-bottom: 7px;
+}
+.StartView--time_counter {
+  font-size: 52px;
+}
+.StartView input {
+  opacity: 0;
+  outline: none;
+  position: absolute;
+  width: 140px;
+  height: 100%;
+}
+/*# sourceMappingURL=startView.css.map */
