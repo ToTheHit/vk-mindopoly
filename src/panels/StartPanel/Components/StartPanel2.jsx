@@ -5,24 +5,24 @@ import {
 } from '@vkontakte/vkui';
 import PropTypes from 'prop-types';
 
-const Start2 = (props) => {
+const StartPanel2 = (props) => {
   const { id } = props;
   const [time, setTime] = useState('20:00');
   return (
-    <Panel id={id} className={classNames('StartView', { StartView_dark: document.body.getAttribute('scheme') !== 'bright_light' })}>
-      <div className="StartView--content">
-        <Title level="1" weight="bold" className="StartView--title">Уведомления</Title>
-        <Text className="StartView--text">
+    <Panel id={id} className={classNames('StartPanel', { StartPanel_dark: document.body.getAttribute('scheme') !== 'bright_light' })}>
+      <div className="StartPanel--content">
+        <Title level="1" weight="bold" className="StartPanel--title">Уведомления</Title>
+        <Text className="StartPanel--text">
           Мы будем напоминать Вам о новых
           самостоялках. Выберите удобное время и
           включите уведомления.
         </Text>
-        <div className="StartView--time">
-          <Text weight="regular" className="StartView--time_counter">
+        <div className="StartPanel--time">
+          <Text weight="regular" className="StartPanel--time_counter">
             {time.split(':')[0]}
           </Text>
-          <Text weight="regular" className="StartView--time_colon">:</Text>
-          <Text weight="regular" className="StartView--time_counter">
+          <Text weight="regular" className="StartPanel--time_colon">:</Text>
+          <Text weight="regular" className="StartPanel--time_counter">
             {time.split(':')[1]}
           </Text>
           <input
@@ -51,8 +51,8 @@ const Start2 = (props) => {
   );
 };
 
-Start2.propTypes = {
+StartPanel2.propTypes = {
   id: PropTypes.string.isRequired,
 };
 
-export default Start2;
+export default StartPanel2;

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { Root, View } from '@vkontakte/vkui';
+import { Root, } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
-
-import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
+import './app.css';
+// import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
-import StartView from './panels/StartView/StartView';
+import StartView from './views/StartView';
+import CommonView from './views/CommonView';
+import TestView from './views/TestView';
 
 const App = () => {
-  const [activePanel, setActivePanel] = useState('start1');
-  const [activeView, setActiveView] = useState('view1');
+  const [activeView, setActiveView] = useState('StartView');
+
   const [fetchedUser, setUser] = useState(null);
-  const [popout, setPopout] = useState(<ScreenSpinner size="large" />);
+  const [popout, setPopout] = useState(/* <ScreenSpinner size="large" /> */);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,6 +29,7 @@ const App = () => {
       }
       if (type === 'VKWebAppAllowNotificationsResult') {
         console.log('Notification accepted!');
+        setActiveView('CommonView');
       }
       if (type === 'VKWebAppAllowNotificationsFailed') {
         console.log('Why you hate me?');
@@ -38,21 +41,15 @@ const App = () => {
       setUser(user);
       setPopout(null);
     }
+
     fetchData();
   }, []);
 
-
-  const go = (e) => {
-    setActivePanel(e.currentTarget.dataset.to);
-  };
-
   return (
     <Root activeView={activeView}>
-      <View id="view1" activePanel={activePanel} popout={popout} header={false} style={{ position: 'fixed', top: '-2px' }}>
-        {/* <Home id='home' fetchedUser={fetchedUser} go={go} /> */}
-        {/* <Persik id='persik' go={go} /> */}
-        <StartView id="start1" go={go} />
-      </View>
+      <StartView id="StartView" />
+      <CommonView id="CommonView" />
+      <TestView id="test" />
     </Root>
 
   );

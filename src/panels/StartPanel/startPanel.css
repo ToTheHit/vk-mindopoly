@@ -1,10 +1,10 @@
-.StartView {
+.StartPanel {
   overflow: hidden;
 }
-.StartView .Gallery__bullets {
+.StartPanel .Gallery__bullets {
   margin-bottom: 20px;
 }
-.StartView--iconGroup {
+.StartPanel--iconGroup {
   position: absolute;
   top: -310px;
   right: -150px;
@@ -15,15 +15,15 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.StartView--iconGroup_line {
+.StartPanel--iconGroup_line {
   display: flex;
   width: 100%;
   justify-content: space-between;
 }
-.StartView--iconGroup_line:nth-child(2) {
+.StartPanel--iconGroup_line:nth-child(2) {
   margin-left: -50px;
 }
-.StartView--content {
+.StartPanel--content {
   position: relative;
   width: 100%;
   height: 100vh;
@@ -32,33 +32,33 @@
   align-items: center;
   flex-direction: column;
 }
-.StartView--title {
+.StartPanel--title {
   position: relative;
 }
-.StartView--text {
+.StartPanel--text {
   margin: 20px 0;
   text-align: center;
   max-width: 325px;
 }
-.StartView--time {
+.StartPanel--time {
   position: relative;
   margin: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.StartView--time_colon {
+.StartPanel--time_colon {
   font-size: 52px;
   margin-bottom: 7px;
 }
-.StartView--time_counter {
+.StartPanel--time_counter {
   font-size: 52px;
 }
-.StartView input {
+.StartPanel input {
   opacity: 0;
   outline: none;
   position: absolute;
   width: 140px;
   height: 100%;
 }
-/*# sourceMappingURL=startView.css.map */
+/*# sourceMappingURL=startPanel.css.map */
