@@ -16,7 +16,9 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, {});
 
 // Init VK  Mini App
-bridge.send("VKWebAppInit");
+bridge.send("VKWebAppInit", {})
+  .then(() => console.log('11111'))
+console.log('2');
 
 ReactDOM.render(
   <Provider store={store}>

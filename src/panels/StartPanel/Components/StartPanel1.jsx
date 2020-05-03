@@ -4,15 +4,26 @@ import {
   Button, Panel, Text, Title,
 } from '@vkontakte/vkui';
 
-import icon1 from '../../../assets/StartPanel/icon1.svg';
-import icon2 from '../../../assets/StartPanel/icon2.svg';
-import icon3 from '../../../assets/StartPanel/icon3.svg';
-import icon4 from '../../../assets/StartPanel/icon4.svg';
-import icon5 from '../../../assets/StartPanel/icon5.svg';
-import icon6 from '../../../assets/StartPanel/icon6.svg';
-import icon7 from '../../../assets/StartPanel/icon7.svg';
-import icon8 from '../../../assets/StartPanel/icon8.svg';
-import icon9 from '../../../assets/StartPanel/icon9.svg';
+
+import icon11 from '../../../assets/StartPanel/originalIcons/icon1.png';
+import icon21 from '../../../assets/StartPanel/originalIcons/icon2.png';
+import icon31 from '../../../assets/StartPanel/originalIcons/icon3.png';
+import icon41 from '../../../assets/StartPanel/originalIcons/icon4.png';
+import icon51 from '../../../assets/StartPanel/originalIcons/icon5.png';
+import icon61 from '../../../assets/StartPanel/originalIcons/icon6.png';
+import icon71 from '../../../assets/StartPanel/originalIcons/icon7.png';
+import icon81 from '../../../assets/StartPanel/originalIcons/icon8.png';
+import icon91 from '../../../assets/StartPanel/originalIcons/icon9.png';
+
+import icon1 from '../../../assets/StartPanel/icon1.png';
+import icon2 from '../../../assets/StartPanel/icon2.png';
+import icon3 from '../../../assets/StartPanel/icon3.png';
+import icon4 from '../../../assets/StartPanel/icon4.png';
+import icon5 from '../../../assets/StartPanel/icon5.png';
+import icon6 from '../../../assets/StartPanel/icon6.png';
+import icon7 from '../../../assets/StartPanel/icon7.png';
+import icon8 from '../../../assets/StartPanel/icon8.png';
+import icon9 from '../../../assets/StartPanel/icon9.png';
 
 const StartPanel1 = (props) => {
   const { goToNextSlide, id } = props;
@@ -24,20 +35,30 @@ const StartPanel1 = (props) => {
         <Title level="1" weight="heavy" className="StartPanel--title">
           Продлёнка
           <div className="StartPanel--iconGroup">
-            <div className="StartPanel--iconGroup_line">
-              <img className="StartPanel--iconGroup--icon" src={icon1} alt="icon1" />
-              <img className="StartPanel--iconGroup--icon" src={icon2} alt="icon2" />
-              <img className="StartPanel--iconGroup--icon" src={icon3} alt="icon3" />
+            <div className="StartPanel--iconGroup__line">
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon1})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon2})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon3})` }} />
+              {/*<img className="StartPanel--iconGroup__icon" src={icon12} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon22} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon32} alt="icon9" onLoad={() => console.log(9)}/>*/}
             </div>
-            <div className="StartPanel--iconGroup_line">
-              <img className="StartPanel--iconGroup--icon" src={icon4} alt="icon4" />
-              <img className="StartPanel--iconGroup--icon" src={icon5} alt="icon5" />
-              <img className="StartPanel--iconGroup--icon" src={icon6} alt="icon6" />
+            <div className="StartPanel--iconGroup__line">
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon4})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon5})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon6})` }} />
+              {/*<img className="StartPanel--iconGroup__icon" src={icon42} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon52} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon62} alt="icon9" onLoad={() => console.log(9)}/>*/}
             </div>
-            <div className="StartPanel--iconGroup_line">
-              <img className="StartPanel--iconGroup--icon" src={icon7} alt="icon7" />
-              <img className="StartPanel--iconGroup--icon" src={icon8} alt="icon8" />
-              <img className="StartPanel--iconGroup--icon" src={icon9} alt="icon9" />
+            <div className="StartPanel--iconGroup__line">
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon7})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon8})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon9})` }} />
+              {/*<img className="StartPanel--iconGroup__icon" src={icon72} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon82} alt="icon9" onLoad={() => console.log(9)}/>*/}
+              {/*<img className="StartPanel--iconGroup__icon" src={icon92} alt="icon9" onLoad={() => console.log(9)}/>*/}
+
             </div>
           </div>
 

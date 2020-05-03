@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import bridge from '@vkontakte/vk-bridge';
+
 import PropTypes from 'prop-types';
 import {
   Button,
   Card,
   Cell,
   Div,
-  Group,
   Header,
   Headline,
   Panel,
-  PanelHeader, Separator,
+  PanelHeader,
+  Separator,
   SimpleCell,
   Spinner,
   Text,
+  Avatar, Group,
 } from '@vkontakte/vkui';
+
 import Icon28RefreshOutline from '@vkontakte/icons/dist/28/refresh_outline';
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import IconQuizCard from '../../assets/Common/IconQuizCard.png';
 
 import './common.css';
+import BrainLeaderboard from './BrainLeaderboard';
 
 const Common = (props) => {
   const { id, setActivePanel } = props;
@@ -29,7 +34,7 @@ const Common = (props) => {
   const [questions, setQuestions] = useState([]);
   const [GP, setGP] = useState(20);
 
-  // Эффект, в котором нужно будет запросить у сервера пачку "вопрос-ответ"
+  // Начальный эффект, в котором нужно будет запросить у сервера пачку "вопрос-ответ"
   // и, возможно, другую информацию
   useEffect(() => {
     setQuestions([
@@ -57,7 +62,6 @@ const Common = (props) => {
 
   function updateQuestions() {
     setQuestions([]);
-
     // Запрос на сервер за новыми вопросами
     setTimeout(() => {
       setQuestions([
@@ -74,93 +78,96 @@ const Common = (props) => {
       <PanelHeader>
         Продлёнка
       </PanelHeader>
-      <div>
-        {quizeCard && (
-          <Div style={{ paddingBottom: 0 }}>
-            <Card size="l">
-              <Div
-                className="Common--quizCard"
-                onClick={() => {
-                  setActivePanel('WorkPanel');
-                }}
-              >
-                <div
-                  className="Common__iconQuiz"
-                  style={{ backgroundImage: `url(${IconQuizCard})` }}
-                />
-                {(quizeCard.completed && (
-                  <Cell
-                    multiline
-                    description={
-                      `Вы ответили на ${quizeCard.trueAnswers} из ${quizeCard.questionsCount} вопросов`
-                    }
-                  >
-                    <Text>
-                      Самостоялка (завершено)
-                    </Text>
-                  </Cell>
-                ))}
-                {(!quizeCard.completed && (
-                  <Cell
-                    multiline
-                    expandable
-                    description="Пять случайных вопросов из разделов: математика, история, литература, физика и спорт."
-                  >
-                    <Text>
-                      Самостоялка,
-                      {' '}
-                      {quizeCard.date}
-                    </Text>
-                  </Cell>
-                ))}
-
-              </Div>
-            </Card>
-          </Div>
-        )}
-        <SimpleCell
-          disabled
-          after={(
-            <Button
-              mode="commerce"
-              before={<Icon28MarketOutline fill="#FFF" />}
+      {quizeCard && (
+        <Div style={{ paddingBottom: 0 }}>
+          <Card size="l">
+            <Div
+              className="Common--quizCard"
+              onClick={() => {
+                if (!quizeCard.completed) setActivePanel('WorkPanel');
+              }}
             >
-              магазин
-            </Button>
-            )}
-        >
-          <Header
-            level={2}
-            weight="semibold"
-            className="Common--GPcounter"
-          >
-            {GP}
-          </Header>
-          <Header mode="secondary" weight="semibold" className="Common--GPcounter">GP</Header>
-        </SimpleCell>
-        <SimpleCell
-          multiline
-          disabled
-          description="Зарабатывайте Genius Points, решая ежедневные самостоятельные работы. Полученные GP можно потратить в магазине."
-          style={{ marginTop: '-15px' }}
-        />
-        <Separator />
-        <Div>
-          <Headline level={2} weight="semibold">Интересные факты</Headline>
-          {renderedQuestions.length ? renderedQuestions : <Spinner size="large" />}
-          <Button
-            size="xl"
-            mode="secondary"
-            before={<Icon28RefreshOutline />}
-            style={{ marginTop: '15px' }}
-            onClick={() => {
-              updateQuestions();
-            }}
-          >
-            Обновить за 20GP
-          </Button>
+              <div
+                className="Common__iconQuiz"
+                style={{ backgroundImage: `url(${IconQuizCard})` }}
+              />
+              {(quizeCard.completed && (
+                <Cell
+                  multiline
+                  description={
+                    `Вы ответили на ${quizeCard.trueAnswers} из ${quizeCard.questionsCount} вопросов`
+                  }
+                >
+                  <Text>
+                    Самостоялка (завершено)
+                  </Text>
+                </Cell>
+              ))}
+              {(!quizeCard.completed && (
+                <Cell
+                  multiline
+                  expandable
+                  description="Пять случайных вопросов из разделов: математика, история, литература, физика и спорт."
+                >
+                  <Text>
+                    Самостоялка,
+                    {' '}
+                    {quizeCard.date}
+                  </Text>
+                </Cell>
+              ))}
+
+            </Div>
+          </Card>
         </Div>
-      </div>
+      )}
+      <SimpleCell
+        disabled
+        after={(
+          <Button
+            mode="commerce"
+            before={<Icon28MarketOutline fill="#FFF" />}
+          >
+            магазин
+          </Button>
+        )}
+      >
+        <Header
+          level={2}
+          weight="semibold"
+          className="Common--GPcounter"
+        >
+          {GP}
+        </Header>
+        <Header mode="secondary" weight="semibold" className="Common--GPcounter">GP</Header>
+      </SimpleCell>
+      <SimpleCell
+        multiline
+        disabled
+        description="Зарабатывайте Genius Points, решая ежедневные самостоятельные работы. Полученные GP можно потратить в магазине."
+        style={{ marginTop: '-15px' }}
+      />
+      <Separator />
+      <Div>
+        <Headline level={2} weight="semibold">Интересные факты</Headline>
+        {renderedQuestions.length ? renderedQuestions : <Spinner size="large" />}
+        <Button
+          size="xl"
+          mode="secondary"
+          before={<Icon28RefreshOutline />}
+          style={{ marginTop: '15px' }}
+          onClick={() => {
+            updateQuestions();
+          }}
+        >
+          Обновить за 20GP
+        </Button>
+
+
+      </Div>
+      <BrainLeaderboard />
+
+
     </Panel>
   );
 };

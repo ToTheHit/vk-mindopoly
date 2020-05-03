@@ -15,13 +15,19 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.StartPanel--iconGroup_line {
+.StartPanel--iconGroup__line {
   display: flex;
   width: 100%;
   justify-content: space-between;
 }
-.StartPanel--iconGroup_line:nth-child(2) {
+.StartPanel--iconGroup__line:nth-child(2) {
   margin-left: -50px;
+}
+.StartPanel--iconGroup__icon {
+  width: 64px;
+  height: 64px;
+  background-size: 64px 64px;
+  background-repeat: no-repeat;
 }
 .StartPanel--content {
   position: relative;

@@ -10,7 +10,7 @@ import CommonView from './views/CommonView';
 import TestView from './views/TestView';
 
 const App = () => {
-  const [activeView, setActiveView] = useState('StartView');
+  const [activeView, setActiveView] = useState('CommonView');
 
   const [fetchedUser, setUser] = useState(null);
   const [popout, setPopout] = useState(/* <ScreenSpinner size="large" /> */);
