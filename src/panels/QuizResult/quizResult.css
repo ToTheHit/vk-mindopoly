@@ -2,72 +2,38 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  padding-top: 3px;
+  text-align: center;
 }
-.QuizResult--GPcounter {
-  float: left;
-  padding: 0 3px;
+.QuizResult--rowContainer {
+  padding-top: 0;
+  padding-bottom: 0;
 }
-.QuizResult--GPcounter .Header__in .Header__content {
-  font-size: 36px;
-  line-height: 36px;
-  padding: 13px 0 9px;
-}
-.QuizResult--GPcounter_green {
-  margin-left: 20px;
-}
-.QuizResult--GPcounter_green .Header__content {
-  color: #4BB34B;
-}
-.QuizResult--GPcounter_small .Header__content {
-  font-size: 24px !important;
-  line-height: 24px !important;
-}
-.QuizResult--counterName {
-  padding-left: 6px;
-}
-.QuizResult--counterName_default {
-  color: var(--text_secondary);
-}
-.QuizResult--counterName_green {
-  color: #4BB34B;
-}
-.QuizResult__iconQuiz {
-  height: 28px;
-  width: 28px;
-  min-height: 28px;
-  min-width: 38px;
-  background-size: 28px 28px;
-  background-repeat: no-repeat;
-}
-.QuizResult--answersBlock {
-  margin: 5px 0 15px 0;
-}
-.QuizResult--answer {
-  color: #5D5F61;
-  font-size: 14px;
-}
-.QuizResult--answer-right {
-  margin-left: 10px;
-  color: #42C01E;
-}
-.QuizResult--answer-wrong {
-  color: #EB4250;
-}
-.QuizResult--question {
-  margin-top: 10px;
-  font-size: 15px;
-}
-.QuizResult--awards {
+.QuizResult--scoreRow {
+  height: 45px;
   display: flex;
-  justify-content: center;
   align-items: center;
 }
-.QuizResult--awards_item {
-  display: flex;
-  align-items: baseline;
+.QuizResult--icon {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  background-position: inherit;
+  padding-right: 12px;
 }
-.QuizResult--awards_item--divider {
-  width: 20px;
+.QuizResult--buttonRow {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.QuizResult--buttonRow__description {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--text_secondary);
 }
 /*# sourceMappingURL=quizResult.css.map */

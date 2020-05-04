@@ -8,7 +8,7 @@ import WorkGallery from '../panels/Work/WorkGallery/WorkGallery';
 
 const CommonView = (props) => {
   const { id } = props;
-  const [activePanel, setActivePanel] = useState('CommonPanel');
+  const [activePanel, setActivePanel] = useState('QuizResultPanel');
   const [popout, setPopout] = useState(/* <ScreenSpinner size="large" /> */);
 
   return (

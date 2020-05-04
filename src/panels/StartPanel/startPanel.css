@@ -60,6 +60,15 @@
 .StartPanel--time_counter {
   font-size: 52px;
 }
+.StartPanel--time::before {
+  content: '';
+  width: 183px;
+  height: 64px;
+  position: absolute;
+  border-top: 1px solid var(--separator_common);
+  border-bottom: 1px solid var(--separator_common);
+  top: -20px;
+}
 .StartPanel input {
   opacity: 0;
   outline: none;

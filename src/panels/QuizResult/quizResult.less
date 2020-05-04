@@ -4,91 +4,43 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    padding-top: 3px;
+    text-align: center;
   }
 
-  &--GPcounter {
-    float: left;
-    padding: 0 3px;
-
-    .Header__in {
-      .Header__content {
-        font-size: 36px;
-        line-height: 36px;
-        padding: 13px 0 9px;
-      }
-    }
-
-    &_green {
-      margin-left: 20px;
-
-      .Header__content {
-        color: #4BB34B;
-      }
-    }
-
-    &_small {
-      .Header__content {
-        font-size: 24px !important;
-        line-height: 24px !important;
-      }
-
-    }
+  &--rowContainer {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  &--scoreRow {
+    height: 45px;
+    display: flex;
+    align-items: center;
   }
 
-  &--counterName {
-    padding-left: 6px;
-    &_default {
+  &--icon {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    background-position: inherit;
+    padding-right: 12px;
+  }
+
+  &--buttonRow {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    &__description {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 16px;
       color: var(--text_secondary);
     }
-    &_green {
-      color: #4BB34B;
-    }
   }
 
-  &__iconQuiz {
-    height: 28px;
-    width: 28px;
-    min-height: 28px;
-    min-width: 38px;
-    background-size: 28px 28px;
-    background-repeat: no-repeat;
-
-  }
-
-  &--answersBlock {
-    margin: 5px 0 15px 0;
-  }
-
-  &--answer {
-    color: #5D5F61;
-    font-size: 14px;
-
-    &-right {
-      margin-left: 10px;
-      color: #42C01E;
-    }
-
-    &-wrong {
-      color: #EB4250;
-    }
-  }
-
-  &--question {
-    margin-top: 10px;
-    font-size: 15px;
-  }
-
-  &--awards {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    &_item {
-      display: flex;
-      align-items: baseline;
-      &--divider {
-        width: 20px;
-      }
-    }
-  }
 }

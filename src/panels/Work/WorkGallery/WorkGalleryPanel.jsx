@@ -18,15 +18,8 @@ const WorkGalleryPanel = (props) => {
   const [summaryData, setSummaryData] = useState(null);
 
   useEffect(() => {
-    // Убираем возможность свайпа для Галереи
-    panelRef.current.childNodes[0].addEventListener('touchmove', (event) => {
-      event.stopPropagation();
-    });
-    console.log(questionIndex, 'update!');
-  }, []);
-
-  useEffect(() => {
     setStartInterval(start);
+
   }, [start]);
 
   useEffect(() => {
@@ -115,7 +108,7 @@ const WorkGalleryPanel = (props) => {
 
         {showArrowNext ? (
           <div className="Work--arrowNext">
-            <Button mode="secondary" onClick={() => nextQuestion()}>
+            <Button mode="secondary" onClick={() => goToNextQuestion()}>
               <Icon28ArrowRightOutline />
             </Button>
           </div>

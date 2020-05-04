@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import '../work.css';
 import {
@@ -10,55 +10,82 @@ import WorkGalleryPanel from './WorkGalleryPanel';
 
 const WorkGallery = (props) => {
   const { id, setActivePanel } = props;
-  const timeToAnswer = 10;
+  const timeToAnswer = 20;
   const dispatch = useDispatch();
 
   const [questions, setQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [activeModal, setActiveModal] = useState('Work--readyCheck');
   const [result, setResult] = useState([]);
-  const [rd, setRd] = useState([]);
+
+  const disableSwipe = useCallback((event) => {
+    event.stopPropagation();
+  }, []);
 
   // Первое получение всех вопросов
   useEffect(() => {
     setTimeout(() => {
       const resultFromServer = [
         {
-          question: 'Что кричал Волк Зайцу в известном мультфильме времён СССР?',
-          answers: ['Ну, догоню!', 'Ну, погоди!', 'Ну, попробуй!', 'Ну, что народ, погнали?!'],
-          correctAnswer: 'Ну, погоди!',
-          correctAnswerNumber: 1,
-          explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
-            + 'Интересно, что цитата стала весьма популярной у взрослых.',
-          theme: 'Детский',
+          question: 'Как называют края шляпы?',
+          answers: ['Нивы', 'Огороды', 'Поля', 'Уделы'],
+          correctAnswer: 'Поля',
+          correctAnswerNumber: 2,
+          explanation: '[Заглушка под пояснение]',
+          theme: 'Эмм...',
         },
         {
-          question: 'Буга вуга?',
-          answers: ['Дирижабль, ага!', 'Fuuu', 'Ра-та-та-та!', 'Конечно'],
-          correctAnswer: 'Дирижабль, ага!',
-          correctAnswerNumber: 1,
-          explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
-            + 'Интересно, что цитата стала весьма популярной у взрослых.',
-          theme: 'Рофел',
-        },
-        {
-          question: 'Металл, вызывающий лихорадку?',
-          answers: ['Золото', 'Серебро', 'Вибраниум', 'Медь'],
-          correctAnswer: 'Золото',
+          question: 'Какая пометка, сделанная возле абзаца, обозначает, что на него надо обратить особое внимание?',
+          answers: ['NB', 'FX', 'AA', 'PS'],
+          correctAnswer: 'NB',
           correctAnswerNumber: 0,
-          explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
-            + 'Интересно, что цитата стала весьма популярной у взрослых.',
-          theme: 'Химия',
+          explanation: '[Заглушка под пояснение]',
+          theme: 'Русский язык',
+        },
+        {
+          question: 'Какой из этих писателей написал "Азбуку" и "Новую Азбуку"?',
+          answers: ['Николай Некрасов', 'Александр Пушкин', 'Лев Толстой', 'Иван Тургенев'],
+          correctAnswer: 'Лев Толстой',
+          correctAnswerNumber: 2,
+          explanation: '[Заглушка под пояснение]',
+          theme: 'Русский язык',
+        },
+        {
+          question: 'Зачем дятел стучит по дереву?',
+          answers: ['Привлекает самку', 'Строит гнездо', 'Греется', 'Ищет еду'],
+          correctAnswer: 'Ищет еду',
+          correctAnswerNumber: 3,
+          explanation: 'Потому что он дятел',
+          theme: 'Биология',
+        },
+        {
+          question: 'Какое единственное уязвимое место было у Ахиллеса?',
+          answers: ['Голова', 'Пятка', 'Шея', 'Ладонь'],
+          correctAnswer: 'Пятка',
+          correctAnswerNumber: 1,
+          explanation: '[Заглушка под пояснение]',
+          theme: 'Мифология',
+        },
+        {
+          question: 'К какой группе музыкальных инструментов относится челеста?',
+          answers: ['Ударно-клавишные', 'Струнные', 'Духовные', 'Электромузыкальные'],
+          correctAnswer: 'Ударно-клавишные',
+          correctAnswerNumber: 0,
+          explanation: '[Заглушка под пояснение]',
+          theme: 'Музыка',
         },
       ];
       setQuestions(resultFromServer);
     }, 1000);
 
+    // Выключаем возможность свайпать галерею
+    window.addEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     return () => {
       setQuestions([]);
       setQuestionIndex(0);
       setActiveModal('Work--readyCheck');
       setResult([]);
+      window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     };
   }, []);
 
@@ -68,43 +95,21 @@ const WorkGallery = (props) => {
       type: 'UPDATE_QUIZ_RESULT',
       payload: result,
     });
-
-    if (questions.length) {
-      // При проверке условия вычитаем первый (проверочный) вопрос
-      if (result.length === questions.length - 1) {
-        setActivePanel('QuizResultPanel');
-      }
-    }
   }, [result]);
 
-
-/*  useEffect(() => {
-    const rendered = questions.map((item, index) => (
-      <WorkGalleryPanel
-        key={Math.random()}
-        id={`WorkGalleryPanel-${index}`}
-        questionIndex={index}
-        totalQuestions={questions.length}
-        data={{
-          question: item.question,
-          answers: item.answers,
-          correctAnswer: item.correctAnswer,
-          correctAnswerNumber: item.correctAnswerNumber,
-          explanation: item.explanation,
-          theme: item.theme,
-        }}
-        setResult={setResult}
-        start={(questionIndex === index) && !activeModal}
-        goToNextQuestion={setQuestionIndex}
-        timeToAnswer={timeToAnswer}
-      />
-    ));
-    setRd(rendered);
-  }, [questions]);*/
+  function goToNextQuestion() {
+    if (result.length === questions.length - 1) {
+      setActivePanel('QuizResultPanel');
+    } else {
+      setQuestionIndex(questionIndex + 1);
+    }
+  }
 
   return (
     <Panel id={id} className="Work" centered={!questions.length}>
-      <PanelHeader>
+      <PanelHeader
+        style={{ zIndex: 1 }}
+      >
         Самостоялка
       </PanelHeader>
 
@@ -138,10 +143,14 @@ const WorkGallery = (props) => {
             align="center"
             onChange={(i) => setQuestionIndex(i)}
             style={{ height: 'auto' }}
+            onDragStart={(e) => {
+              // console.log(e)
+              // e.preventDefault();
+            }}
           >
             {questions.map((item, index) => (
               <WorkGalleryPanel
-                key={'WorkGalleryPanel_' + index}
+                key={`WorkGalleryPanel_${index}`}
                 id={`WorkGalleryPanel-${index}`}
                 questionIndex={index}
                 totalQuestions={questions.length}
@@ -155,11 +164,11 @@ const WorkGallery = (props) => {
                 }}
                 setResult={setResult}
                 start={(questionIndex === index) && !activeModal}
-                goToNextQuestion={setQuestionIndex}
+                goToNextQuestion={goToNextQuestion}
                 timeToAnswer={timeToAnswer}
               />
             ))}
-            {/*{rd}*/}
+            {/* {rd} */}
           </Gallery>
         </div>
       )
