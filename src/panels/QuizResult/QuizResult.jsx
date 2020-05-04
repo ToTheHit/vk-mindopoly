@@ -18,15 +18,15 @@ const QuizResult = (props) => {
 
   useEffect(() => {
     let counter = 0;
+
     for (let i = 0; i < quizResult.length; i += 1) {
-      if (quizResult[i].selectedAnswer === quizResult[i].rightAnswer) {
+      if (quizResult[i].selectedAnswerNumber === quizResult[i].correctAnswerNumber) {
         counter += 1;
       }
     }
     setRightAnswers(counter);
   }, quizResult);
 
-  console.log(IOS);
   return (
     <Panel className="QuizResult" id={id}>
       <PanelHeader
@@ -40,8 +40,8 @@ const QuizResult = (props) => {
         Результат
       </PanelHeader>
       {(rightAnswers === quizResult.length
-        ? <QuizResultExcellent rightQuestionCount={rightAnswers} />
-        : <QuizResultMain quizResult={quizResult} />)}
+        ? <QuizResultExcellent correctQuestionCount={rightAnswers} />
+        : <QuizResultMain quizResult={quizResult} correctQuestionCount={rightAnswers} />)}
     </Panel>
   );
 };

@@ -1,43 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import bridge from '@vkontakte/vk-bridge';
 
 import PropTypes from 'prop-types';
 import {
+  Avatar,
   Button,
   Card,
   Cell,
   Div,
+  Group,
   Header,
   Headline,
   Panel,
   PanelHeader,
   Separator,
-  SimpleCell,
-  Spinner,
+  SimpleCell, Spinner,
   Text,
-  Avatar, Group,
 } from '@vkontakte/vkui';
-
-import Icon28RefreshOutline from '@vkontakte/icons/dist/28/refresh_outline';
-import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
-import IconQuizCard from '../../assets/Common/IconQuizCard.png';
+import Icon16Market from '../../assets/Common/icon_market_16.svg';
+import Icon16Coin from '../../assets/Common/icn_coin_16.svg';
 
 import './common.css';
 import BrainLeaderboard from './BrainLeaderboard';
+import MyQuestionGallery from "./Components/MyQuestionGallery/MyQuestionGallery";
 
 const Common = (props) => {
   const { id, setActivePanel } = props;
-  const [quizeCard, setQuizeCard] = useState({
+  const [quizCard, setquizCard] = useState({
     completed: false, date: '25 апреля', trueAnswers: 3, questionsCount: 5,
   });
-  const [renderedQuestions, setRenderedQuestions] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [GP, setGP] = useState(20);
+  const [renderedFacts, setRenderedFacts] = useState([]);
+  const [facts, setFacts] = useState([]);
+  const [myQuestions, setMyQuestions] = useState([]);
+  const [fetchedUser, setUser] = useState({
+    first_name: 'Test',
+    last_name: 'User',
+    photo_200: 'https://sun9-51.userapi.com/c840222/v840222319/8a733/I7rD4NcI9N0.jpg?ava=1',
+    BR: 62,
+    coins: 2556,
+  });
+  const [userLeaderboardData, setUserLeaderboardData] = useState({
+    worldPlace: 12803312,
+    friendsPlace: 4,
+  });
 
   // Начальный эффект, в котором нужно будет запросить у сервера пачку "вопрос-ответ"
   // и, возможно, другую информацию
   useEffect(() => {
-    setQuestions([
+    setFacts([
       {
         question: 'Какая птица не подкладывает свои яйца в чужие гнёзда?',
         answer: 'Золотистая ржанка',
@@ -51,122 +60,177 @@ const Common = (props) => {
         answer: 'Верблюд',
       },
     ]);
+    setMyQuestions([
+      {
+        question: 'Какой из этих металлов вызывает лихорадку?',
+        answers: ['1', '2', '3', '4'],
+        cost: 32,
+      },
+      {
+        question: 'Какой из этих металлов вызывает лихорадку? Какой из этих металлов вызывает лихорадку?',
+        answers: ['1', '2', '3', '4'],
+        cost: 32,
+      },
+      {
+        question: 'Какой из этих металлов вызывает лихорадку?',
+        answers: ['1', '2', '3', '4'],
+        cost: 32,
+      },
+      {
+        question: 'Какой из этих металлов вызывает лихорадку?',
+        answers: ['1', '2', '3', '4'],
+        cost: 32,
+      },
+    ]);
   }, []);
 
   useEffect(() => {
-    const renderedItems = questions.map((item) => (
+    const renderedItems = facts.map((item) => (
       <Cell key={item.question} description={item.answer} multiline>{item.question}</Cell>
     ));
-    setRenderedQuestions(renderedItems);
-  }, [questions]);
+    setRenderedFacts(renderedItems);
+  }, [facts]);
 
-  function updateQuestions() {
-    setQuestions([]);
-    // Запрос на сервер за новыми вопросами
-    setTimeout(() => {
-      setQuestions([
-        {
-          question: 'Кто зелебоба?',
-          answer: 'ТЫ',
-        },
-      ]);
-    }, 1000);
-  }
 
   return (
     <Panel id={id} className="Common">
       <PanelHeader>
         Продлёнка
       </PanelHeader>
-      {quizeCard && (
-        <Div style={{ paddingBottom: 0 }}>
-          <Card size="l">
-            <Div
-              className="Common--quizCard"
-              onClick={() => {
-                if (!quizeCard.completed) setActivePanel('WorkPanel');
-              }}
-            >
-              <div
-                className="Common__iconQuiz"
-                style={{ backgroundImage: `url(${IconQuizCard})` }}
-              />
-              {(quizeCard.completed && (
-                <Cell
-                  multiline
-                  description={
-                    `Вы ответили на ${quizeCard.trueAnswers} из ${quizeCard.questionsCount} вопросов`
-                  }
-                >
-                  <Text>
-                    Самостоялка (завершено)
-                  </Text>
-                </Cell>
-              ))}
-              {(!quizeCard.completed && (
-                <Cell
-                  multiline
-                  expandable
-                  description="Пять случайных вопросов из разделов: математика, история, литература, физика и спорт."
-                >
-                  <Text>
-                    Самостоялка,
-                    {' '}
-                    {quizeCard.date}
-                  </Text>
-                </Cell>
-              ))}
 
-            </Div>
-          </Card>
-        </Div>
-      )}
-      <SimpleCell
-        disabled
-        after={(
-          <Button
-            mode="commerce"
-            before={<Icon28MarketOutline fill="#FFF" />}
-          >
-            магазин
-          </Button>
+      {/* Quiz card */}
+      <div>
+        {quizCard && (
+          <Div style={{ paddingBottom: 0 }}>
+            <Card size="l">
+              <Div
+                className="Common--quizCard"
+              >
+{/*                <div
+                  className="Common__iconQuiz"
+                  style={{ backgroundImage: `url(${IconQuizCard})` }}
+                />*/}
+                <img src={Icon16Coin} className="Common__iconQuiz" alt={'Icon coin'} />
+                {(quizCard.completed && (
+                  <Cell
+                    multiline
+                    description={
+                      `Вы ответили на ${quizCard.trueAnswers} из ${quizCard.questionsCount} вопросов`
+                    }
+                  >
+                    <Text>
+                      Самостоялка (завершено)
+                    </Text>
+                  </Cell>
+                ))}
+                {(!quizCard.completed && (
+                  <Cell
+                    multiline
+                    description="Пять случайных вопросов из разделов: математика, история, литература, физика и спорт."
+                    size="l"
+                    bottomContent={(
+                      <Button
+                        mode="primary"
+                        onClick={() => {
+                          if (!quizCard.completed) setActivePanel('WorkPanel');
+                        }}
+                      >
+                        Пройти сейчас
+                      </Button>
+                    )}
+                  >
+                    <Text>
+                      Самостоялка,
+                      {' '}
+                      {quizCard.date}
+                    </Text>
+                  </Cell>
+                ))}
+
+              </Div>
+            </Card>
+          </Div>
         )}
-      >
-        <Header
-          level={2}
-          weight="semibold"
-          className="Common--GPcounter"
-        >
-          {GP}
-        </Header>
-        <Header mode="secondary" weight="semibold" className="Common--GPcounter">GP</Header>
-      </SimpleCell>
-      <SimpleCell
-        multiline
-        disabled
-        description="Зарабатывайте Genius Points, решая ежедневные самостоятельные работы. Полученные GP можно потратить в магазине."
-        style={{ marginTop: '-15px' }}
-      />
-      <Separator />
-      <Div>
-        <Headline level={2} weight="semibold">Интересные факты</Headline>
-        {renderedQuestions.length ? renderedQuestions : <Spinner size="large" />}
-        <Button
-          size="xl"
-          mode="secondary"
-          before={<Icon28RefreshOutline />}
-          style={{ marginTop: '15px' }}
-          onClick={() => {
-            updateQuestions();
-          }}
-        >
-          Обновить за 20GP
-        </Button>
+      </div>
 
+      <Headline level={2} weight="semibold" className="Common--BrainHeader">Брейн-рейтинг</Headline>
+      {fetchedUser && (
+        <Group
+          separator="hide"
+          description={(
+            <div>
+              {`Вы на ${userLeaderboardData.worldPlace.toLocaleString()} месте в мире 
+              и на ${userLeaderboardData.friendsPlace.toLocaleString()} месте среди друзей. Чтобы
+              автоматически получать очки брейн-рейтинга, купите в магазине «Вопрос».`}
+            </div>
+          )}
+          className="Common--user"
+        >
+          <SimpleCell
+            disabled
+            before={<Avatar src={fetchedUser.photo_200} />}
+            indicator={<div>{`${fetchedUser.BR} BR`}</div>}
+          >
+
+            {`${fetchedUser.first_name} `}
+            {' '}
+            <b>{fetchedUser.last_name}</b>
+          </SimpleCell>
+        </Group>
+      )}
+
+      <Div className="Common--CustomQuestionBlock">
+        <SimpleCell
+          className="Common--ShopButton"
+          disabled
+          before={(
+            <Button
+              mode="commerce"
+              before={<img src={Icon16Market} alt={'Icon shop'} className="Common--ShopButton_icon" />}
+            >
+              МАГАЗИН
+            </Button>
+          )}
+        >
+          <div className="Common--ShopButton_textAfter">
+            {`У вас ${fetchedUser.coins} монет`}
+          </div>
+        </SimpleCell>
 
       </Div>
-      <BrainLeaderboard />
+      <Separator />
 
+      <Group
+        header={(
+          <Header
+            mode="secondary"
+            aside={
+              <Button mode="tertiary" className={'Common--button__showAllQuestions'}>Показать все</Button>}
+          >
+            мои вопросы
+          </Header>
+        )}
+      >
+        <MyQuestionGallery questions={myQuestions} />
+      </Group>
+
+      <Group
+        header={(
+          <Header
+            mode="secondary"
+          >
+            таблица лидеров
+          </Header>
+        )}
+      >
+        <BrainLeaderboard />
+
+      </Group>
+
+      <Div>
+        <Headline level={2} weight="semibold">Интересные факты</Headline>
+        {renderedFacts.length ? renderedFacts : <Spinner size="large" />}
+      </Div>
 
     </Panel>
   );

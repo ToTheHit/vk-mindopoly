@@ -10,12 +10,39 @@
   &--GPcounter {
     float: left;
     padding: 0 3px;
+
     .Header__in {
       .Header__content {
         font-size: 36px;
         line-height: 36px;
         padding: 13px 0 9px;
       }
+    }
+
+    &_green {
+      margin-left: 20px;
+
+      .Header__content {
+        color: #4BB34B;
+      }
+    }
+
+    &_small {
+      .Header__content {
+        font-size: 24px !important;
+        line-height: 24px !important;
+      }
+
+    }
+  }
+
+  &--counterName {
+    padding-left: 6px;
+    &_default {
+      color: var(--text_secondary);
+    }
+    &_green {
+      color: #4BB34B;
     }
   }
 
@@ -32,19 +59,36 @@
   &--answersBlock {
     margin: 5px 0 15px 0;
   }
+
   &--answer {
     color: #5D5F61;
     font-size: 14px;
+
     &-right {
       margin-left: 10px;
       color: #42C01E;
     }
+
     &-wrong {
       color: #EB4250;
     }
   }
+
   &--question {
     margin-top: 10px;
     font-size: 15px;
+  }
+
+  &--awards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &_item {
+      display: flex;
+      align-items: baseline;
+      &--divider {
+        width: 20px;
+      }
+    }
   }
 }

@@ -13,6 +13,25 @@
   line-height: 36px;
   padding: 13px 0 9px;
 }
+.QuizResult--GPcounter_green {
+  margin-left: 20px;
+}
+.QuizResult--GPcounter_green .Header__content {
+  color: #4BB34B;
+}
+.QuizResult--GPcounter_small .Header__content {
+  font-size: 24px !important;
+  line-height: 24px !important;
+}
+.QuizResult--counterName {
+  padding-left: 6px;
+}
+.QuizResult--counterName_default {
+  color: var(--text_secondary);
+}
+.QuizResult--counterName_green {
+  color: #4BB34B;
+}
 .QuizResult__iconQuiz {
   height: 28px;
   width: 28px;
@@ -38,5 +57,17 @@
 .QuizResult--question {
   margin-top: 10px;
   font-size: 15px;
+}
+.QuizResult--awards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.QuizResult--awards_item {
+  display: flex;
+  align-items: baseline;
+}
+.QuizResult--awards_item--divider {
+  width: 20px;
 }
 /*# sourceMappingURL=quizResult.css.map */

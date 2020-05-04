@@ -17,6 +17,7 @@ const WorkGallery = (props) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [activeModal, setActiveModal] = useState('Work--readyCheck');
   const [result, setResult] = useState([]);
+  const [rd, setRd] = useState([]);
 
   // Первое получение всех вопросов
   useEffect(() => {
@@ -25,7 +26,8 @@ const WorkGallery = (props) => {
         {
           question: 'Что кричал Волк Зайцу в известном мультфильме времён СССР?',
           answers: ['Ну, догоню!', 'Ну, погоди!', 'Ну, попробуй!', 'Ну, что народ, погнали?!'],
-          rightAnswer: 'Ну, погоди!',
+          correctAnswer: 'Ну, погоди!',
+          correctAnswerNumber: 1,
           explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
             + 'Интересно, что цитата стала весьма популярной у взрослых.',
           theme: 'Детский',
@@ -33,15 +35,17 @@ const WorkGallery = (props) => {
         {
           question: 'Буга вуга?',
           answers: ['Дирижабль, ага!', 'Fuuu', 'Ра-та-та-та!', 'Конечно'],
-          rightAnswer: 'Конечно',
+          correctAnswer: 'Дирижабль, ага!',
+          correctAnswerNumber: 1,
           explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
             + 'Интересно, что цитата стала весьма популярной у взрослых.',
           theme: 'Рофел',
         },
         {
           question: 'Металл, вызывающий лихорадку?',
-          answers: ['Серебро', 'Вибраниум', 'Золото', 'Медь'],
-          rightAnswer: 'Золото',
+          answers: ['Золото', 'Серебро', 'Вибраниум', 'Медь'],
+          correctAnswer: 'Золото',
+          correctAnswerNumber: 0,
           explanation: '«Ну, заяц, погоди!», — кричал знаменитый персонаж Союз Мультфильма. '
             + 'Интересно, что цитата стала весьма популярной у взрослых.',
           theme: 'Химия',
@@ -72,6 +76,31 @@ const WorkGallery = (props) => {
       }
     }
   }, [result]);
+
+
+/*  useEffect(() => {
+    const rendered = questions.map((item, index) => (
+      <WorkGalleryPanel
+        key={Math.random()}
+        id={`WorkGalleryPanel-${index}`}
+        questionIndex={index}
+        totalQuestions={questions.length}
+        data={{
+          question: item.question,
+          answers: item.answers,
+          correctAnswer: item.correctAnswer,
+          correctAnswerNumber: item.correctAnswerNumber,
+          explanation: item.explanation,
+          theme: item.theme,
+        }}
+        setResult={setResult}
+        start={(questionIndex === index) && !activeModal}
+        goToNextQuestion={setQuestionIndex}
+        timeToAnswer={timeToAnswer}
+      />
+    ));
+    setRd(rendered);
+  }, [questions]);*/
 
   return (
     <Panel id={id} className="Work" centered={!questions.length}>
@@ -112,24 +141,25 @@ const WorkGallery = (props) => {
           >
             {questions.map((item, index) => (
               <WorkGalleryPanel
-                key={Math.random()}
+                key={'WorkGalleryPanel_' + index}
                 id={`WorkGalleryPanel-${index}`}
                 questionIndex={index}
                 totalQuestions={questions.length}
                 data={{
                   question: item.question,
                   answers: item.answers,
-                  rightAnswer: item.rightAnswer,
+                  correctAnswer: item.correctAnswer,
+                  correctAnswerNumber: item.correctAnswerNumber,
                   explanation: item.explanation,
                   theme: item.theme,
                 }}
-                updateResult={setResult}
+                setResult={setResult}
                 start={(questionIndex === index) && !activeModal}
                 goToNextQuestion={setQuestionIndex}
                 timeToAnswer={timeToAnswer}
               />
             ))}
-
+            {/*{rd}*/}
           </Gallery>
         </div>
       )
@@ -185,7 +215,7 @@ const WorkGallery = (props) => {
           data={{
             question: currentQuestion.question,
             answers: currentQuestion.answers,
-            rightAnswer: currentQuestion.rightAnswer,
+            correctAnswer: currentQuestion.correctAnswer,
             explanation: currentQuestion.explanation,
           }}
           time={time}

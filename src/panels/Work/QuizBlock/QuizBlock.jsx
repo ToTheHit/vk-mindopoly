@@ -6,7 +6,9 @@ import {
 } from '@vkontakte/vkui';
 
 const QuizBlock = (props) => {
-  const { data, time, onComplete } = props;
+  const {
+    data, time, onComplete, correctAnswerNumber,
+  } = props;
   const refButton1 = useRef(null);
   const refButton2 = useRef(null);
   const refButton3 = useRef(null);
@@ -16,7 +18,23 @@ const QuizBlock = (props) => {
   const [rightButton, setRightButton] = useState();
 
   useEffect(() => {
-    switch (data.answers.indexOf(data.rightAnswer)) {
+    /*    switch (data.answers.indexOf(data.correctAnswer)) {
+          case 0:
+            setRightButton(refButton1);
+            break;
+          case 1:
+            setRightButton(refButton2);
+            break;
+          case 2:
+            setRightButton(refButton3);
+            break;
+          case 3:
+            setRightButton(refButton4);
+            break;
+          default:
+            break;
+        } */
+    switch (data.correctAnswerNumber) {
       case 0:
         setRightButton(refButton1);
         break;
@@ -47,7 +65,7 @@ const QuizBlock = (props) => {
         arr.splice(arr.indexOf(rightButton), 1);
         setSelectedButton(arr[rndNumber]);
       }
-      onComplete(data.question, (selectedButton ? selectedButton.current.textContent : 'Нет ответа'), rightButton.current.textContent);
+      onComplete(data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], -1, data.correctAnswerNumber);
     }
   }, [time]);
 
@@ -78,11 +96,13 @@ const QuizBlock = (props) => {
             size="xl"
             className="Work--button"
             getRootRef={refButton1}
-            onClick={(e) => {
+            answernumber={0}
+            onClick={() => {
               if (time > 0) {
                 setStop(true);
                 setSelectedButton(refButton1);
-                onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                onComplete(data.question, data.answers[refButton1.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton1.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
           >
@@ -93,11 +113,13 @@ const QuizBlock = (props) => {
             size="xl"
             className="Work--button"
             getRootRef={refButton2}
-            onClick={(e) => {
+            answernumber={1}
+            onClick={() => {
               if (time > 0) {
                 setStop(true);
                 setSelectedButton(refButton2);
-                onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                onComplete(data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton2.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
 
@@ -109,11 +131,13 @@ const QuizBlock = (props) => {
             size="xl"
             className="Work--button"
             getRootRef={refButton3}
-            onClick={(e) => {
+            answernumber={2}
+            onClick={() => {
               if (time > 0) {
                 setStop(true);
                 setSelectedButton(refButton3);
-                onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                onComplete(data.question, data.answers[refButton3.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton3.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
           >
@@ -124,11 +148,13 @@ const QuizBlock = (props) => {
             size="xl"
             className="Work--button"
             getRootRef={refButton4}
-            onClick={(e) => {
+            answernumber={3}
+            onClick={() => {
               if (time > 0) {
                 setStop(true);
                 setSelectedButton(refButton4);
-                onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
+                onComplete(data.question, data.answers[refButton4.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton4.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
           >
@@ -161,7 +187,8 @@ QuizBlock.propTypes = {
   data: PropTypes.shape({
     question: PropTypes.string,
     answers: PropTypes.arrayOf(PropTypes.string),
-    rightAnswer: PropTypes.string,
+    correctAnswer: PropTypes.string,
+    correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
   }).isRequired,
   time: PropTypes.number.isRequired,

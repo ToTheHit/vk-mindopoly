@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Card, Gallery, Group, Separator, SimpleCell,
+  Avatar, Card, Gallery, Separator, SimpleCell,
 } from '@vkontakte/vkui';
+import './leaderboardGallery.css';
 
 const LeaderboardGallery = (props) => {
-  const { friendsLeaderboard, worldLeaderboard } = props;
+  const {
+    friendsLeaderboard, worldLeaderboard, activeTab, setActiveTab,
+  } = props;
   const [slideIndex, setSlideIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
+  // const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
   const [renderedFriendsLeaderboard, setRenderedFriendsLeaderBoard] = useState([]);
   const [renderedWorldLeaderboard, setRenderedWorldLeaderboard] = useState([]);
-
 
   useEffect(() => {
     const rendered = friendsLeaderboard.map((item, index) => (
@@ -30,6 +32,11 @@ const LeaderboardGallery = (props) => {
     ));
     setRenderedFriendsLeaderBoard(rendered);
   }, [friendsLeaderboard]);
+
+  useEffect(() => {
+    if (activeTab === 'WorldLeaderboardTab') setSlideIndex(0);
+    else if (activeTab === 'FriendsLeaderboardTab') setSlideIndex(1);
+  }, [activeTab]);
 
   useEffect(() => {
     const rendered = worldLeaderboard.map((item, index) => (
@@ -68,46 +75,16 @@ const LeaderboardGallery = (props) => {
     >
       <Card
         mode="shadow"
+        className="LeaderboardGallery--card"
         style={{ height: 'auto' }}
       >
         {renderedWorldLeaderboard}
-{/*        {worldLeaderboard.map((item, index) => (
-          <div
-            key={Math.random()}
-          >
-            <SimpleCell
-              disabled
-              before={<Avatar size={48} src={item.photo_200} />}
-              indicator={`${item.score} BR`}
-            >
-              {`${item.first_name} `}
-              <b>{item.last_name}</b>
-            </SimpleCell>
-            {index !== (worldLeaderboard.length - 1) && <Separator wide />}
-          </div>
-        ))}*/}
       </Card>
       <Card
         mode="shadow"
         style={{ height: 'auto' }}
       >
-        {console.log('1')}
         {renderedFriendsLeaderboard}
-        {/*{friendsLeaderboard.map((item, index) => (
-          <div
-            key={Math.random()}
-          >
-            <SimpleCell
-              disabled
-              before={<Avatar size={48} src={item.photo_200} />}
-              indicator={`${item.score} BR`}
-            >
-              {`${item.first_name} `}
-              <b>{item.last_name}</b>
-            </SimpleCell>
-            {index !== (friendsLeaderboard.length - 1) && <Separator wide />}
-          </div>
-        ))}*/}
       </Card>
     </Gallery>
   );
@@ -126,6 +103,8 @@ LeaderboardGallery.propTypes = {
     photo_200: PropTypes.string,
     score: PropTypes.number,
   })).isRequired,
+  activeTab: PropTypes.string.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
 };
 LeaderboardGallery.defaultProps = {};
 export default LeaderboardGallery;

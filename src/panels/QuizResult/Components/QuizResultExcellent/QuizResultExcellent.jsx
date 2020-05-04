@@ -2,33 +2,65 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './quizResultExcellent.css';
 import {
-  Button, Header, Placeholder, Text,
+  Button, Placeholder, Text, Title,
 } from '@vkontakte/vkui';
 import cupIcon from '../../../../assets/Quiz/cup.png';
 
 const QuizResultExcellent = (props) => {
-  const { rightQuestionCount } = props;
+  const { correctQuestionCount } = props;
   return (
     <Placeholder
-      icon={<div className="QuizResultExcellent--picture" style={{ backgroundImage: `url(${cupIcon})` }} />}
+      icon={(
+        <div
+          className="QuizResultExcellent--picture"
+          style={{ backgroundImage: `url(${cupIcon})` }}
+        />
+      )}
       header={(
         <div className="QuizResultExcellent--header">
-          <div>
-            <Header
-              level={2}
-              weight="semibold"
-              className="QuizResult--GPcounter"
-            >
-              + {rightQuestionCount * 10}
-            </Header>
-            <Header mode="secondary" weight="semibold" className="QuizResult--GPcounter">GP</Header>
+          <div className="QuizResult--awards">
+            <div className="QuizResult--awards_item">
+              <Title
+                level={1}
+                weight="semibold"
+                className="QuizResult--GPcounter"
+              >
+                {`+${correctQuestionCount * 10}`}
+              </Title>
+              <Title
+                level={1}
+                mode="secondary"
+                weight="semibold"
+                className="QuizResult--counterName QuizResult--counterName_default"
+              >
+                монет
+              </Title>
+            </div>
+            <div className="QuizResult--awards_item--divider" />
+            <div className="QuizResult--awards_item">
+              <Title
+                level={1}
+
+                weight="semibold"
+                className="QuizResult--counterName_green"
+              >
+                {`+${correctQuestionCount}`}
+              </Title>
+              <Title
+                level={1}
+                mode="secondary"
+                weight="semibold"
+                className="QuizResult--counterName QuizResult--counterName_default"
+              >
+                BR
+              </Title>
+            </div>
           </div>
+
 
           <div className="QuizResultExcellent--subheader">
             Вы не допустили ни одной ошибки.
-            {' '}
             <br />
-            {' '}
             Поздравляем!
           </div>
         </div>
@@ -44,7 +76,7 @@ const QuizResultExcellent = (props) => {
 };
 
 QuizResultExcellent.propTypes = {
-  rightQuestionCount: PropTypes.number.isRequired,
+  correctQuestionCount: PropTypes.number.isRequired,
 };
 QuizResultExcellent.defaultProps = {};
 export default QuizResultExcellent;

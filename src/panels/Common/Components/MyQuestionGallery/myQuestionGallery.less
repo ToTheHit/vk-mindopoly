@@ -1,0 +1,38 @@
+.MyQuestionGallery {
+  height: auto;
+  margin-top: 6px;
+
+  .Gallery__slide {
+    &:last-child {
+      width: 282px;
+      .MyQuestionGallery--cardOuter {
+        width: 260px;
+      }
+    }
+  }
+  &--cardOuter {
+    padding-right: 10px;
+    width: 272px;
+    .SimpleCell__children {
+      max-height: 44px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &--empty {
+    width: 100%;
+    min-height: 136px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &__content {
+      color: var(--text_secondary);
+      text-align: center;
+      max-width: 300px;
+    }
+  }
+}

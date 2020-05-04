@@ -8,24 +8,29 @@ import QuizBlock from '../QuizBlock/QuizBlock';
 
 const WorkGalleryPanel = (props) => {
   const {
-    id, questionIndex, data, totalQuestions, timeToAnswer, updateResult, start, goToNextQuestion,
+    id, questionIndex, data, totalQuestions, timeToAnswer, setResult, start, goToNextQuestion,
   } = props;
 
   const panelRef = useRef(null);
   const [showArrowNext, setShowArrowNext] = useState(false);
   const [time, setTime] = useState(timeToAnswer);
   const [startInterval, setStartInterval] = useState(false);
-  const [summaryData, setSummaryData] = useState({});
+  const [summaryData, setSummaryData] = useState(null);
 
   useEffect(() => {
     // Убираем возможность свайпа для Галереи
     panelRef.current.childNodes[0].addEventListener('touchmove', (event) => {
       event.stopPropagation();
     });
+    console.log(questionIndex, 'update!');
   }, []);
 
   useEffect(() => {
     setStartInterval(start);
+  }, [start]);
+
+  useEffect(() => {
+    // console.log(questionIndex, start);
   }, [start]);
 
   // Интервал
@@ -50,18 +55,32 @@ const WorkGalleryPanel = (props) => {
   }, [time]);
 
   // Вызывается после окончания таймера, либо после выбранного ответа
-  function onCompleteQuestion(question, selectedAnswer, rightAnswer) {
+  function onCompleteQuestion(question, selectedAnswer, correctAnswer, selectedAnswerNumber, correctAnswerNumber) {
     setStartInterval(false);
     setShowArrowNext(true);
-    setSummaryData({
-      questionIndex, question, selectedAnswer, rightAnswer,
-    });
+
+    /*    setSummaryData({
+      questionIndex,
+      question,
+      selectedAnswer,
+      correctAnswer,
+      selectedAnswerNumber,
+      correctAnswerNumber,
+    }); */
+
+    if (questionIndex !== 0) {
+      setResult((prevResult) => [...prevResult, {
+        questionIndex,
+        question,
+        selectedAnswer,
+        correctAnswer,
+        selectedAnswerNumber,
+        correctAnswerNumber,
+      }]);
+    }
   }
 
   function nextQuestion() {
-    if (questionIndex !== 0) {
-      updateResult((prevResult) => [...prevResult, summaryData]);
-    }
     goToNextQuestion(questionIndex + 1);
   }
 
@@ -114,7 +133,8 @@ const WorkGalleryPanel = (props) => {
         data={{
           question: data.question,
           answers: data.answers,
-          rightAnswer: data.rightAnswer,
+          correctAnswer: data.correctAnswer,
+          correctAnswerNumber: data.correctAnswerNumber,
           explanation: data.explanation,
         }}
         time={time}
@@ -131,12 +151,13 @@ WorkGalleryPanel.propTypes = {
   data: PropTypes.shape({
     question: PropTypes.string,
     answers: PropTypes.arrayOf(PropTypes.string),
-    rightAnswer: PropTypes.string,
+    correctAnswer: PropTypes.string,
+    correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
     theme: PropTypes.string,
   }).isRequired,
   timeToAnswer: PropTypes.number,
-  updateResult: PropTypes.func.isRequired,
+  setResult: PropTypes.func.isRequired,
   start: PropTypes.bool.isRequired,
   goToNextQuestion: PropTypes.func.isRequired,
 };

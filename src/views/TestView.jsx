@@ -4,48 +4,15 @@ import './testView.css';
 import {
   Gallery, Panel, PanelHeader, SimpleCell, View,
 } from '@vkontakte/vkui';
+import TestPanel from "./TestPanel";
 
 const TestView = (props) => {
   const { id } = props;
   const [slideIndex, setSlideIndex] = useState(0);
-  const slideContent1 = (
-    <div>
-      <div>1</div>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-    </div>
-  );
-  const slideContent2 = (
-    <div>
-      <div>1</div>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-      <SimpleCell>1</SimpleCell>
-    </div>
-  );
+  const [globalCounter, setGlobalCounter] = useState(0);
 
+
+  const arr = [1,2];
   useEffect(() => {
 
   }, []);
@@ -66,12 +33,17 @@ const TestView = (props) => {
           }}
           align="center"
         >
-          <Panel id="testGallery-1">
-            {slideContent1}
-          </Panel>
-          <Panel id="testGallery-2">
-            {slideContent2}
-          </Panel>
+
+          {arr.map((item, index) => {
+            return (
+              <TestPanel
+                key={'TestGallery'+index}
+                currentIndex={slideIndex}
+                setGlobalCounter={setGlobalCounter}
+                globalCounter={globalCounter}
+              />
+            )
+          })}
 
         </Gallery>
       </Panel>
