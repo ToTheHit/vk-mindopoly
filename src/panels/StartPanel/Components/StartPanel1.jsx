@@ -39,26 +39,16 @@ const StartPanel1 = (props) => {
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon1})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon2})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon3})` }} />
-              {/*<img className="StartPanel--iconGroup__icon" src={icon12} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon22} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon32} alt="icon9" onLoad={() => console.log(9)}/>*/}
             </div>
             <div className="StartPanel--iconGroup__line">
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon4})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon5})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon6})` }} />
-              {/*<img className="StartPanel--iconGroup__icon" src={icon42} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon52} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon62} alt="icon9" onLoad={() => console.log(9)}/>*/}
             </div>
             <div className="StartPanel--iconGroup__line">
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon7})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon8})` }} />
               <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon9})` }} />
-              {/*<img className="StartPanel--iconGroup__icon" src={icon72} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon82} alt="icon9" onLoad={() => console.log(9)}/>*/}
-              {/*<img className="StartPanel--iconGroup__icon" src={icon92} alt="icon9" onLoad={() => console.log(9)}/>*/}
-
             </div>
           </div>
 

@@ -110,7 +110,7 @@ const WorkGallery = (props) => {
       <PanelHeader
         style={{ zIndex: 1 }}
       >
-        Самостоялка
+        Мозговой отчёт
       </PanelHeader>
 
 
@@ -143,10 +143,6 @@ const WorkGallery = (props) => {
             align="center"
             onChange={(i) => setQuestionIndex(i)}
             style={{ height: 'auto' }}
-            onDragStart={(e) => {
-              // console.log(e)
-              // e.preventDefault();
-            }}
           >
             {questions.map((item, index) => (
               <WorkGalleryPanel

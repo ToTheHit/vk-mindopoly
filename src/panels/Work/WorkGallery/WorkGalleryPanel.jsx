@@ -14,10 +14,11 @@ const WorkGalleryPanel = (props) => {
   const panelRef = useRef(null);
   const [showArrowNext, setShowArrowNext] = useState(false);
   const [time, setTime] = useState(timeToAnswer);
+  const [systemTime, setSystemTime] = useState(0);
   const [startInterval, setStartInterval] = useState(false);
-  const [summaryData, setSummaryData] = useState(null);
 
   useEffect(() => {
+    setSystemTime(Date.now());
     setStartInterval(start);
 
   }, [start]);
@@ -30,9 +31,14 @@ const WorkGalleryPanel = (props) => {
   useEffect(() => {
     let intervalId;
     if (startInterval) {
+      let prevSystemTime = Date.now();
       intervalId = setInterval(() => {
-        setTime((oldTime) => oldTime - 1);
-      }, 1000);
+
+        const seconds = ((Date.now() - prevSystemTime) / 1000).toFixed(1);
+        console.log(seconds);
+        prevSystemTime = Date.now();
+        setTime((oldTime) => oldTime - seconds);
+      }, 500);
     } else {
       clearInterval(intervalId);
     }
@@ -117,7 +123,7 @@ const WorkGalleryPanel = (props) => {
             <div className="Work--timer__gradient" />
             <div className="Work--timer__gradient-mask" />
             <div className="Work--timer__time">
-              <Title level={2}>{(time > 0 ? time : 0)}</Title>
+              <Title level={2}>{(time > 0 ? time.toFixed(0) : 0)}</Title>
             </div>
           </div>
         )}

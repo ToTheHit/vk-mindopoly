@@ -4,6 +4,7 @@ import './quizBlock.css';
 import {
   Button, Div, Group, Headline, Text, Title,
 } from '@vkontakte/vkui';
+import AnswerButton from '../../CustomComponents/AnswerButton';
 
 const QuizBlock = (props) => {
   const {
@@ -15,44 +16,28 @@ const QuizBlock = (props) => {
   const refButton4 = useRef(null);
   const [stop, setStop] = useState(false);
   const [selectedButton, setSelectedButton] = useState(null);
-  const [rightButton, setRightButton] = useState();
+  const [correctButton, setcorrectButton] = useState();
 
   useEffect(() => {
-    /*    switch (data.answers.indexOf(data.correctAnswer)) {
-          case 0:
-            setRightButton(refButton1);
-            break;
-          case 1:
-            setRightButton(refButton2);
-            break;
-          case 2:
-            setRightButton(refButton3);
-            break;
-          case 3:
-            setRightButton(refButton4);
-            break;
-          default:
-            break;
-        } */
     switch (data.correctAnswerNumber) {
       case 0:
-        setRightButton(refButton1);
+        setcorrectButton(refButton1);
         break;
       case 1:
-        setRightButton(refButton2);
+        setcorrectButton(refButton2);
         break;
       case 2:
-        setRightButton(refButton3);
+        setcorrectButton(refButton3);
         break;
       case 3:
-        setRightButton(refButton4);
+        setcorrectButton(refButton4);
         break;
       default:
         break;
     }
     return () => {
       setSelectedButton(null);
-      setRightButton(null);
+      setcorrectButton(null);
       setStop(false);
     };
   }, [data.question]);
@@ -62,104 +47,90 @@ const QuizBlock = (props) => {
       if (!selectedButton) {
         const rndNumber = Math.floor(Math.random() * Math.floor(3));
         const arr = [refButton1, refButton2, refButton3, refButton4];
-        arr.splice(arr.indexOf(rightButton), 1);
+        arr.splice(arr.indexOf(correctButton), 1);
         setSelectedButton(arr[rndNumber]);
       }
       onComplete(data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], -1, data.correctAnswerNumber);
     }
   }, [time]);
 
-  function getMode(ref) {
+  function getType(ref) {
     if (time > 0 && !stop) {
-      if (selectedButton === ref) return 'primary';
-      return 'secondary';
+      return '';
     }
     if (selectedButton === ref) {
-      if (selectedButton === rightButton) return 'commerce';
-      return 'destructive';
+      if (selectedButton === correctButton) return 'correct';
+      return 'wrong';
     }
-    if (ref === rightButton) return 'commerce';
-    return 'secondary';
+    if (ref === correctButton) return 'correct';
+    return 'disabled';
   }
 
   return (
     <div style={{ paddingTop: 0 }}>
-      <Div>
+      <Div style={{ paddingBottom: 0 }}>
         <Title level={1} weight="bold" className="Work--title">
           {data.question}
         </Title>
       </Div>
       <Group>
-        <Div>
-          <Button
-            mode={getMode(refButton1)}
-            size="xl"
+        <Div style={{ paddingTop: '2px' }}>
+          <AnswerButton
             className="Work--button"
-            getRootRef={refButton1}
-            answernumber={0}
-            onClick={() => {
-              if (time > 0) {
+            ref={refButton1}
+            label={data.answers[0]}
+            answerNumber={0}
+            action={() => {
+              if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton1);
-                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
                 onComplete(data.question, data.answers[refButton1.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton1.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
-          >
-            {data.answers[0]}
-          </Button>
-          <Button
-            mode={getMode(refButton2)}
-            size="xl"
+            type={getType(refButton1)}
+          />
+          <AnswerButton
             className="Work--button"
-            getRootRef={refButton2}
-            answernumber={1}
-            onClick={() => {
-              if (time > 0) {
+            ref={refButton2}
+            label={data.answers[1]}
+            answerNumber={1}
+            action={() => {
+              if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton2);
-                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
                 onComplete(data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton2.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
-
-          >
-            {data.answers[1]}
-          </Button>
-          <Button
-            mode={getMode(refButton3)}
-            size="xl"
+            type={getType(refButton2)}
+          />
+          <AnswerButton
             className="Work--button"
-            getRootRef={refButton3}
-            answernumber={2}
-            onClick={() => {
-              if (time > 0) {
+            ref={refButton3}
+            label={data.answers[2]}
+            answerNumber={2}
+            action={() => {
+              if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton3);
-                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
-                onComplete(data.question, data.answers[refButton3.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton3.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
+                onComplete(data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton3.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
-          >
-            {data.answers[2]}
-          </Button>
-          <Button
-            mode={getMode(refButton4)}
-            size="xl"
+            type={getType(refButton3)}
+          />
+          <AnswerButton
             className="Work--button"
-            getRootRef={refButton4}
-            answernumber={3}
-            onClick={() => {
-              if (time > 0) {
+            ref={refButton4}
+            label={data.answers[3]}
+            answerNumber={3}
+            action={() => {
+              if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton4);
-                // onComplete(data.question, e.target.innerText, rightButton.current.textContent);
                 onComplete(data.question, data.answers[refButton4.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton4.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
-          >
-            {data.answers[3]}
-          </Button>
+            type={getType(refButton4)}
+          />
         </Div>
       </Group>
 

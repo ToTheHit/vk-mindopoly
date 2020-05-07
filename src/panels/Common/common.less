@@ -1,14 +1,49 @@
 .Common {
 
   &--GPcounter {
-    float: left;
-    padding: 0 3px;
+    //padding: 0 3px;
     .Header__in {
       .Header__content {
         font-size: 24px;
         line-height: 28px;
         padding: 13px 0 9px;
       }
+    }
+    &_currency {
+      color: var(--text_secondary);
+      padding-left: 5px;
+    }
+  }
+
+  &--balance {
+    margin-top: 20px;
+    margin-bottom: 7px;
+    &__row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    &__title {
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--text_secondary);
+      font-size: 13px;
+      line-height: 1.23;
+      letter-spacing: -0.08px;
+    }
+    &__item {
+      display: flex;
+      align-items: center;
+      margin: 0 10px
+    }
+    &__icon {
+      width: 32px;
+      height: 32px;
+      background-repeat: no-repeat;
+      background-size: 32px 32px;
+      background-position: inherit;
+      padding-right: 6px;
     }
   }
 
@@ -55,6 +90,7 @@
       color: var(--text_secondary);
       font-size: 14px;
       margin-left: 12px;
+      white-space: pre-wrap;
     }
   }
 

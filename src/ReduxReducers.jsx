@@ -13,7 +13,6 @@ export function schemeChanger(state = { scheme: 'light', quizResult: [] }, actio
 export function quiz(state = { quizResult: [] }, action) {
   switch (action.type) {
     case 'UPDATE_QUIZ_RESULT':
-      // console.log(action.payload);
       return {
         ...state,
         quizResult: action.payload,

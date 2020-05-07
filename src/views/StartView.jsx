@@ -4,16 +4,9 @@ import { View } from '@vkontakte/vkui';
 import StartPanel from '../panels/StartPanel/StartPanel';
 
 const StartView = (props) => {
-  const { id } = props;
+  const { id, nextView } = props;
   const [activePanel, setActivePanel] = useState('StartPanel');
   const [popout, setPopout] = useState(/* <ScreenSpinner size="large" /> */);
-
-  useEffect(() => {
-    // console.log('render');
-    return () => {
-      setActivePanel('StartPanel');
-    };
-  }, []);
 
   return (
     <View
@@ -23,13 +16,14 @@ const StartView = (props) => {
       header={false}
       style={{ position: 'fixed', top: '-2px' }}
     >
-      <StartPanel id="StartPanel" />
+      <StartPanel id="StartPanel" nextView={nextView} />
     </View>
   );
 };
 
 StartView.propTypes = {
   id: PropTypes.string.isRequired,
+  nextView: PropTypes.func.isRequired,
 };
 StartView.defaultProps = {};
 export default StartView;

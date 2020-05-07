@@ -48,7 +48,7 @@
 }
 .StartPanel--time {
   position: relative;
-  margin: 20px 0;
+  margin: 35px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,6 +68,12 @@
   border-top: 1px solid var(--separator_common);
   border-bottom: 1px solid var(--separator_common);
   top: -20px;
+}
+.StartPanel--time__buttonAllow {
+  margin-top: 20px;
+}
+.StartPanel--time__buttonReject {
+  margin-top: 18px;
 }
 .StartPanel input {
   opacity: 0;
