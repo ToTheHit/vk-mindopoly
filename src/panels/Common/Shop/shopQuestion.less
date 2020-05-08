@@ -1,0 +1,31 @@
+.ShopQuestion {
+
+  .Group>:not(.Header):first-child {
+    margin-top: 0;
+  }
+
+  &--incorrectAnswer {
+    &_input:not(:first-child) {
+      margin-top: 24px;
+    }
+  }
+
+  &--placeholder {
+    .Placeholder__text {
+      color: var(--text_primary);
+    }
+    &__icon {
+      &-accepted {
+        color: var(--button_primary_background);
+      }
+      &-rejected {
+        color: var(--destructive);
+      }
+    }
+    &__button {
+      margin: 0 8px;
+
+    }
+  }
+
+}

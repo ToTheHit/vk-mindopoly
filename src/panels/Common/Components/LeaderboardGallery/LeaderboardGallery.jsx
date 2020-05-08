@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Card, Gallery, Separator, SimpleCell, Placeholder, Button,
+  Avatar, Card, Gallery, Separator, SimpleCell
 } from '@vkontakte/vkui';
-import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 
 import './leaderboardGallery.css';
 import bridge from '@vkontakte/vk-bridge';
@@ -65,11 +64,16 @@ const LeaderboardGallery = (props) => {
 
   useEffect(() => {
     let height = 61;
-    if (activeTab === 'WorldLeaderboardTab') {
+/*    if (activeTab === 'WorldLeaderboardTab') {
       height *= renderedWorldLeaderboard.length;
     } else if (renderedFriendsLeaderboard.length === 1) {
       height += 300;
-    } else height *= renderedFriendsLeaderboard.length;
+    } else height *= renderedFriendsLeaderboard.length;*/
+
+    if (activeTab === 'WorldLeaderboardTab') {
+      height *= renderedWorldLeaderboard.length;
+    }
+    else height *= renderedFriendsLeaderboard.length;
 
     setCardHeight(height);
   }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard]);
@@ -90,6 +94,7 @@ const LeaderboardGallery = (props) => {
       align="center"
       style={{ height: cardHeight }}
     >
+
       <Card
         mode="shadow"
         className="LeaderboardGallery--card"
@@ -103,28 +108,6 @@ const LeaderboardGallery = (props) => {
         className="LeaderboardGallery--card"
       >
         {renderedFriendsLeaderboard}
-        {(renderedFriendsLeaderboard.length === 1 && (
-          <div>
-            <Separator />
-            <Placeholder
-              className="LeaderboardGallery--card__placeholder"
-              icon={<Icon24UserAddOutline width={56} height={36} style={{ color: 'var(--button_primary_background)' }} />}
-              header="Друзья не в игре"
-              action={(
-                <Button
-                  size="l"
-                  onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
-                >
-                  Пригласить
-                </Button>
-              )}
-            >
-              Сейчас в Мозгополии нет Ваших друзей.
-              Пригласите их, чтобы выяснить, кто лучший мозгополист.
-            </Placeholder>
-          </div>
-
-        ))}
       </Card>
     </Gallery>
   );

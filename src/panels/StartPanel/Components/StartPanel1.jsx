@@ -4,26 +4,26 @@ import {
   Button, Panel, Text, Title,
 } from '@vkontakte/vkui';
 
+import icon1 from '../../../assets/StartPanel/coloredIcons/icon1.png';
+import icon2 from '../../../assets/StartPanel/coloredIcons/icon2.png';
+import icon3 from '../../../assets/StartPanel/coloredIcons/icon3.png';
+import icon4 from '../../../assets/StartPanel/coloredIcons/icon4.png';
+import icon5 from '../../../assets/StartPanel/coloredIcons/icon5.png';
+import icon6 from '../../../assets/StartPanel/coloredIcons/icon6.png';
+import icon7 from '../../../assets/StartPanel/coloredIcons/icon7.png';
+import icon8 from '../../../assets/StartPanel/coloredIcons/icon8.png';
+import icon9 from '../../../assets/StartPanel/coloredIcons/icon9.png';
 
-import icon11 from '../../../assets/StartPanel/originalIcons/icon1.png';
-import icon21 from '../../../assets/StartPanel/originalIcons/icon2.png';
-import icon31 from '../../../assets/StartPanel/originalIcons/icon3.png';
-import icon41 from '../../../assets/StartPanel/originalIcons/icon4.png';
-import icon51 from '../../../assets/StartPanel/originalIcons/icon5.png';
-import icon61 from '../../../assets/StartPanel/originalIcons/icon6.png';
-import icon71 from '../../../assets/StartPanel/originalIcons/icon7.png';
-import icon81 from '../../../assets/StartPanel/originalIcons/icon8.png';
-import icon91 from '../../../assets/StartPanel/originalIcons/icon9.png';
-
-import icon1 from '../../../assets/StartPanel/icon1.png';
-import icon2 from '../../../assets/StartPanel/icon2.png';
-import icon3 from '../../../assets/StartPanel/icon3.png';
-import icon4 from '../../../assets/StartPanel/icon4.png';
-import icon5 from '../../../assets/StartPanel/icon5.png';
-import icon6 from '../../../assets/StartPanel/icon6.png';
-import icon7 from '../../../assets/StartPanel/icon7.png';
-import icon8 from '../../../assets/StartPanel/icon8.png';
-import icon9 from '../../../assets/StartPanel/icon9.png';
+import icon11 from '../../../assets/StartPanel/blueIcons/icn32_sigma.png';
+import icon21 from '../../../assets/StartPanel/blueIcons/icn32_russian.png';
+import icon31 from '../../../assets/StartPanel/blueIcons/icn32_litra.png';
+import icon41 from '../../../assets/StartPanel/blueIcons/icn32_genius.png';
+import icon51 from '../../../assets/StartPanel/blueIcons/icn32_chemistry.png';
+import icon61 from '../../../assets/StartPanel/blueIcons/icn32_moon.png';
+import icon71 from '../../../assets/StartPanel/blueIcons/icn32_history.png';
+import icon81 from '../../../assets/StartPanel/blueIcons/icn32_art.png';
+import icon91 from '../../../assets/StartPanel/blueIcons/icn32_other.png';
+import icon101 from '../../../assets/StartPanel/blueIcons/icn32_sport.png';
 
 const StartPanel1 = (props) => {
   const { goToNextSlide, id } = props;
@@ -33,39 +33,38 @@ const StartPanel1 = (props) => {
       <div className="StartPanel--content">
 
         <Title level="1" weight="heavy" className="StartPanel--title">
-          Продлёнка
+          Мозгополия
           <div className="StartPanel--iconGroup">
             <div className="StartPanel--iconGroup__line">
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon1})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon2})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon3})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon11})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon21})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon31})` }} />
             </div>
             <div className="StartPanel--iconGroup__line">
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon4})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon5})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon6})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon41})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon51})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon61})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon71})` }} />
             </div>
             <div className="StartPanel--iconGroup__line">
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon7})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon8})` }} />
-              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon9})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon81})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon91})` }} />
+              <div className="StartPanel--iconGroup__icon" style={{ backgroundImage: `url(${icon101})` }} />
             </div>
           </div>
 
         </Title>
         <Text weight="regular" className="StartPanel--text">
-          Добро пожаловать в Продлёнку. Пишите
-          ежедневные самостоятельные работы,
-          зарабатывайте баллы и расширяйте
-          свой кругозор!
+          {`Добро пожаловать в Мозгополию.\nПишите ежедневные мозговые отчёты, зарабатывайте очки гения
+          и станьте настоящим мозгополистом!`}
         </Text>
         <Button
-          size="l"
+          size="m"
           onClick={() => {
             goToNextSlide(1);
           }}
         >
-          Начать обучение
+          Продолжить
         </Button>
       </div>
     </Panel>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Root, View } from '@vkontakte/vkui';
+import { View } from '@vkontakte/vkui';
 import Common from '../panels/Common/Common';
 import QuizResult from '../panels/QuizResult/QuizResult';
 import WorkGallery from '../panels/Work/WorkGallery/WorkGallery';

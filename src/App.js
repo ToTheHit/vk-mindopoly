@@ -12,11 +12,12 @@ import globalVariables from './GlobalVariables';
 import Page404 from './views/Page404';
 
 const App = () => {
-  const [activeView, setActiveView] = useState(globalVariables.view.start);
+  const [activeView, setActiveView] = useState(globalVariables.view.main);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    bridge.send('VKWebAppUpdateConfig', {})
+
+/*    bridge.send('VKWebAppUpdateConfig', {})
       .then((data) => {
         setTimeout(() => {
           console.info(data);
@@ -26,7 +27,8 @@ const App = () => {
         setTimeout(() => {
           console.info(err);
         }, 1000);
-      });
+      });*/
+
     bridge.subscribe(({ detail: { type, data } }) => {
       switch (type) {
         case 'VKWebAppUpdateConfig':
@@ -48,7 +50,8 @@ const App = () => {
           console.info('Why you hate me?');
           break;
         default:
-          console.info(type);
+          // console.info('UknownType:', type);
+          break;
       }
     });
   }, []);

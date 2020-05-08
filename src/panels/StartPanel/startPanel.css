@@ -6,11 +6,10 @@
 }
 .StartPanel--iconGroup {
   position: absolute;
-  top: -310px;
-  right: -150px;
+  top: -190px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: -1;
-  width: 250px;
-  height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -18,16 +17,17 @@
 .StartPanel--iconGroup__line {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
 }
 .StartPanel--iconGroup__line:nth-child(2) {
-  margin-left: -50px;
+  margin: 20px 0;
 }
 .StartPanel--iconGroup__icon {
-  width: 64px;
-  height: 64px;
-  background-size: 64px 64px;
+  width: 32px;
+  height: 32px;
+  background-size: 32px 32px;
   background-repeat: no-repeat;
+  margin: 0 20px;
 }
 .StartPanel--content {
   position: relative;
@@ -42,9 +42,12 @@
   position: relative;
 }
 .StartPanel--text {
-  margin: 20px 0;
+  margin: 15px 0;
   text-align: center;
-  max-width: 325px;
+  max-width: 305px;
+  white-space: pre-line;
+  line-height: 1.33;
+  letter-spacing: -0.24px;
 }
 .StartPanel--time {
   position: relative;
@@ -70,7 +73,7 @@
   top: -20px;
 }
 .StartPanel--time__buttonAllow {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 .StartPanel--time__buttonReject {
   margin-top: 18px;
