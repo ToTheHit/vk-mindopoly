@@ -23,6 +23,7 @@ const App = () => {
           const schemeAttribute = document.createAttribute('scheme');
           schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
           document.body.attributes.setNamedItem(schemeAttribute);
+          console.info('update!')
           dispatch({
             type: 'UPDATE_SCHEME',
             payload: schemeAttribute.value,

@@ -9,18 +9,19 @@ import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import Icon32Russian from '../../../assets/StartPanel/blueIcons/icn32_russian.png';
-import Icon32Math from '../../../assets/StartPanel/blueIcons/icn32_sigma.png';
-import Icon32Litra from '../../../assets/StartPanel/blueIcons/icn32_litra.png';
-import Icon32Physics from '../../../assets/StartPanel/blueIcons/icn32_genius.png';
-import Icon32Chemistry from '../../../assets/StartPanel/blueIcons/icn32_chemistry.png';
-import Icon32Astro from '../../../assets/StartPanel/blueIcons/icn32_moon.png';
-import Icon32Biology from '../../../assets/StartPanel/blueIcons/icn32_biology.png';
-import Icon32History from '../../../assets/StartPanel/blueIcons/icn32_history.png';
-import Icon32Art from '../../../assets/StartPanel/blueIcons/icn32_art.png';
-import Icon32Sport from '../../../assets/StartPanel/blueIcons/icn32_sport.png';
-import Icon32Other from '../../../assets/StartPanel/blueIcons/icn32_other.png';
-import Icon32Geography from '../../../assets/StartPanel/blueIcons/icn32_geography.png';
+
+import Icon64Russian from '../../../assets/Icons/icn64_rus.png';
+import Icon64Math from '../../../assets/Icons/icn64_math.png';
+import Icon64Litra from '../../../assets/Icons/icn64_litra.png';
+import Icon64Physics from '../../../assets/Icons/icn64_physics.png';
+import Icon64Chemistry from '../../../assets/Icons/icn64_chem.png';
+import Icon64Astro from '../../../assets/Icons/icn64_astro.png';
+import Icon64Biology from '../../../assets/Icons/icn64_bio.png';
+import Icon64History from '../../../assets/Icons/icn64_history.png';
+import Icon64Art from '../../../assets/Icons/icn64_art.png';
+import Icon64Sport from '../../../assets/Icons/icn64_sport.png';
+import Icon64Other from '../../../assets/Icons/icn64_other.png';
+import Icon64Geography from '../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../GlobalVariables';
 
 
@@ -35,18 +36,18 @@ const Shop = (props) => {
 
   function getIcon(category) {
     switch (category) {
-      case 'Math': return Icon32Math;
-      case 'Russian': return Icon32Russian;
-      case 'Literature': return Icon32Litra;
-      case 'Physics': return Icon32Physics;
-      case 'Chemistry': return Icon32Chemistry;
-      case 'Astronomy': return Icon32Astro;
-      case 'Biology': return Icon32Biology;
-      case 'History': return Icon32History;
-      case 'Art': return Icon32Art;
-      case 'Sport': return Icon32Sport;
-      case 'Other': return Icon32Other;
-      case 'Geography': return Icon32Geography;
+      case 'Math': return Icon64Math;
+      case 'Russian': return Icon64Russian;
+      case 'Literature': return Icon64Litra;
+      case 'Physics': return Icon64Physics;
+      case 'Chemistry': return Icon64Chemistry;
+      case 'Astronomy': return Icon64Astro;
+      case 'Biology': return Icon64Biology;
+      case 'History': return Icon64History;
+      case 'Art': return Icon64Art;
+      case 'Sport': return Icon64Sport;
+      case 'Other': return Icon64Other;
+      case 'Geography': return Icon64Geography;
       default: return '';
     }
   }

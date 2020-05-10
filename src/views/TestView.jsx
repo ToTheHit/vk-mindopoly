@@ -5,7 +5,10 @@ import {
   Div, Panel, PanelHeader, Separator, View,
 } from '@vkontakte/vkui';
 
+import axios from 'axios';
+
 import bridge from '@vkontakte/vk-bridge';
+import globalVariables from '../GlobalVariables';
 
 const TestView = (props) => {
   const { id } = props;
@@ -89,27 +92,38 @@ const TestView = (props) => {
           .catch((err) => console.info(err));
       }); */
 
-    const urlParams = new URLSearchParams(window.location.search);
+    bridge.send('VKWebAppStorageGet', { keys: ['authToken'] })
+      .then(((data) => {
+        const urlParams = new URLSearchParams(window.location.search);
 
-
-    bridge.send('VKWebAppCallAPIMethod', {
-      method: 'users.get',
-      params: {
-        user_ids: '1',
-        v: '5.103',
-        access_token: 'token',
-      },
-    })
-      .then((data) => {
-        setTimeout(() => {
-          console.info(data);
-        }, 1000);
-      })
-      .catch((err) => {
-        setTimeout(() => {
-          console.info(err);
-        }, 1000);
-      });
+        axios.all([
+          axios.get(`${globalVariables.serverURL}/api/userInfo`, {
+            params: {
+              token: data.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          }),
+          axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
+            params: {
+              token: data.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          }),
+          axios.get(`${globalVariables.serverURL}/api/userInfo`, {
+            params: {
+              token: data.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          }),
+        ])
+          .then(axios.spread((first, second, third) => {
+            // Both requests are now complete
+            console.info(first);
+            console.info(second);
+            console.info(third);
+          }))
+          .catch((err) => console.info(err));
+      }));
   }, []);
 
   return (

@@ -15,13 +15,12 @@ import {
 } from '@vkontakte/vkui';
 
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
-import axios from 'axios';
-import bridge from '@vkontakte/vk-bridge';
 import globalVariables from '../../../../GlobalVariables';
 
 const Mindbreakers = (props) => {
-  const { setActivePanel, setSelectedQuestion, setActiveStory } = props;
-  const [questions, setQuestions] = useState([]);
+  const {
+    setActivePanel, setSelectedQuestion, setActiveStory, questions,
+  } = props;
   const [renderedCards, setRenderedCards] = useState([]);
 
   const refThemeButton1 = useRef(null);
@@ -41,35 +40,9 @@ const Mindbreakers = (props) => {
 
   useEffect(() => {
     setRefCurrentThemeButton(refThemeButton1);
-
-    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
-      .then(((bridgeData) => {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        if (bridgeData.keys[0].value) {
-          axios.get(`${globalVariables.serverURL}/api/userQuestions`, {
-            params: {
-              token: bridgeData.keys[0].value,
-              id: urlParams.get('vk_user_id'),
-            },
-          })
-            .then((data) => {
-              setQuestions(data.data.attachment);
-            })
-            .catch((err) => {
-              console.info('Main, get/userQuestions', err);
-              // Сервер не нашёл токен в БД.
-              // Перемещение на стартовый экран
-            });
-        } else {
-          // Перемещение на стартовый экран
-
-        }
-      }));
   }, []);
 
   useEffect(() => {
-    console.info(questions);
     const rendered = questions.map((item) => (
       <Card
         mode="outline"
@@ -94,10 +67,10 @@ const Mindbreakers = (props) => {
             {item.text}
           </Text>
 
-          {(item.approved && (
+          {(!item.approved && (
             <div className="Mindbreakers--card__footer">
               <Subhead weight="medium" className="Mindbreakers--card__footer-item">
-                {`Вопрос на проверке`}
+                Вопрос на проверке
               </Subhead>
             </div>
           ))}
@@ -378,6 +351,29 @@ Mindbreakers.propTypes = {
   setActivePanel: PropTypes.func.isRequired,
   setSelectedQuestion: PropTypes.func.isRequired,
   setActiveStory: PropTypes.func.isRequired,
+  questions: PropTypes.arrayOf(PropTypes.shape({
+    answers: PropTypes.arrayOf(PropTypes.string),
+    approved: PropTypes.bool,
+    bpEarned: PropTypes.shape({
+      overall: PropTypes.number,
+      today: PropTypes.number,
+      yesterday: PropTypes.number,
+    }),
+    bpForError: PropTypes.number,
+    category: PropTypes.string,
+    error_count: PropTypes.shape({
+      overall: PropTypes.number,
+      today: PropTypes.number,
+      yesterday: PropTypes.number,
+    }),
+    requestedBy: PropTypes.any,
+    views: PropTypes.shape({
+      overall: PropTypes.number,
+      today: PropTypes.number,
+      yesterday: PropTypes.number,
+    }),
+    text: PropTypes.string,
+  })).isRequired,
 };
 Mindbreakers.defaultProps = {};
 export default Mindbreakers;

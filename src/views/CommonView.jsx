@@ -24,7 +24,7 @@ const CommonView = (props) => {
     <View
       id={id}
       activePanel="Common"
-      header
+      // header
       className="CommonView"
     >
       <Panel id="Common" className="CommonView__panel">

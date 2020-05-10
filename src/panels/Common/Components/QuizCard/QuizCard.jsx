@@ -8,7 +8,7 @@ import {
 import globalVariables from '../../../../GlobalVariables';
 
 const QuizCard = (props) => {
-  const { completed, date, nextView } = props;
+  const { completed, nextView } = props;
   return (
     <Div style={{ paddingBottom: '10px', paddingTop: 0 }}>
       <Card size="l">
@@ -46,7 +46,7 @@ const QuizCard = (props) => {
               )}
             >
               <Subhead weight="regular">
-                {`Мозговой отчёт, ${date}`}
+                Мозговой отчёт
               </Subhead>
             </Cell>
           ))}
@@ -60,7 +60,6 @@ const QuizCard = (props) => {
 QuizCard.propTypes = {
   completed: PropTypes.bool,
   nextView: PropTypes.func.isRequired,
-  date: PropTypes.string.isRequired,
 };
 QuizCard.defaultProps = {
   completed: false,
