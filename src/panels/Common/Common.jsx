@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import {
@@ -8,17 +8,12 @@ import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outlin
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 
-// import './common.css';
-import Main from './Main/Main';
 import BrainLeaderboard from './Leaderboard/BrainLeaderboard';
-import Shop from './Shop/Shop';
-import ShopView from "../../views/ShopView";
-import QuestionDetails from "./QuestionDetails/QuestionDetails";
-import MainView from "../../views/MainView";
-
+import ShopView from '../../views/ShopView';
+import MainView from '../../views/MainView';
 
 const Common = (props) => {
-  const { id, setActivePanel } = props;
+  const { id, setActiveCommonView } = props;
   const [activeStory, setActiveStory] = useState('Main');
 
   function changeStory(e) {
@@ -54,20 +49,22 @@ const Common = (props) => {
         </Tabbar>
       )}
     >
-      <MainView id="Main" setActivePanel={setActivePanel} />
+      <MainView id="Main" setActiveCommonView={setActiveCommonView} />
+
+      <ShopView id="Shop" />
+
 
       <View activePanel="Leaderboard" id="Leaderboard">
         <BrainLeaderboard id="Leaderboard" />
       </View>
 
-      <ShopView id="Shop" />
     </Epic>
   );
 };
 
 Common.propTypes = {
   id: PropTypes.string.isRequired,
-  setActivePanel: PropTypes.func.isRequired,
+  setActiveCommonView: PropTypes.func.isRequired,
 };
 Common.defaultProps = {};
 export default Common;

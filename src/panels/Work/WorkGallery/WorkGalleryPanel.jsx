@@ -20,7 +20,6 @@ const WorkGalleryPanel = (props) => {
   useEffect(() => {
     setSystemTime(Date.now());
     setStartInterval(start);
-
   }, [start]);
 
   useEffect(() => {
@@ -33,9 +32,7 @@ const WorkGalleryPanel = (props) => {
     if (startInterval) {
       let prevSystemTime = Date.now();
       intervalId = setInterval(() => {
-
         const seconds = ((Date.now() - prevSystemTime) / 1000).toFixed(1);
-        console.log(seconds);
         prevSystemTime = Date.now();
         setTime((oldTime) => oldTime - seconds);
       }, 500);
@@ -54,18 +51,15 @@ const WorkGalleryPanel = (props) => {
   }, [time]);
 
   // Вызывается после окончания таймера, либо после выбранного ответа
-  function onCompleteQuestion(question, selectedAnswer, correctAnswer, selectedAnswerNumber, correctAnswerNumber) {
+  function onCompleteQuestion(
+    question,
+    selectedAnswer,
+    correctAnswer,
+    selectedAnswerNumber,
+    correctAnswerNumber,
+  ) {
     setStartInterval(false);
     setShowArrowNext(true);
-
-    /*    setSummaryData({
-      questionIndex,
-      question,
-      selectedAnswer,
-      correctAnswer,
-      selectedAnswerNumber,
-      correctAnswerNumber,
-    }); */
 
     if (questionIndex !== 0) {
       setResult((prevResult) => [...prevResult, {
@@ -135,6 +129,7 @@ const WorkGalleryPanel = (props) => {
           correctAnswer: data.correctAnswer,
           correctAnswerNumber: data.correctAnswerNumber,
           explanation: data.explanation,
+          requestedBy: data.requestedBy,
         }}
         time={time}
         onComplete={onCompleteQuestion}
@@ -154,6 +149,11 @@ WorkGalleryPanel.propTypes = {
     correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
     theme: PropTypes.string,
+    requestedBy: PropTypes.oneOf([PropTypes.shape({
+      first_name: PropTypes.string,
+      last_name: PropTypes.string,
+      photo: PropTypes.string,
+    }), PropTypes.number]),
   }).isRequired,
   timeToAnswer: PropTypes.number,
   setResult: PropTypes.func.isRequired,

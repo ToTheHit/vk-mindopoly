@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Card, Gallery, Separator, SimpleCell
+  Avatar, Card, Gallery, Separator, SimpleCell,
 } from '@vkontakte/vkui';
 
 import './leaderboardGallery.css';
-import bridge from '@vkontakte/vk-bridge';
 
 const LeaderboardGallery = (props) => {
   const {
@@ -64,16 +63,10 @@ const LeaderboardGallery = (props) => {
 
   useEffect(() => {
     let height = 61;
-/*    if (activeTab === 'WorldLeaderboardTab') {
-      height *= renderedWorldLeaderboard.length;
-    } else if (renderedFriendsLeaderboard.length === 1) {
-      height += 300;
-    } else height *= renderedFriendsLeaderboard.length;*/
 
     if (activeTab === 'WorldLeaderboardTab') {
       height *= renderedWorldLeaderboard.length;
-    }
-    else height *= renderedFriendsLeaderboard.length;
+    } else height *= renderedFriendsLeaderboard.length;
 
     setCardHeight(height);
   }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard]);

@@ -26,3 +26,22 @@ export function quiz(state = { quizResult: [] }, action) {
       return state;
   }
 }
+
+export function userInfo(state = {
+  GP: 0,
+  GPgrowth: 0,
+  coins: 0,
+  first_name: '',
+  last_name: '',
+  photo_200: '',
+  tax: 0,
+  friendsPlace: 1,
+  worldPlace: 1,
+}, action) {
+  switch (action.type) {
+    case 'UPDATE_USER_INFO':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}

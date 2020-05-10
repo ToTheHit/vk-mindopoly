@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './shop.css';
 import {
-  Group, Panel, PanelHeader, ScreenSpinner, Header, Button, SimpleCell, Div,
+  Group, Panel, PanelHeader, Header, Button, SimpleCell, Div, Snackbar,
 } from '@vkontakte/vkui';
 
+import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
+
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import Icon32Russian from '../../../assets/StartPanel/blueIcons/icn32_russian.png';
 import Icon32Math from '../../../assets/StartPanel/blueIcons/icn32_sigma.png';
 import Icon32Litra from '../../../assets/StartPanel/blueIcons/icn32_litra.png';
@@ -21,10 +25,13 @@ import globalVariables from '../../../GlobalVariables';
 
 
 const Shop = (props) => {
-  const { id, setActivePanel, setQuestionData } = props;
-  const [showScreen, setShowScreen] = useState(false);
+  const {
+    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView,
+  } = props;
   const [categories, setCategories] = useState([]);
   const [renderedCategories, setRenderedCategories] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const userBalance = useSelector((state) => state.userInfo.coins);
 
   function getIcon(category) {
     switch (category) {
@@ -44,56 +51,77 @@ const Shop = (props) => {
     }
   }
 
+  const checkBalance = useCallback((category, price) => {
+    if (userBalance >= price) {
+      setQuestionData({ category, price });
+      setActivePanel('ShopQuestion');
+    } else {
+      setShowSnackbar(true);
+    }
+  }, [setActivePanel, setQuestionData, userBalance]);
+
   useEffect(() => {
-    setTimeout(() => {
-      setShowScreen(true);
-      const themesFromServer = [
-        {
-          category: 'Math',
-          cost: 20,
-        },
-        {
-          category: 'Russian',
-          cost: 25,
-        },
-      ];
-      setCategories(themesFromServer);
-    }, 1000);
-  }, []);
+    axios.get(`${globalVariables.serverURL}/api/getCategoriesState`, {
+      params: {
+      },
+    })
+      .then((data) => {
+        setCategories(data.data);
+        setPopoutShopView(false);
+      })
+      .catch((err) => {
+        console.info('Main, get/userQuestions', err);
+        // Сервер не нашёл токен в БД.
+        // Перемещение на стартовый экран
+      });
+  }, [setPopoutShopView, checkBalance]);
+
+
 
   useEffect(() => {
     const rendered = categories.map((item) => (
       <SimpleCell
-        key={`ShopItem_${item.category}`}
+        key={`ShopItem_${item.name}`}
         className="Shop--item"
         disabled
         after={(
           <Button
             mode="secondary"
-            onClick={() => { setQuestionData({ category: item.category, cost: item.cost }); setActivePanel('ShopQuestion'); }}
+            onClick={() => { checkBalance(item.name, item.price); }}
           >
-            {`${item.cost} марок`}
+            {`${item.price} марок`}
           </Button>
         )}
         before={(
           <div className="Shop--iconOuter">
-            <div className="Shop--icon" style={{ backgroundImage: `url(${getIcon(item.category)})` }} />
+            <div className="Shop--icon" style={{ backgroundImage: `url(${getIcon(item.name)})` }} />
           </div>
 )}
       >
-        {globalVariables.translateEnToRu(item.category)}
+        {globalVariables.translateEnToRu(item.name)}
       </SimpleCell>
     ));
     setRenderedCategories(rendered);
-  }, [categories]);
+  }, [categories, checkBalance]);
 
   return (
-    <Panel id={id} className="Shop" centered={!showScreen}>
+    <Panel id={id} className="Shop">
       <PanelHeader>
         Магазин
       </PanelHeader>
-      {!showScreen && <ScreenSpinner />}
-      {showScreen && (
+      {showSnackbar && (
+        <Snackbar
+          duration={2000}
+          onClose={() => setShowSnackbar(false)}
+          before={(
+            <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
+          )}
+        >
+          Вам не хватает марок для покупки этого вопроса.
+        </Snackbar>
+      )}
+
+      {!popoutShopView && (
         <Group
           header={(
             <Header>
@@ -116,6 +144,8 @@ Shop.propTypes = {
   id: PropTypes.string.isRequired,
   setActivePanel: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  setPopoutShopView: PropTypes.func.isRequired,
+  popoutShopView: PropTypes.bool.isRequired,
 };
 Shop.defaultProps = {};
 export default Shop;

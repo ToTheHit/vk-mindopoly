@@ -15,12 +15,12 @@ const StartPanel = (props) => {
   const { id, nextView } = props;
 
   const [slideIndex, setSlideIndex] = useState(0);
-  const [showScreen, setShowScreen] = useState(true);
+  const [showScreen, setShowScreen] = useState(false);
 
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
-/*    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
       .then(((bridgeData) => {
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -42,8 +42,8 @@ const StartPanel = (props) => {
         } else {
           setShowScreen(true);
         }
-      }));*/
-  }, []);
+      }));
+  }, [nextView]);
 
   return (
     <Panel id={id} className="StartPanel" centered={!showScreen}>

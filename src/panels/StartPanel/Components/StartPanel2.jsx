@@ -13,10 +13,9 @@ const StartPanel2 = (props) => {
   const [showScreen, setShowScreen] = useState(true);
 
   function Registration() {
-    nextView(globalVariables.view.main);
+    // nextView(globalVariables.view.main);
 
-
-    /*    setShowScreen(false);
+    setShowScreen(false);
     axios.get(`${globalVariables.serverURL}/api/registerUser${window.location.search}`)
       .then((data) => {
         bridge.send('VKWebAppStorageSet', {
@@ -30,9 +29,10 @@ const StartPanel2 = (props) => {
       .catch((err) => {
         if (!err.status) {
           // Сервер не отвечает
-          nextView(globalVariables.view.page404);
+          setShowScreen(true);
+          // nextView(globalVariables.view.page404);
         }
-      }); */
+      });
   }
 
   return (
@@ -49,7 +49,7 @@ const StartPanel2 = (props) => {
             Приложение может напоминать Вам о ежедневных тестах.
             Уведомления отправлятся в 10:00 по МСК.
           </Text>
-{/*          <div className="StartPanel--time">
+          {/*          <div className="StartPanel--time">
             <Text weight="regular" className="StartPanel--time_counter">
               {time.split(':')[0]}
             </Text>
@@ -66,7 +66,7 @@ const StartPanel2 = (props) => {
               value={time}
               onChange={(e) => setTime(e.target.value)}
             />
-          </div>*/}
+          </div> */}
 
           <Button
             size="l"

@@ -1,135 +1,131 @@
 import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import { Cell, Panel, PanelHeader, ScreenSpinner, Separator, } from '@vkontakte/vkui';
+import {
+  Group, Panel, PanelHeader, Separator,
+} from '@vkontakte/vkui';
+import axios from 'axios';
 
 import './main.css';
 import bridge from '@vkontakte/vk-bridge';
+import { useDispatch } from 'react-redux';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
 import Balance from '../Components/Balance/Balance';
 import QuizCard from '../Components/QuizCard/QuizCard';
+import globalVariables from '../../../GlobalVariables';
 
 const Main = (props) => {
-  const { id, setActivePanel, setSelectedQuestion } = props;
-  const [showScreen, setShowScreen] = useState(false);
+  const dispatch = useDispatch();
+  const {
+    id, setActivePanel,
+    setSelectedQuestion, nextView,
+    setActiveStory, setPopoutMainView,
+    popoutMainView,
+  } = props;
   const [quizCard, setQuizCard] = useState({
-    completed: false, date: '25 апреля', trueAnswers: 3, questionsCount: 5,
+    isAvailable: false, date: '25 апреля',
   });
-  const [renderedFacts, setRenderedFacts] = useState([]);
-  const [facts, setFacts] = useState([]);
-  const [myQuestions, setMyQuestions] = useState([]);
+
   const [VKuser, setVKuser] = useState({
     first_name: 'Test',
     last_name: 'User',
     photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-    GP: 62,
-    GPgrowth: 20,
-    tax: 75,
-    coins: 15,
+    GP: 0,
+    GPgrowth: 0,
+    tax: 0,
+    coins: 0,
     worldPlace: 12803312,
     friendsPlace: 4,
   });
 
   useEffect(() => {
-    bridge
-      .send('VKWebAppGetUserInfo')
-      .then((data) => {
-        setVKuser({ ...VKuser, ...data });
-        setShowScreen(true);
-      });
-    setFacts([
-      {
-        question: 'Какая птица не подкладывает свои яйца в чужие гнёзда?',
-        answer: 'Золотистая ржанка',
-      },
-      {
-        question: 'В каком из этих напитков, по мнению дегустаторов, преобладает оттенок корочки ржаного хлеба?',
-        answer: 'В Токае',
-      },
-      {
-        question: 'Из чьей шерсти первоначально делались камилавки: головные уборы византийских священников?',
-        answer: 'Верблюд',
-      },
-    ]);
-    setMyQuestions([
-      {
-        question: 'Какой из этих металлов вызывает лихорадку?',
-        answers: ['1', '2', '3', '4'],
-        cost: 32,
-      },
-      {
-        question: 'Какой из этих металлов вызывает лихорадку? Какой из этих металлов вызывает лихорадку?',
-        answers: ['1', '2', '3', '4'],
-        cost: 32,
-      },
-      {
-        question: 'Какой из этих металлов вызывает лихорадку?',
-        answers: ['1', '2', '3', '4'],
-        cost: 32,
-      },
-      {
-        question: 'Какой из этих металлов вызывает лихорадку?',
-        answers: ['1', '2', '3', '4'],
-        cost: 32,
-      },
-    ]);
+    dispatch({
+      type: 'UPDATE_USER_INFO',
+      payload: VKuser,
+    });
+  }, [VKuser]);
+
+  useEffect(() => {
+    setPopoutMainView(true);
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
+      .then(((bridgeData) => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (bridgeData.keys[0].value) {
+          axios.get(`${globalVariables.serverURL}/api/userInfo`, {
+            params: {
+              token: bridgeData.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          })
+            .then((data) => {
+              // Сервер нашёл токен в БД. Рендерим информацию
+              const srvData = data.data.attachment;
+              const user = {
+                first_name: srvData.first_name,
+                last_name: srvData.last_name,
+                photo_200: srvData.photo,
+                GP: srvData.bp.overall,
+                GPgrowth: srvData.bp.today,
+                coins: srvData.coins,
+                tax: srvData.tax,
+              };
+              setQuizCard({
+                isAvailable: srvData.isExamAvailable, date: '25 апреля',
+              });
+              setVKuser({ ...VKuser, ...user });
+              setPopoutMainView(false);
+            })
+            .catch((err) => {
+              console.info('Main, get/userInfo', err);
+              // Сервер не нашёл токен в БД.
+              // Перемещение на стартовый экран
+              nextView(globalVariables.view.start);
+            });
+        } else {
+          // Перемещение на стартовый экран
+          nextView(globalVariables.view.start);
+        }
+      }));
 
     // TODO: Для разработки. Удалить для релиза
     setTimeout(() => {
-      setShowScreen(true);
-    }, 100);
+      setPopoutMainView(false);
+    }, 2000);
   }, []);
 
-  useEffect(() => {
-    const renderedItems = facts.map((item) => (
-      <Cell key={item.question} description={item.answer} multiline>{item.question}</Cell>
-    ));
-    setRenderedFacts(renderedItems);
-  }, [facts]);
-
   return (
-    <Panel id={id} className="Main" centered={!showScreen}>
+    <Panel id={id} className="Main">
       <PanelHeader>
         Мозгополия
       </PanelHeader>
-      {!showScreen && <ScreenSpinner />}
-
-      {showScreen && (
-        <div>
-          <Balance
-            coins={VKuser.coins}
-            GP={VKuser.GP}
-            tax={VKuser.tax}
-            GPgrowth={VKuser.GPgrowth}
-          />
+      {(!popoutMainView && (
+        <Group>
 
           <div>
-            {quizCard && (
-              <QuizCard setActivePanel={setActivePanel} date="6 мая" />
-            )}
+            <Balance
+              coins={VKuser.coins}
+              GP={VKuser.GP}
+              tax={VKuser.tax}
+              GPgrowth={VKuser.GPgrowth}
+            />
+
+            <div>
+              {quizCard.isAvailable && (
+                <QuizCard nextView={nextView} date={quizCard.date} />
+              )}
+            </div>
+
+            <Separator style={{ marginTop: '10px' }} />
+
+            <Mindbreakers
+              setActivePanel={setActivePanel}
+              setSelectedQuestion={setSelectedQuestion}
+              setActiveStory={setActiveStory}
+            />
           </div>
-
-          <Separator style={{ marginTop: '10px' }} />
-          <Mindbreakers />
-
-          {/*          <BrainLeaderboard
-            user={{
-              first_name: VKuser.first_name,
-              last_name: VKuser.last_name,
-              photo_200: VKuser.photo_200,
-              BP: VKuser.BP,
-            }}
-          /> */}
-
-        </div>
-      )}
-
-
-      {/*      <Div>
-        <Headline level={2} weight="semibold">Интересные факты</Headline>
-        {renderedFacts.length ? renderedFacts : <Spinner size="large" />}
-      </Div> */}
-
+        </Group>
+      ))}
     </Panel>
   );
 };
@@ -137,7 +133,11 @@ const Main = (props) => {
 Main.propTypes = {
   id: PropTypes.string.isRequired,
   setActivePanel: PropTypes.func.isRequired,
-  setSelectedQuestion: PropTypes.func.isRequired
+  setSelectedQuestion: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
+  setActiveStory: PropTypes.func.isRequired,
+  setPopoutMainView: PropTypes.func.isRequired,
+  popoutMainView: PropTypes.bool.isRequired,
 };
 Main.defaultProps = {};
 export default Main;

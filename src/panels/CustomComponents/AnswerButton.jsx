@@ -46,17 +46,17 @@ const AnswerButton = React.forwardRef((props, ref) => {
 
 AnswerButton.propTypes = {
   className: PropTypes.string,
-
   disabled: PropTypes.bool,
   type: PropTypes.oneOf(['correct', 'wrong', 'pressed', 'disabled', '']),
   label: PropTypes.string.isRequired,
-  action: PropTypes.func.isRequired,
+  action: PropTypes.func,
   answerNumber: PropTypes.number.isRequired,
 };
 AnswerButton.defaultProps = {
   className: '',
   disabled: false,
   type: '',
+  action: () => {},
 };
 
 export default AnswerButton;

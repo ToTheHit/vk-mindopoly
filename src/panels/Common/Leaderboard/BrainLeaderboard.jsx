@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import {
   Button,
-  Div, Group, Header, Panel, PanelHeader, Placeholder, Tabs, TabsItem,
+  Div, Group, Panel, PanelHeader, Placeholder, Tabs, TabsItem,
 } from '@vkontakte/vkui';
 import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 

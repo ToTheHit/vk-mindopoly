@@ -12,8 +12,18 @@
   &--button {
     margin-top: 10px;
   }
-  &--title {
-
+  &--question {
+    .Group__description {
+      padding-bottom: 5px;
+    }
+    &__author {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      &-name {
+        margin-left: 6px;
+      }
+    }
   }
   &--subTitle {
     display: flex;
@@ -70,4 +80,9 @@
       background-color: var(--background_content);
     }
   }
+
+  .ModalCard__title {
+    white-space: pre-line;
+  }
+
 }

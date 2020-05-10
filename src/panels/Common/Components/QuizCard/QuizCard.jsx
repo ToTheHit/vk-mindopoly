@@ -5,17 +5,16 @@ import './quizCard.css';
 import {
   Button, Card, Cell, Div, Subhead, Text,
 } from '@vkontakte/vkui';
-import Icon32Coins from "../../../../assets/Quiz/icn32_coins.png";
+import globalVariables from '../../../../GlobalVariables';
 
 const QuizCard = (props) => {
-  const { completed, date, setActivePanel } = props;
+  const { completed, date, nextView } = props;
   return (
     <Div style={{ paddingBottom: '10px', paddingTop: 0 }}>
       <Card size="l">
         <Div
           className="QuizCard"
         >
-          {/*<div className="QuizCard__icon" style={{ backgroundImage: `url(${Icon28BrainOutline})` }} />*/}
           <Icon28BrainOutline className="QuizCard__icon" width={21} height={21} />
           {(completed && (
             <Cell
@@ -37,7 +36,9 @@ const QuizCard = (props) => {
                 <Button
                   mode="primary"
                   onClick={() => {
-                    if (!completed) setActivePanel('WorkPanel');
+                    if (!completed) {
+                      nextView(globalVariables.view.work);
+                    }
                   }}
                 >
                   Пройти сейчас
@@ -58,10 +59,10 @@ const QuizCard = (props) => {
 
 QuizCard.propTypes = {
   completed: PropTypes.bool,
-  setActivePanel: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
   date: PropTypes.string.isRequired,
 };
 QuizCard.defaultProps = {
-  completed: false
+  completed: false,
 };
 export default QuizCard;

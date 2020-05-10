@@ -58,13 +58,16 @@ const Balance = (props) => {
                 <SimpleCell
                   className="Balance__tax"
                   disabled
-                  before={
-                    <div style={{ backgroundImage: `url(${Icon32Tax})` }} className="Balance__icon" />
-                  }
+                  before={(
+                    <div
+                      style={{ backgroundImage: `url(${Icon32Tax})` }}
+                      className="Balance__icon"
+                    />
+                  )}
                   description="Мозговой налог"
                 >
                   <div className="Balance__tax--textRed">
-                    {`${coins} М`}
+                    {`${tax} М`}
                   </div>
                 </SimpleCell>
               </Div>
@@ -86,7 +89,7 @@ const Balance = (props) => {
                   description="Прирост гения"
                 >
                   <div className="Balance__tax--textGreen">
-                    {`${GP} GP`}
+                    {`${GPgrowth} GP`}
                   </div>
                 </SimpleCell>
               </Div>

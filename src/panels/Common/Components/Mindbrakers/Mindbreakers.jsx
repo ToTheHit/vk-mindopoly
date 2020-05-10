@@ -10,17 +10,19 @@ import {
   Header,
   HorizontalScroll,
   Placeholder,
-  Subhead,
   Text,
+  Subhead,
 } from '@vkontakte/vkui';
 
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
+import axios from 'axios';
+import bridge from '@vkontakte/vk-bridge';
+import globalVariables from '../../../../GlobalVariables';
 
 const Mindbreakers = (props) => {
-  const { questions } = props;
-
+  const { setActivePanel, setSelectedQuestion, setActiveStory } = props;
+  const [questions, setQuestions] = useState([]);
   const [renderedCards, setRenderedCards] = useState([]);
-  const [questionsData, setQuestionsData] = useState([]);
 
   const refThemeButton1 = useRef(null);
   const refThemeButton2 = useRef(null);
@@ -38,64 +40,85 @@ const Mindbreakers = (props) => {
   const [refCurrentThemeButton, setRefCurrentThemeButton] = useState(null);
 
   useEffect(() => {
-    setQuestionsData([
-      {
-        theme: 'Другое',
-        text: 'Каким словом называют движение автомобилей по городу?',
-        answers: ['Мафик', 'Траффик', 'График', 'Профик'],
-        category: 'Other',
-        correctAnswer: 1,
-        GP: 1,
-      },
-      {
-        theme: 'Математика',
-        text: 'Как называется геометрическое тело, образованное вращением прямоугольника вокруг одной из его сторон?',
-        answers: ['Треугольник', 'Носорог', 'Сфера', 'Цилиндр'],
-        category: 'Geometry',
-        correctAnswer: 3,
-        GP: 2,
-        isHot: true,
-      },
-    ]);
     setRefCurrentThemeButton(refThemeButton1);
+
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
+      .then(((bridgeData) => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (bridgeData.keys[0].value) {
+          axios.get(`${globalVariables.serverURL}/api/userQuestions`, {
+            params: {
+              token: bridgeData.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          })
+            .then((data) => {
+              setQuestions(data.data.attachment);
+            })
+            .catch((err) => {
+              console.info('Main, get/userQuestions', err);
+              // Сервер не нашёл токен в БД.
+              // Перемещение на стартовый экран
+            });
+        } else {
+          // Перемещение на стартовый экран
+
+        }
+      }));
   }, []);
 
   useEffect(() => {
-    const rendered = questionsData.map((item) => (
-      <Card mode="outline" className="Mindbreakers--card" key={`Mindbreakers--card_${item.text}`}>
+    console.info(questions);
+    const rendered = questions.map((item) => (
+      <Card
+        mode="outline"
+        className="Mindbreakers--card"
+        key={`Mindbreakers--card_${item.text}`}
+        onClick={() => {
+          setSelectedQuestion(item);
+          setActivePanel('QuestionDetails');
+        }}
+      >
         <Div>
           <div
             className={
-              classNames('Mindbreakers--card__header',
-                { 'Mindbreakers--card__header-hot': item.isHot })
+              classNames('Mindbreakers--card__header')
             }
+            style={{ color: globalVariables.categoryColor(item.category) }}
           >
-            {item.theme}
+            <div className="Mindbreakers--card__header-dot" style={{ backgroundColor: globalVariables.categoryColor(item.category) }} />
+            {globalVariables.translateEnToRu(item.category)}
           </div>
           <Text className="Mindbreakers--card__text">
             {item.text}
           </Text>
 
-          <div className="Mindbreakers--card__footer">
-            <Subhead weight="medium" className="Mindbreakers--card__footer-item">
-              {`${item.GP} GP`}
-            </Subhead>
-          </div>
+          {(item.approved && (
+            <div className="Mindbreakers--card__footer">
+              <Subhead weight="medium" className="Mindbreakers--card__footer-item">
+                {`Вопрос на проверке`}
+              </Subhead>
+            </div>
+          ))}
+
         </Div>
       </Card>
     ));
 
     const sortedCards = { Все: [] };
-    for (let i = 0; i < questionsData.length; i += 1) {
-      if (!sortedCards[questionsData[i].theme]) {
-        sortedCards[questionsData[i].theme] = [];
+    for (let i = 0; i < questions.length; i += 1) {
+      if (!sortedCards[globalVariables.translateEnToRu(questions[i].category)]) {
+        sortedCards[globalVariables.translateEnToRu(questions[i].category)] = [];
       }
-      sortedCards[questionsData[i].theme].push(rendered[i]);
+      sortedCards[globalVariables.translateEnToRu(questions[i].category)].push(rendered[i]);
       sortedCards['Все'].push(rendered[i]);
     }
 
-    setRenderedCards(sortedCards);
-  }, [questionsData]);
+    if (sortedCards['Все'].length > 0) {
+      setRenderedCards(sortedCards);
+    }
+  }, [questions]);
 
   return (
     <Group
@@ -112,7 +135,12 @@ const Mindbreakers = (props) => {
 
       <HorizontalScroll>
         <div className="Mindbreakers__themes">
-          <div ref={refThemeButton1} className="Mindbreakers__themes-divider" data-theme="Все">
+          <div
+            ref={refThemeButton1}
+            className="Mindbreakers__themes-divider"
+            data-theme="Все"
+            style={{ display: (!renderedCards['Все'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton1 })}
@@ -130,11 +158,13 @@ const Mindbreakers = (props) => {
             ref={refThemeButton2}
             className="Mindbreakers__themes-divider"
             data-theme="Математика"
+            style={{ display: (!renderedCards['Математика'] && 'none') }}
           >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton2 })}
               onClick={() => setRefCurrentThemeButton(refThemeButton2)}
+
             >
               <Text>
                 Математика
@@ -145,6 +175,7 @@ const Mindbreakers = (props) => {
             ref={refThemeButton3}
             className="Mindbreakers__themes-divider"
             data-theme="Русский язык"
+            style={{ display: (!renderedCards['Русский язык'] && 'none') }}
           >
             <Button
               mode="tertiary"
@@ -161,6 +192,7 @@ const Mindbreakers = (props) => {
             ref={refThemeButton4}
             className="Mindbreakers__themes-divider"
             data-theme="Литература"
+            style={{ display: (!renderedCards['Литература'] && 'none') }}
           >
             <Button
               mode="tertiary"
@@ -173,7 +205,12 @@ const Mindbreakers = (props) => {
             </Button>
           </div>
 
-          <div ref={refThemeButton5} className="Mindbreakers__themes-divider" data-theme="Физика">
+          <div
+            ref={refThemeButton5}
+            className="Mindbreakers__themes-divider"
+            data-theme="Физика"
+            style={{ display: (!renderedCards['Физика'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton5 })}
@@ -185,7 +222,12 @@ const Mindbreakers = (props) => {
             </Button>
           </div>
 
-          <div ref={refThemeButton6} className="Mindbreakers__themes-divider" data-theme="Химия">
+          <div
+            ref={refThemeButton6}
+            className="Mindbreakers__themes-divider"
+            data-theme="Химия"
+            style={{ display: (!renderedCards['Химия'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton6 })}
@@ -200,6 +242,7 @@ const Mindbreakers = (props) => {
             ref={refThemeButton7}
             className="Mindbreakers__themes-divider"
             data-theme="Астрономия"
+            style={{ display: (!renderedCards['Астрономия'] && 'none') }}
           >
             <Button
               mode="tertiary"
@@ -212,7 +255,12 @@ const Mindbreakers = (props) => {
             </Button>
           </div>
 
-          <div ref={refThemeButton8} className="Mindbreakers__themes-divider" data-theme="Биология">
+          <div
+            ref={refThemeButton8}
+            className="Mindbreakers__themes-divider"
+            data-theme="Биология"
+            style={{ display: (!renderedCards['Биология'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton8 })}
@@ -224,7 +272,12 @@ const Mindbreakers = (props) => {
             </Button>
           </div>
 
-          <div ref={refThemeButton9} className="Mindbreakers__themes-divider" data-theme="История">
+          <div
+            ref={refThemeButton9}
+            className="Mindbreakers__themes-divider"
+            data-theme="История"
+            style={{ display: (!renderedCards['История'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton9 })}
@@ -240,6 +293,7 @@ const Mindbreakers = (props) => {
             ref={refThemeButton10}
             className="Mindbreakers__themes-divider"
             data-theme="Искусство"
+            style={{ display: (!renderedCards['Искусство'] && 'none') }}
           >
             <Button
               mode="tertiary"
@@ -252,7 +306,12 @@ const Mindbreakers = (props) => {
             </Button>
           </div>
 
-          <div ref={refThemeButton11} className="Mindbreakers__themes-divider" data-theme="Спорт">
+          <div
+            ref={refThemeButton11}
+            className="Mindbreakers__themes-divider"
+            data-theme="Спорт"
+            style={{ display: (!renderedCards['Спорт'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton11 })}
@@ -267,6 +326,7 @@ const Mindbreakers = (props) => {
             ref={refThemeButton12}
             className="Mindbreakers__themes-divider"
             data-theme="География"
+            style={{ display: (!renderedCards['География'] && 'none') }}
           >
             <Button
               mode="tertiary"
@@ -278,7 +338,12 @@ const Mindbreakers = (props) => {
               </Text>
             </Button>
           </div>
-          <div ref={refThemeButton13} className="Mindbreakers__themes-divider" data-theme="Другое">
+          <div
+            ref={refThemeButton13}
+            className="Mindbreakers__themes-divider"
+            data-theme="Другое"
+            style={{ display: (!renderedCards['Другое'] && 'none') }}
+          >
             <Button
               mode="tertiary"
               className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton13 })}
@@ -299,20 +364,20 @@ const Mindbreakers = (props) => {
       ) : (
         <Placeholder
           icon={<Icon28MarketOutline width={38} height={43} />}
-          action={<Button mode="tertiary">Перейти в магазин</Button>}
+          action={<Button mode="tertiary" onClick={() => setActiveStory('Shop')}>Перейти в магазин</Button>}
         >
           Приобретайте вопросы в магазине и зарабатывайте очки BP на чужих ошибках.
         </Placeholder>
       ))}
-
-
     </Group>
 
   );
 };
 
 Mindbreakers.propTypes = {
-  // questions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  setActivePanel: PropTypes.func.isRequired,
+  setSelectedQuestion: PropTypes.func.isRequired,
+  setActiveStory: PropTypes.func.isRequired,
 };
 Mindbreakers.defaultProps = {};
 export default Mindbreakers;

@@ -4,16 +4,6 @@ import {
   Button, Panel, Text, Title,
 } from '@vkontakte/vkui';
 
-import icon1 from '../../../assets/StartPanel/coloredIcons/icon1.png';
-import icon2 from '../../../assets/StartPanel/coloredIcons/icon2.png';
-import icon3 from '../../../assets/StartPanel/coloredIcons/icon3.png';
-import icon4 from '../../../assets/StartPanel/coloredIcons/icon4.png';
-import icon5 from '../../../assets/StartPanel/coloredIcons/icon5.png';
-import icon6 from '../../../assets/StartPanel/coloredIcons/icon6.png';
-import icon7 from '../../../assets/StartPanel/coloredIcons/icon7.png';
-import icon8 from '../../../assets/StartPanel/coloredIcons/icon8.png';
-import icon9 from '../../../assets/StartPanel/coloredIcons/icon9.png';
-
 import icon11 from '../../../assets/StartPanel/blueIcons/icn32_sigma.png';
 import icon21 from '../../../assets/StartPanel/blueIcons/icn32_russian.png';
 import icon31 from '../../../assets/StartPanel/blueIcons/icn32_litra.png';
@@ -59,7 +49,7 @@ const StartPanel1 = (props) => {
           и станьте настоящим мозгополистом!`}
         </Text>
         <Button
-          size="m"
+          size="l"
           onClick={() => {
             goToNextSlide(1);
           }}

@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import './quizBlock.css';
-import {
-  Button, Div, Group, Headline, Text, Title,
-} from '@vkontakte/vkui';
+import { Avatar, Div, Group, Headline, Text, Title, } from '@vkontakte/vkui';
 import AnswerButton from '../../CustomComponents/AnswerButton';
 
 const QuizBlock = (props) => {
@@ -73,7 +71,17 @@ const QuizBlock = (props) => {
           {data.question}
         </Title>
       </Div>
-      <Group>
+      <Group
+        className={'Work--question'}
+        description={(data.requestedBy !== 0) && (
+          <div className="Work--question__author">
+            <Avatar size={24} src={data.requestedBy.photo} />
+            <div className="Work--question__author-name">
+              {`${data.requestedBy.first_name} ${data.requestedBy.last_name} - автор вопроса`}
+            </div>
+          </div>
+        )}
+      >
         <Div style={{ paddingTop: '2px' }}>
           <AnswerButton
             className="Work--button"
@@ -134,7 +142,7 @@ const QuizBlock = (props) => {
         </Div>
       </Group>
 
-      {selectedButton && (
+      {(selectedButton && data.explanation) && (
         <Group>
           <Div style={{ marginTop: 0 }}>
             <Headline
@@ -161,6 +169,11 @@ QuizBlock.propTypes = {
     correctAnswer: PropTypes.string,
     correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
+    requestedBy: PropTypes.oneOf([PropTypes.shape({
+      first_name: PropTypes.string,
+      last_name: PropTypes.string,
+      photo: PropTypes.string,
+    }), PropTypes.number]),
   }).isRequired,
   time: PropTypes.number.isRequired,
   onComplete: PropTypes.func.isRequired,

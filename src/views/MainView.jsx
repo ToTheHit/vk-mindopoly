@@ -1,23 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { View } from '@vkontakte/vkui';
+import { PopoutWrapper, ScreenSpinner, View } from '@vkontakte/vkui';
 import Main from '../panels/Common/Main/Main';
 import QuestionDetails from '../panels/Common/QuestionDetails/QuestionDetails';
 
 const MainView = (props) => {
-  const { id, setActivePanel } = props;
-  const {selectedQuestion, setSelectedQuestion} = useState({});
+  const { id, nextView, setActiveStory } = props;
+  const [selectedQuestion, setSelectedQuestion] = useState({});
+  const [activePanel, setActivePanel] = useState('Main');
+  const [popoutMainView, setPopoutMainView] = useState(true);
+
+  useEffect(() => {
+    setPopoutMainView(true);
+  }, []);
+
   return (
-    <View activePanel="Main" id={id}>
-      <Main id="Main" setActivePanel={setActivePanel} setSelectedQuestion={setSelectedQuestion} />
-      <QuestionDetails id="QuestionDetails" setActivePanel={setActivePanel} selectedQuestion={selectedQuestion} />
+    <View activePanel={activePanel} id={id} popout={(popoutMainView && (<ScreenSpinner />))}>
+      <Main
+        id="Main"
+        setActivePanel={setActivePanel}
+        setSelectedQuestion={setSelectedQuestion}
+        nextView={nextView}
+        setActiveStory={setActiveStory}
+        setPopoutMainView={setPopoutMainView}
+        popoutMainView={popoutMainView}
+      />
+      <QuestionDetails
+        id="QuestionDetails"
+        setActivePanel={setActivePanel}
+        selectedQuestion={selectedQuestion}
+      />
     </View>
   );
 };
 
 MainView.propTypes = {
   id: PropTypes.string.isRequired,
-  setActivePanel: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
+  setActiveStory: PropTypes.func.isRequired,
 };
 MainView.defaultProps = {};
 export default MainView;

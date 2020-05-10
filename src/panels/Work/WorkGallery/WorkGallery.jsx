@@ -6,10 +6,13 @@ import {
 } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
 import Icon56ErrorOutline from '@vkontakte/icons/dist/56/error_outline';
+import bridge from '@vkontakte/vk-bridge';
+import axios from 'axios';
 import WorkGalleryPanel from './WorkGalleryPanel';
+import globalVariables from '../../../GlobalVariables';
 
 const WorkGallery = (props) => {
-  const { id, setActivePanel } = props;
+  const { id, setActivePanel, nextView } = props;
   const timeToAnswer = 20;
   const dispatch = useDispatch();
 
@@ -24,59 +27,86 @@ const WorkGallery = (props) => {
 
   // Первое получение всех вопросов
   useEffect(() => {
-    setTimeout(() => {
-      const resultFromServer = [
-        {
-          question: 'Как называют края шляпы?',
-          answers: ['Нивы', 'Огороды', 'Поля', 'Уделы'],
-          correctAnswer: 'Поля',
-          correctAnswerNumber: 2,
-          explanation: '[Заглушка под пояснение]',
-          theme: 'Эмм...',
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
+      .then(((bridgeData) => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (bridgeData.keys[0].value) {
+          axios.get(`${globalVariables.serverURL}/api/exam`, {
+            params: {
+              token: bridgeData.keys[0].value,
+              id: urlParams.get('vk_user_id'),
+            },
+          })
+            .then((data) => {
+              // Сервер нашёл токен в БД. Рендерим информацию
+              const resultFromServer = data.data.attachment.map((item) => ({
+                question: item.text,
+                answers: item.answers,
+                correctAnswerNumber: 0,
+                explanation: item.explanation,
+                theme: globalVariables.translateEnToRu(item.category),
+                requestedBy: item.requestedBy,
+              }));
+              setQuestions(resultFromServer);
+              console.info(data.data.attachment)
+            })
+            .catch((err) => {
+              console.info('Work, Get /api/exam', err);
+              // Сервер не нашёл токен в БД.
+              // Перемещение на стартовый экран
+            });
+        } else {
+          // Перемещение на стартовый экран
+        }
+      }));
+
+/*    setQuestions([
+      {
+        question: 'test1',
+        answers: [1,2,3,4],
+        correctAnswerNumber: 0,
+        explanation: 'test test',
+        theme: 'Math',
+        requestedBy: {
+          first_name: 'Имя',
+          last_name: 'Фамилия',
+          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
         },
-        {
-          question: 'Какая пометка, сделанная возле абзаца, обозначает, что на него надо обратить особое внимание?',
-          answers: ['NB', 'FX', 'AA', 'PS'],
-          correctAnswer: 'NB',
-          correctAnswerNumber: 0,
-          explanation: '[Заглушка под пояснение]',
-          theme: 'Русский язык',
+      },
+      {
+        question: 'test2',
+        answers: [1,2,3,4],
+        correctAnswerNumber: 0,
+        explanation: 'test test',
+        theme: 'Math',
+        requestedBy: 0,
+      },
+      {
+        question: 'test3',
+        answers: [1,2,3,4],
+        correctAnswerNumber: 0,
+        explanation: 'test test',
+        theme: 'Math',
+        requestedBy: {
+          first_name: 'Имя',
+          last_name: 'Фамилия',
+          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
         },
-        {
-          question: 'Какой из этих писателей написал "Азбуку" и "Новую Азбуку"?',
-          answers: ['Николай Некрасов', 'Александр Пушкин', 'Лев Толстой', 'Иван Тургенев'],
-          correctAnswer: 'Лев Толстой',
-          correctAnswerNumber: 2,
-          explanation: '[Заглушка под пояснение]',
-          theme: 'Русский язык',
+      },
+      {
+        question: 'test4',
+        answers: [1,2,3,4],
+        correctAnswerNumber: 0,
+        explanation: 'test test',
+        theme: 'Math',
+        requestedBy: {
+          first_name: 'Имя',
+          last_name: 'Фамилия',
+          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
         },
-        {
-          question: 'Зачем дятел стучит по дереву?',
-          answers: ['Привлекает самку', 'Строит гнездо', 'Греется', 'Ищет еду'],
-          correctAnswer: 'Ищет еду',
-          correctAnswerNumber: 3,
-          explanation: 'Потому что он дятел',
-          theme: 'Биология',
-        },
-        {
-          question: 'Какое единственное уязвимое место было у Ахиллеса?',
-          answers: ['Голова', 'Пятка', 'Шея', 'Ладонь'],
-          correctAnswer: 'Пятка',
-          correctAnswerNumber: 1,
-          explanation: '[Заглушка под пояснение]',
-          theme: 'Мифология',
-        },
-        {
-          question: 'К какой группе музыкальных инструментов относится челеста?',
-          answers: ['Ударно-клавишные', 'Струнные', 'Духовные', 'Электромузыкальные'],
-          correctAnswer: 'Ударно-клавишные',
-          correctAnswerNumber: 0,
-          explanation: '[Заглушка под пояснение]',
-          theme: 'Музыка',
-        },
-      ];
-      setQuestions(resultFromServer);
-    }, 1000);
+      },
+    ]);*/
 
     // Выключаем возможность свайпать галерею
     window.addEventListener('touchmove', disableSwipe, { passive: false, capture: true });
@@ -120,13 +150,12 @@ const WorkGallery = (props) => {
             <ModalCard
               id="Work--readyCheck"
               icon={<Icon56ErrorOutline style={{ transform: 'rotate(180deg)' }} />}
-              header="Пять вопросов из разных тем. Десять секунд на один вопрос.
-                  Готовы начать?"
+              header={`${questions.length} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`}
               actions={[
                 {
                   title: 'Отложить',
                   mode: 'secondary',
-                  action: () => setActivePanel('CommonPanel'),
+                  action: () => nextView(globalVariables.view.main),
                 },
                 {
                   title: 'Начать',
@@ -157,6 +186,7 @@ const WorkGallery = (props) => {
                   correctAnswerNumber: item.correctAnswerNumber,
                   explanation: item.explanation,
                   theme: item.theme,
+                  requestedBy: item.requestedBy,
                 }}
                 setResult={setResult}
                 start={(questionIndex === index) && !activeModal}
@@ -164,69 +194,10 @@ const WorkGallery = (props) => {
                 timeToAnswer={timeToAnswer}
               />
             ))}
-            {/* {rd} */}
           </Gallery>
         </div>
       )
         : <ScreenSpinner />}
-
-      {/*      <Div className="Work--subTitle">
-        {(isWarmUp ? (
-          <Cell
-            multiline
-            description="Не учитывается"
-          >
-            <Text>
-              Вопрос для разогрева
-            </Text>
-          </Cell>
-        ) : (
-          <Cell
-            multiline
-            description={currentQuestion.theme}
-          >
-            <Text>
-              Вопрос
-              {' '}
-              {questionIndex}
-              {' '}
-              из
-              {' '}
-              {questions.length - 1}
-            </Text>
-          </Cell>
-
-        ))}
-
-        {showArrowNext ? (
-          <div className="Work--arrowNext">
-            <Button mode="secondary">
-              <Icon28ArrowRightOutline />
-            </Button>
-          </div>
-        ) : (
-          <div className="Work--timer">
-            <div className="Work--timer__gradient" />
-            <div className="Work--timer__gradient-mask" />
-            <div className="Work--timer__time">
-              <Title level={2}>{(time > 0 ? time : 0)}</Title>
-            </div>
-          </div>
-        )}
-
-      </Div>
-      {(currentQuestion ? (
-        <QuizBlock
-          data={{
-            question: currentQuestion.question,
-            answers: currentQuestion.answers,
-            correctAnswer: currentQuestion.correctAnswer,
-            explanation: currentQuestion.explanation,
-          }}
-          time={time}
-          onComplete={onCompleteQuestion}
-        />
-      ) : <Spinner size="large" />)} */}
 
     </Panel>
   );
@@ -235,6 +206,7 @@ const WorkGallery = (props) => {
 WorkGallery.propTypes = {
   id: PropTypes.string.isRequired,
   setActivePanel: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
 };
 WorkGallery.defaultProps = {};
 export default WorkGallery;

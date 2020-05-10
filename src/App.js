@@ -10,28 +10,16 @@ import CommonView from './views/CommonView';
 import TestView from './views/TestView';
 import globalVariables from './GlobalVariables';
 import Page404 from './views/Page404';
+import WorkView from './views/WorkView';
 
 const App = () => {
-  const [activeView, setActiveView] = useState(globalVariables.view.main);
+  const [activeView, setActiveView] = useState(globalVariables.view.start);
   const dispatch = useDispatch();
 
   useEffect(() => {
-
-/*    bridge.send('VKWebAppUpdateConfig', {})
-      .then((data) => {
-        setTimeout(() => {
-          console.info(data);
-        }, 1000);
-      })
-      .catch((err) => {
-        setTimeout(() => {
-          console.info(err);
-        }, 1000);
-      });*/
-
     bridge.subscribe(({ detail: { type, data } }) => {
       switch (type) {
-        case 'VKWebAppUpdateConfig':
+        case 'VKWebAppUpdateConfig': {
           const schemeAttribute = document.createAttribute('scheme');
           schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
           document.body.attributes.setNamedItem(schemeAttribute);
@@ -40,6 +28,7 @@ const App = () => {
             payload: schemeAttribute.value,
           });
           break;
+        }
         case 'VKWebAppAllowNotificationsResult':
           console.info('Notification accepted!');
           break;
@@ -59,7 +48,9 @@ const App = () => {
   return (
     <Root activeView={activeView}>
       <StartView id={globalVariables.view.start} nextView={setActiveView} />
-      <CommonView id={globalVariables.view.main} />
+      <CommonView id={globalVariables.view.main} nextView={setActiveView} />
+      <WorkView id={globalVariables.view.work} nextView={setActiveView} />
+
       <TestView id={globalVariables.view.test} />
       <Page404 id={globalVariables.view.page404} nextView={setActiveView} />
     </Root>
