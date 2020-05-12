@@ -30,6 +30,80 @@ const ShopQuestion = (props) => {
     rejected: 'rejected',
     alreadyExist: 'alreadyExist',
   };
+  const inputPlaceholders = {
+    Math: {
+      question: 'Что извлекают математики?',
+      answers: [
+        'Корень', 'Выгоду', 'Пулю', 'Диск',
+      ],
+    },
+    Russian: {
+      question: 'Какого падежа не существует?',
+      answers: [
+        'Склонительного', 'Дательного', 'Предложного', 'Иминительного',
+      ],
+    },
+    Literature: {
+      question: 'Кто был М. Булгаков?',
+      answers: [
+        'Писатель', 'Математика', 'Физик', 'Химик',
+      ],
+    },
+    Physics: {
+      question: 'В чем измеряют напряжение?',
+      answers: [
+        'Вольты', 'Амперы', 'Моли', 'Джоули',
+      ],
+    },
+    Chemistry: {
+      question: 'Что открыл Менделеев?',
+      answers: [
+        'Водку', 'Закон всемирного тяготения', 'Дверь', 'Окно',
+      ],
+    },
+    Astronomy: {
+      question: 'В какой системе находится Земля?',
+      answers: [
+        'Солнечная', 'Млечная', 'Мрачная', 'Яркая',
+      ],
+    },
+    Biology: {
+      question: 'На кого похож человек?',
+      answers: [
+        'Обезьяна', 'Слон', 'Жираф', 'Собака',
+      ],
+    },
+    History: {
+      question: 'Когда отмечают День Конституции РФ?',
+      answers: [
+        '12 декабря', '10 января', '11 апреля', '21 декабря',
+      ],
+    },
+    Art: {
+      question: 'Кто нарисовал чёрный квадрат?',
+      answers: [
+        'Малевич', 'Пикассо', 'Шишкин', 'Васнецов',
+      ],
+    },
+    Sport: {
+      question: 'Фамилия российского футбольного комментатора?',
+      answers: [
+        'Уткин', 'Гусев', 'Голубев', 'Белкин',
+      ],
+    },
+    Other: {
+      question: 'Кем был Гарри Поттер?',
+      answers: [
+        'Волшебником', 'Учёным', 'Детективом', 'Космонавтом',
+      ],
+    },
+    Geography: {
+      question: 'Столица Канады?',
+      answers: [
+        'Торонто', 'Сингапур', 'Мехико', 'Рио-Де-Жанейро',
+      ],
+    },
+  };
   const { id, questionData, setActivePanel } = props;
 
   const refQuestionText = useRef(null);
@@ -57,6 +131,7 @@ const ShopQuestion = (props) => {
       '',
       '',
     ],
+    explanation: '',
     category: questionData.category,
     correctAnswer: 0,
     cost: questionData.price,
@@ -97,6 +172,7 @@ const ShopQuestion = (props) => {
           axios.post(`${globalVariables.serverURL}/api/buy/question`, {
             text: savedUserQuestion.text,
             answers: savedUserQuestion.answers,
+            explanation: savedUserQuestion.explanation,
             category: questionData.category,
           }, {
             params: {
@@ -166,7 +242,7 @@ const ShopQuestion = (props) => {
             <FormLayout>
               <Textarea
                 top="Вопрос"
-                placeholder="Введите текст Вашего вопроса"
+                placeholder={`Например, «${inputPlaceholders[questionData.category].question}»`}
                 getRef={refQuestionText}
                 status={((resultType === resultTypeOptions.alreadyExist) || emptyInput.input0) && 'error'}
                 bottom={(resultType === resultTypeOptions.alreadyExist) && 'К сожалению, этот вопрос уже зарегистрирован кем-то другим.'}
@@ -183,6 +259,7 @@ const ShopQuestion = (props) => {
               <FormLayoutGroup top="Правильный ответ" className="ShopQuestion--correctAnswer">
                 <Input
                   type="text"
+                  placeholder={inputPlaceholders[questionData.category].answers[0]}
                   getRef={refQuestionCorrectAnswer}
                   value={savedUserQuestion.answers[0]}
                   status={(emptyInput.input1 && 'error')}
@@ -198,6 +275,7 @@ const ShopQuestion = (props) => {
               <FormLayoutGroup top="Неправильные ответы" className="ShopQuestion--badAnswer">
                 <Input
                   type="text"
+                  placeholder={inputPlaceholders[questionData.category].answers[1]}
                   className="ShopQuestion--incorrectAnswer_input"
                   getRef={refQuestionIncorrectAnswer1}
                   value={savedUserQuestion.answers[1]}
@@ -211,6 +289,7 @@ const ShopQuestion = (props) => {
                 />
                 <Input
                   type="text"
+                  placeholder={inputPlaceholders[questionData.category].answers[2]}
                   className="ShopQuestion--incorrectAnswer_input"
                   getRef={refQuestionIncorrectAnswer2}
                   value={savedUserQuestion.answers[2]}
@@ -224,6 +303,7 @@ const ShopQuestion = (props) => {
                 />
                 <Input
                   type="text"
+                  placeholder={inputPlaceholders[questionData.category].answers[3]}
                   className="ShopQuestion--incorrectAnswer_input"
                   getRef={refQuestionIncorrectAnswer3}
                   value={savedUserQuestion.answers[3]}
@@ -235,7 +315,19 @@ const ShopQuestion = (props) => {
                     setEmptyInput((prevState) => ({ ...prevState, ...{ input4: false } }));
                   }}
                 />
+
               </FormLayoutGroup>
+              <Textarea
+                top="Пояснение"
+                placeholder="Введите текст пояснения для Вашего вопроса"
+                value={savedUserQuestion.explanation}
+                onChange={(e) => {
+                  setSavedUserQuestion({
+                    ...savedUserQuestion,
+                    ...{ explanation: e.target.value },
+                  });
+                }}
+              />
             </FormLayout>
             <Div>
               <Button
@@ -247,7 +339,7 @@ const ShopQuestion = (props) => {
                   sendQuestion();
                 }}
               >
-                {`Купить за ${questionData.price} марок`}
+                {`Купить за ${questionData.price} монет`}
               </Button>
             </Div>
           </Group>

@@ -52,18 +52,21 @@ const WorkGalleryPanel = (props) => {
 
   // Вызывается после окончания таймера, либо после выбранного ответа
   function onCompleteQuestion(
+    questionId,
     question,
     selectedAnswer,
     correctAnswer,
     selectedAnswerNumber,
     correctAnswerNumber,
   ) {
+    console.info('id',questionId);
     setStartInterval(false);
     setShowArrowNext(true);
 
     if (questionIndex !== 0) {
       setResult((prevResult) => [...prevResult, {
         questionIndex,
+        questionId,
         question,
         selectedAnswer,
         correctAnswer,
@@ -130,6 +133,7 @@ const WorkGalleryPanel = (props) => {
           correctAnswerNumber: data.correctAnswerNumber,
           explanation: data.explanation,
           requestedBy: data.requestedBy,
+          _id: data._id,
         }}
         time={time}
         onComplete={onCompleteQuestion}
@@ -149,11 +153,12 @@ WorkGalleryPanel.propTypes = {
     correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
     theme: PropTypes.string,
-    requestedBy: PropTypes.oneOf([PropTypes.shape({
+    requestedBy: PropTypes.oneOfType([PropTypes.shape({
       first_name: PropTypes.string,
       last_name: PropTypes.string,
       photo: PropTypes.string,
     }), PropTypes.number]),
+    _id: PropTypes.string,
   }).isRequired,
   timeToAnswer: PropTypes.number,
   setResult: PropTypes.func.isRequired,

@@ -9,8 +9,8 @@ import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 
 import BrainLeaderboard from './Leaderboard/BrainLeaderboard';
-import ShopView from '../../views/ShopView';
-import MainView from '../../views/MainView';
+import ShopView from '../../views/ShopView/ShopView';
+import MainView from '../../views/MainView/MainView';
 
 const Common = (props) => {
   const { id, setActiveCommonView } = props;

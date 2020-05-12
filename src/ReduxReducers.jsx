@@ -28,19 +28,57 @@ export function quiz(state = { quizResult: [] }, action) {
 }
 
 export function userInfo(state = {
-  GP: 0,
+  GP: {
+    today: 0,
+    overall: 0,
+  },
   GPgrowth: 0,
-  coins: 0,
+  coins: {
+    today: 0,
+    overall: 0,
+  },
   first_name: '',
   last_name: '',
   photo_200: '',
   tax: 0,
   friendsPlace: 1,
   worldPlace: 1,
+  date: 0,
+  isExamAvailable: false,
+  isExamSuccess: false,
+  effects: [],
+  questions: [],
+  caregoriesHorizontalScroll: 0,
+  selectedTab: '',
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
       return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+
+export function mainViewModal(state = { modalName: null }, action) {
+  switch (action.type) {
+    case 'OPEN_MODAL':
+      return {
+        ...state,
+        modalName: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+export function workViewModal(state = { modalIsActive: false, questionsLength: 0 }, action) {
+  switch (action.type) {
+    case 'UPDATE_WORK-VIEW-MODAL':
+      return {
+        ...state,
+        modalIsActive: action.payload.modalIsActive,
+        questionsLength: action.payload.questionsLength,
+      };
     default:
       return state;
   }

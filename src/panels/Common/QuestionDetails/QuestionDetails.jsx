@@ -146,6 +146,12 @@ const QuestionDetails = (props) => {
                   {(activeTab === 'Yesterday') && (selectedQuestion.bpEarned.yesterday)}
                   {(activeTab === 'Overall') && (selectedQuestion.bpEarned.overall)}
                 </InfoRow>
+                <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                <InfoRow header="Получено монет">
+                  {(activeTab === 'Today') && (selectedQuestion.coinsEarned.today)}
+                  {(activeTab === 'Yesterday') && (selectedQuestion.coinsEarned.yesterday)}
+                  {(activeTab === 'Overall') && (selectedQuestion.coinsEarned.overall)}
+                </InfoRow>
               </Div>
             </Card>
           </div>
@@ -165,6 +171,11 @@ QuestionDetails.propTypes = {
     answers: PropTypes.arrayOf(PropTypes.string),
     category: PropTypes.string,
     bpForError: PropTypes.number,
+    coinsEarned: PropTypes.shape({
+      overall: PropTypes.number,
+      yesterday: PropTypes.number,
+      today: PropTypes.number,
+    }),
     bpEarned: PropTypes.shape({
       overall: PropTypes.number,
       yesterday: PropTypes.number,

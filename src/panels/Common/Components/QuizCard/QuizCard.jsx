@@ -30,7 +30,7 @@ const QuizCard = (props) => {
           {(!completed && (
             <Cell
               multiline
-              description={<div className="QuizCard--description">Дайте 4 правильных ответа, чтобы не платить мозговой налог и заработать марки.</div>}
+              description={<div className="QuizCard--description">Дайте 4 правильных ответа, чтобы не платить мозговой налог и заработать монеты.</div>}
               size="l"
               bottomContent={(
                 <Button

@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Div, SimpleCell } from '@vkontakte/vkui';
+import { useDispatch } from 'react-redux';
+import globalVariables from '../../../../GlobalVariables';
 
 const BalanceItem = (props) => {
   const {
-    count, currency, icon, description,
+    count, currency, icon, description, name,
   } = props;
   const [renderedIcon, setRenderedIcon] = useState(null);
+  const dispatch = useDispatch();
+
+  function openModal() {
+    dispatch({
+      type: 'OPEN_MODAL',
+      payload: globalVariables.mainViewModal(name),
+    });
+  }
+
 
   useEffect(() => {
     let render = null;
@@ -24,7 +35,11 @@ const BalanceItem = (props) => {
   }, [icon]);
 
   return (
-    <Card mode="shadow">
+    <Card
+      mode="shadow"
+      onClick={() => openModal()}
+      className="Balance__cardEffect"
+    >
       <Div style={{ padding: '0 12px' }}>
         <SimpleCell
           className="Balance__effect"
@@ -34,12 +49,11 @@ const BalanceItem = (props) => {
               {renderedIcon}
             </div>
         )}
-          description={
-            <div className={'Balance__effect--description'}>
+          description={(
+            <div className="Balance__effect--description">
               {description}
             </div>
-
-          }
+          )}
         >
           <div>
             {`${count} ${currency}`}
@@ -55,6 +69,7 @@ BalanceItem.propTypes = {
   currency: PropTypes.string.isRequired,
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   description: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 BalanceItem.defaultProps = {
 };

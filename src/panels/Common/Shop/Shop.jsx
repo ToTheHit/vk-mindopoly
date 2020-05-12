@@ -32,7 +32,7 @@ const Shop = (props) => {
   const [categories, setCategories] = useState([]);
   const [renderedCategories, setRenderedCategories] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const userBalance = useSelector((state) => state.userInfo.coins);
+  const userBalance = useSelector((state) => state.userInfo.coins.overall);
 
   function getIcon(category) {
     switch (category) {
@@ -90,7 +90,7 @@ const Shop = (props) => {
             mode="secondary"
             onClick={() => { checkBalance(item.name, item.price); }}
           >
-            {`${item.price} марок`}
+            {`${item.price} монет`}
           </Button>
         )}
         before={(
@@ -118,7 +118,7 @@ const Shop = (props) => {
             <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
           )}
         >
-          Вам не хватает марок для покупки этого вопроса.
+          Вам не хватает монет для покупки этого вопроса.
         </Snackbar>
       )}
 

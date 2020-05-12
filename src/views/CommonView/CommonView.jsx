@@ -6,9 +6,9 @@ import {
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline';
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
-import MainView from './MainView';
-import ShopView from './ShopView';
-import BrainLeaderboard from '../panels/Common/Leaderboard/BrainLeaderboard';
+import MainView from '../MainView/MainView';
+import ShopView from '../ShopView/ShopView';
+import BrainLeaderboard from '../../panels/Common/Leaderboard/BrainLeaderboard';
 
 import './commonView.css';
 
@@ -24,7 +24,7 @@ const CommonView = (props) => {
     <View
       id={id}
       activePanel="Common"
-      // header
+      header
       className="CommonView"
     >
       <Panel id="Common" className="CommonView__panel">

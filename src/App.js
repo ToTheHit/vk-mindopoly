@@ -5,15 +5,15 @@ import { useDispatch } from 'react-redux';
 import './app.css';
 // import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
-import StartView from './views/StartView';
-import CommonView from './views/CommonView';
-import TestView from './views/TestView';
+import StartView from './views/StartView/StartView';
+import CommonView from './views/CommonView/CommonView';
+import TestView from './views/TestView/TestView';
 import globalVariables from './GlobalVariables';
-import Page404 from './views/Page404';
-import WorkView from './views/WorkView';
+import Page404 from './views/Page404/Page404';
+import WorkView from './views/WorkView/WorkView';
 
 const App = () => {
-  const [activeView, setActiveView] = useState(globalVariables.view.start);
+  const [activeView, setActiveView] = useState(globalVariables.view.main);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,7 +23,6 @@ const App = () => {
           const schemeAttribute = document.createAttribute('scheme');
           schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
           document.body.attributes.setNamedItem(schemeAttribute);
-          console.info('update!')
           dispatch({
             type: 'UPDATE_SCHEME',
             payload: schemeAttribute.value,
@@ -43,6 +42,7 @@ const App = () => {
           // console.info('UknownType:', type);
           break;
       }
+
     });
   }, []);
 

@@ -7,7 +7,7 @@ import {
 import './page404.css';
 import bridge from '@vkontakte/vk-bridge';
 import axios from 'axios';
-import globalVariables from '../GlobalVariables';
+import globalVariables from '../../GlobalVariables';
 
 const Page404 = (props) => {
   const { id, nextView } = props;

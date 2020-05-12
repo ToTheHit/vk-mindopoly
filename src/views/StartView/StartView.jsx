@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { View } from '@vkontakte/vkui';
-import StartPanel from '../panels/StartPanel/StartPanel';
+import StartPanel from '../../panels/StartPanel/StartPanel';
 
 const StartView = (props) => {
   const { id, nextView } = props;

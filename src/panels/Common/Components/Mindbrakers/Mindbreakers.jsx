@@ -1,3 +1,5 @@
+// TODO: Переписать референсы
+
 import React, { useEffect, useRef, useState } from 'react';
 import './mindbreakers.css';
 import PropTypes from 'prop-types';
@@ -15,9 +17,14 @@ import {
 } from '@vkontakte/vkui';
 
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
+import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
 
 const Mindbreakers = (props) => {
+  const dispatch = useDispatch();
+  const caregoriesHorizontalScroll = useSelector((state) => state.userInfo.caregoriesHorizontalScroll);
+  const selectedTab = useSelector((state) => state.userInfo.selectedTab);
+
   const {
     setActivePanel, setSelectedQuestion, setActiveStory, questions,
   } = props;
@@ -38,9 +45,45 @@ const Mindbreakers = (props) => {
   const refThemeButton13 = useRef(null);
   const [refCurrentThemeButton, setRefCurrentThemeButton] = useState(null);
 
+  const scrollRef = useRef(null);
+
   useEffect(() => {
-    setRefCurrentThemeButton(refThemeButton1);
+    if (!selectedTab) {
+      setRefCurrentThemeButton(refThemeButton1);
+    } else {
+      switch (selectedTab) {
+        case 'Все': { setRefCurrentThemeButton(refThemeButton1); break; }
+        case 'Математика': { setRefCurrentThemeButton(refThemeButton2); break; }
+        case 'Русский язык': {  setRefCurrentThemeButton(refThemeButton3); break; }
+        case 'Литература': { setRefCurrentThemeButton(refThemeButton4); break; }
+        case 'Физика': { setRefCurrentThemeButton(refThemeButton5); break; }
+        case 'Химия': { setRefCurrentThemeButton(refThemeButton6); break; }
+        case 'Астрономия': { setRefCurrentThemeButton(refThemeButton7); break; }
+        case 'Биология': {  setRefCurrentThemeButton(refThemeButton8); break; }
+        case 'История': { ; setRefCurrentThemeButton(refThemeButton9); break; }
+        case 'Искусство': {  setRefCurrentThemeButton(refThemeButton10); break; }
+        case 'Спорт': { setRefCurrentThemeButton(refThemeButton11); break; }
+        case 'География': {  setRefCurrentThemeButton(refThemeButton12); break; }
+        case 'Другое': {  setRefCurrentThemeButton(refThemeButton13); break; }
+        default: {  setRefCurrentThemeButton(refThemeButton1); break; }
+      }
+
+            setTimeout(() => {
+              scrollRef.current.parentNode.scrollLeft = caregoriesHorizontalScroll;
+            }, 50);
+    }
   }, []);
+
+  useEffect(() => {
+    if (refCurrentThemeButton && refCurrentThemeButton.current) {
+      dispatch({
+        type: 'UPDATE_USER_INFO',
+        payload: { selectedTab: refCurrentThemeButton.current.getAttribute('data-theme'), caregoriesHorizontalScroll: scrollRef.current.parentNode.scrollLeft },
+      });
+
+
+    }
+  }, [refCurrentThemeButton]);
 
   useEffect(() => {
     const rendered = questions.map((item) => (
@@ -106,8 +149,10 @@ const Mindbreakers = (props) => {
       )}
     >
 
-      <HorizontalScroll>
-        <div className="Mindbreakers__themes">
+      <div >
+
+      <HorizontalScroll >
+        <div className="Mindbreakers__themes" ref={scrollRef}>
           <div
             ref={refThemeButton1}
             className="Mindbreakers__themes-divider"
@@ -329,6 +374,7 @@ const Mindbreakers = (props) => {
           </div>
         </div>
       </HorizontalScroll>
+      </div>
 
       {(refCurrentThemeButton && renderedCards[refCurrentThemeButton.current.getAttribute('data-theme')] && (renderedCards[refCurrentThemeButton.current.getAttribute('data-theme')].length > 0) ? (
         <Div style={{ paddingBottom: 0, paddingTop: '18px' }}>

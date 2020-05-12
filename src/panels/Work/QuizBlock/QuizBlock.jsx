@@ -48,7 +48,7 @@ const QuizBlock = (props) => {
         arr.splice(arr.indexOf(correctButton), 1);
         setSelectedButton(arr[rndNumber]);
       }
-      onComplete(data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], -1, data.correctAnswerNumber);
+      onComplete(data._id, data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], -1, data.correctAnswerNumber);
     }
   }, [time]);
 
@@ -92,7 +92,7 @@ const QuizBlock = (props) => {
               if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton1);
-                onComplete(data.question, data.answers[refButton1.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton1.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
+                onComplete(data._id, data.question, data.answers[refButton1.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton1.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
             type={getType(refButton1)}
@@ -106,7 +106,7 @@ const QuizBlock = (props) => {
               if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton2);
-                onComplete(data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton2.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
+                onComplete(data._id, data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton2.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
             type={getType(refButton2)}
@@ -120,7 +120,7 @@ const QuizBlock = (props) => {
               if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton3);
-                onComplete(data.question, data.answers[refButton2.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton3.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
+                onComplete(data._id, data.question, data.answers[refButton3.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton3.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
             type={getType(refButton3)}
@@ -134,7 +134,7 @@ const QuizBlock = (props) => {
               if (time > 0 && !stop) {
                 setStop(true);
                 setSelectedButton(refButton4);
-                onComplete(data.question, data.answers[refButton4.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton4.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
+                onComplete(data._id, data.question, data.answers[refButton4.current.getAttribute('answernumber')], data.answers[data.correctAnswerNumber], parseInt(refButton4.current.getAttribute('answernumber'), 10), data.correctAnswerNumber);
               }
             }}
             type={getType(refButton4)}
@@ -169,11 +169,12 @@ QuizBlock.propTypes = {
     correctAnswer: PropTypes.string,
     correctAnswerNumber: PropTypes.number,
     explanation: PropTypes.string,
-    requestedBy: PropTypes.oneOf([PropTypes.shape({
+    requestedBy: PropTypes.oneOfType([PropTypes.shape({
       first_name: PropTypes.string,
       last_name: PropTypes.string,
       photo: PropTypes.string,
     }), PropTypes.number]),
+    _id: PropTypes.string,
   }).isRequired,
   time: PropTypes.number.isRequired,
   onComplete: PropTypes.func.isRequired,

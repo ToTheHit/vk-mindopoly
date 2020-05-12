@@ -19,7 +19,9 @@
 
   &--button {
     background: var(--button_secondary_background);
-    height: 44px;
+    min-height: 44px;
+    //height: auto;
+    white-space: pre-line;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -49,8 +51,10 @@
   &--label {
     font-size: 17px;
     font-weight: 500;
-    line-height: 17px;
+    //line-height: 17px;
+    line-height: normal;
     color: var(--text_primary);
+    text-align: left;
   }
 }
 

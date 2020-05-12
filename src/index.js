@@ -6,12 +6,14 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
-import {schemeChanger, quiz, userInfo} from './ReduxReducers';
+import {schemeChanger, quiz, userInfo, mainViewModal, workViewModal} from './ReduxReducers';
 
 const rootReducer = combineReducers({
   schemeChanger,
   quiz,
   userInfo,
+  mainViewModal,
+  workViewModal
 });
 
 const store = createStore(rootReducer, {});

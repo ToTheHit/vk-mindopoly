@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ScreenSpinner, View, ConfigProvider } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
-import Main from '../panels/Common/Main/Main';
-import QuestionDetails from '../panels/Common/QuestionDetails/QuestionDetails';
+import { useSelector } from 'react-redux';
+import Main from '../../panels/Common/Main/Main';
+import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
+import TestPanel2 from '../TestView/TestPanel2';
+import TestPanel from '../TestView/TestPanel';
+import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetailsSelector';
 
 
 const MainView = (props) => {
@@ -13,21 +17,19 @@ const MainView = (props) => {
   const [popoutMainView, setPopoutMainView] = useState(true);
   const [history, setHistory] = useState(['Main']);
 
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
+
   useEffect(() => {
-    setPopoutMainView(true);
+    // setPopoutMainView(true);
   }, []);
 
   useEffect(() => {
     if (activePanel === 'Main') {
       setHistory(['Main']);
-      bridge.send('VKWebAppDisableSwipeBack')
-        .then((data) => console.info(data))
-        .catch((err) => console.info(err));
+      bridge.send('VKWebAppDisableSwipeBack');
     } else {
       setHistory(((prevState) => [...prevState, activePanel]));
-      bridge.send('VKWebAppEnableSwipeBack')
-        .then((data) => console.info(data))
-        .catch((err) => console.info(err));
+      bridge.send('VKWebAppEnableSwipeBack');
     }
   }, [activePanel]);
 
@@ -39,13 +41,17 @@ const MainView = (props) => {
   };
 
   return (
-    <ConfigProvider>
+    <ConfigProvider
+      webviewType="vkapps"
+      scheme={(((scheme === 'light' || scheme === 'bright_light') || scheme === 'client_light') ? 'bright_light' : 'space_gray')}
+    >
       <View
         activePanel={activePanel}
         id={id}
         popout={(popoutMainView && (<ScreenSpinner />))}
         onSwipeBack={goBack}
         history={history}
+        modal={<EffectDetailsSelector />}
       >
         <Main
           id="Main"
@@ -61,6 +67,8 @@ const MainView = (props) => {
           setActivePanel={setActivePanel}
           selectedQuestion={selectedQuestion}
         />
+        <TestPanel setActivePanel={setActivePanel} id="1" />
+        <TestPanel2 setActivePanel={setActivePanel} id="2" />
       </View>
     </ConfigProvider>
   );

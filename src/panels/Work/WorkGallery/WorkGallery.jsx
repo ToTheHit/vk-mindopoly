@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import '../work.css';
 import {
   Gallery, ModalCard, ModalRoot, Panel, PanelHeader, ScreenSpinner,
 } from '@vkontakte/vkui';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon56ErrorOutline from '@vkontakte/icons/dist/56/error_outline';
 import bridge from '@vkontakte/vk-bridge';
 import axios from 'axios';
@@ -12,18 +12,63 @@ import WorkGalleryPanel from './WorkGalleryPanel';
 import globalVariables from '../../../GlobalVariables';
 
 const WorkGallery = (props) => {
-  const { id, setActivePanel, nextView } = props;
+  const { id, setActivePanel } = props;
   const timeToAnswer = 20;
   const dispatch = useDispatch();
+  const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
 
   const [questions, setQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [activeModal, setActiveModal] = useState('Work--readyCheck');
   const [result, setResult] = useState([]);
 
   const disableSwipe = useCallback((event) => {
     event.stopPropagation();
   }, []);
+
+
+  function shuffle(array, prevIndex) {
+    const copy = []; let n = array.length;
+    let i;
+    const correctAnswer = array[0];
+
+    // While there remain elements to shuffle…
+    while (n) {
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * array.length);
+
+      // If not already shuffled, move it to the new array.
+      if (i in array) {
+        copy.push(array[i]);
+        delete array[i];
+        n--;
+      }
+    }
+    if (prevIndex !== -1) {
+      const correctIndex = copy.indexOf(correctAnswer);
+      if ((prevIndex === correctIndex) && (Math.random() >= 0.3)) {
+        return shuffle(copy, prevIndex);
+      }
+      return copy;
+    } return copy;
+  }
+
+  function shuffle1(array) {
+    let m = array.length; let t; let
+      i;
+
+    // While there remain elements to shuffle…
+    while (m) {
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * m--);
+
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+
+    return array;
+  }
 
   // Первое получение всех вопросов
   useEffect(() => {
@@ -47,12 +92,20 @@ const WorkGallery = (props) => {
                 explanation: item.explanation,
                 theme: globalVariables.translateEnToRu(item.category),
                 requestedBy: item.requestedBy,
+                test: 0,
+                _id: item._id,
               }));
+
+              for (let i = 0; i < resultFromServer.length; i += 1) {
+                const correctAnswer = resultFromServer[i].answers[0];
+                resultFromServer[i].answers = shuffle(resultFromServer[i].answers, (i > 0 ? resultFromServer[i - 1].correctAnswerNumber : -1));
+                resultFromServer[i].correctAnswerNumber = resultFromServer[i].answers.indexOf(correctAnswer);
+             }
+
               setQuestions(resultFromServer);
-              console.info(data.data.attachment)
             })
             .catch((err) => {
-              console.info('Work, Get /api/exam', err);
+              console.error('Work, Get /api/exam', err);
               // Сервер не нашёл токен в БД.
               // Перемещение на стартовый экран
             });
@@ -61,59 +114,11 @@ const WorkGallery = (props) => {
         }
       }));
 
-/*    setQuestions([
-      {
-        question: 'test1',
-        answers: [1,2,3,4],
-        correctAnswerNumber: 0,
-        explanation: 'test test',
-        theme: 'Math',
-        requestedBy: {
-          first_name: 'Имя',
-          last_name: 'Фамилия',
-          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
-        },
-      },
-      {
-        question: 'test2',
-        answers: [1,2,3,4],
-        correctAnswerNumber: 0,
-        explanation: 'test test',
-        theme: 'Math',
-        requestedBy: 0,
-      },
-      {
-        question: 'test3',
-        answers: [1,2,3,4],
-        correctAnswerNumber: 0,
-        explanation: 'test test',
-        theme: 'Math',
-        requestedBy: {
-          first_name: 'Имя',
-          last_name: 'Фамилия',
-          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
-        },
-      },
-      {
-        question: 'test4',
-        answers: [1,2,3,4],
-        correctAnswerNumber: 0,
-        explanation: 'test test',
-        theme: 'Math',
-        requestedBy: {
-          first_name: 'Имя',
-          last_name: 'Фамилия',
-          photo: 'https://vk.com/images/deactivated_100.png?ava=1',
-        },
-      },
-    ]);*/
-
     // Выключаем возможность свайпать галерею
     window.addEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     return () => {
       setQuestions([]);
       setQuestionIndex(0);
-      setActiveModal('Work--readyCheck');
       setResult([]);
       window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     };
@@ -126,6 +131,21 @@ const WorkGallery = (props) => {
       payload: result,
     });
   }, [result]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'UPDATE_WORK-VIEW-MODAL',
+      payload: {
+        questionsLength: questions.length,
+        modalIsActive: true,
+      },
+    });
+  }, [questions]);
+
+
+  useEffect(() => {
+    console.info('Gallery', modalIsActive);
+  }, [])
 
   function goToNextQuestion() {
     if (result.length === questions.length - 1) {
@@ -146,26 +166,7 @@ const WorkGallery = (props) => {
 
       {questions.length ? (
         <div>
-          <ModalRoot activeModal={activeModal}>
-            <ModalCard
-              id="Work--readyCheck"
-              icon={<Icon56ErrorOutline style={{ transform: 'rotate(180deg)' }} />}
-              header={`${questions.length} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`}
-              actions={[
-                {
-                  title: 'Отложить',
-                  mode: 'secondary',
-                  action: () => nextView(globalVariables.view.main),
-                },
-                {
-                  title: 'Начать',
-                  mode: 'primary',
-                  action: () => setActiveModal(null),
-                },
-              ]}
-              onClose={() => setActiveModal(null)}
-            />
-          </ModalRoot>
+
           <Gallery
             slideWidth="100%"
             slideIndex={questionIndex}
@@ -173,7 +174,7 @@ const WorkGallery = (props) => {
             onChange={(i) => setQuestionIndex(i)}
             style={{ height: 'auto' }}
           >
-            {questions.map((item, index) => (
+            {questions.length && questions.map((item, index) => (
               <WorkGalleryPanel
                 key={`WorkGalleryPanel_${index}`}
                 id={`WorkGalleryPanel-${index}`}
@@ -187,9 +188,10 @@ const WorkGallery = (props) => {
                   explanation: item.explanation,
                   theme: item.theme,
                   requestedBy: item.requestedBy,
+                  _id: item._id,
                 }}
                 setResult={setResult}
-                start={(questionIndex === index) && !activeModal}
+                start={(questionIndex === index) && !modalIsActive}
                 goToNextQuestion={goToNextQuestion}
                 timeToAnswer={timeToAnswer}
               />

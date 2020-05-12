@@ -26,6 +26,7 @@ const Balance = (props) => {
           currency={effect.currency}
           icon={effect.icon}
           description={effect.description}
+          name={effect.name}
         />
       </div>
     ));

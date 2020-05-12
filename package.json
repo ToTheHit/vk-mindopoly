@@ -36,12 +36,14 @@
     "eruda": "^2.2.0",
     "eruda-code": "^2.0.0",
     "eruda-dom": "^2.0.0",
+    "https": "^1.0.0",
     "less": "^3.11.1",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "use-dynamic-refs": "^1.0.0"
   },
   "browserslist": {
     "production": [
