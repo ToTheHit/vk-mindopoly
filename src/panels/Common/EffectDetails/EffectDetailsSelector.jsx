@@ -24,14 +24,15 @@ const EffectDetailsSelector = (props) => {
 
   return (
     <ModalRoot
-      className="GPDetails"
       activeModal={(isActive ? mainViewModalName : null)}
       onClose={() => setIsActive(false)}
     >
 
-      <ModalPage id="GPDetailsModalPage"
-                 header={<EffectGPDetailsHeader status={{ isActive, setIsActive }} />}
-                 dynamicContentHeight>
+      <ModalPage
+        id="GPDetailsModalPage"
+        header={<EffectGPDetailsHeader status={{ isActive, setIsActive }} />}
+        dynamicContentHeight
+      >
         <EffectGPDetailsContent status={{
           isActive,
           setIsActive,

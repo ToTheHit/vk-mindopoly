@@ -1,162 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './brainLeaderboard.css';
 import PropTypes from 'prop-types';
 
 import {
-  Button,
-  Div, Group, Panel, PanelHeader, Placeholder, Tabs, TabsItem,
+  Cell, Group, List, Panel, PanelHeader, PanelHeaderContent, PanelHeaderContext,
 } from '@vkontakte/vkui';
-import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
-
-import bridge from '@vkontakte/vk-bridge';
-import LeaderboardGallery from '../Components/LeaderboardGallery/LeaderboardGallery';
+import Icon28GhostOutline from '@vkontakte/icons/dist/28/ghost_outline';
+import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
+import Icon24Done from '@vkontakte/icons/dist/24/done';
+import Icon28BrainOutline from '@vkontakte/icons/dist/28/brain_outline';
+import Icon28GridSquareOutline from '@vkontakte/icons/dist/28/grid_square_outline';
+import LeaderboardGenius from './Components/LeaderboardGenius/LeaderboardGenius';
+import LeaderboardCategories from './Components/LeaderboardCategories/LeaderboardCategories';
 
 const BrainLeaderboard = (props) => {
   const { id } = props;
-  const [worldLeaderboard, setWorldLeaderboard] = useState([
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-    {
-      first_name: 'Test1',
-      last_name: 'User1',
-      photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-      score: 503,
-    },
-  ]);
-  const [friendsLeaderboard, setFriendsLeaderboard] = useState([]);
-
-  const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
-
-  useEffect(() => {
-    const friendsArray = [];
-    bridge
-      .send('VKWebAppGetUserInfo')
-      .then((data) => {
-        friendsArray.push({
-          first_name: data.first_name,
-          last_name: data.last_name,
-          photo_200: data.photo_200,
-          score: 0,
-        });
-
-        // Далее запрашиваем с сервера списки лидеров и раскидываем их по массивам.
-        // Возможно нужна будет сортировка массива "Среди друзей"
-        setFriendsLeaderboard(friendsArray);
-      });
-
-    // TODO: Для разработки. Удалить.
-    setTimeout(() => {
-      if (!friendsArray.length) {
-        friendsArray.push({
-          first_name: 'Test',
-          last_name: 'User',
-          photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-          score: 62,
-        });
-        setFriendsLeaderboard(friendsArray);
-      }
-    }, 1000);
-  }, []);
+  const [contextIsOpened, setContextIsOpened] = useState(false);
+  const [ratingType, setRatingType] = useState('score');
 
   return (
     <Panel id={id}>
       <PanelHeader>
-        Мозгополисты
-      </PanelHeader>
-      <Group
-        className="BrainLeaderboard"
-/*        header={(
-          <Header
-            style={{ marginTop: '2px' }}
-          >
-            Мозгополисты
-          </Header>
-        )} */
-      >
-        <Div style={{ paddingTop: 0 }}>
-
-          <Group
-            separator="hide"
-          >
-            <Tabs>
-              <TabsItem
-                selected={activeTab === 'WorldLeaderboardTab'}
-                onClick={() => {
-                  setActiveTab('WorldLeaderboardTab');
-                }}
-              >
-                Все игроки
-              </TabsItem>
-              <TabsItem
-                selected={activeTab === 'FriendsLeaderboardTab'}
-                onClick={() => {
-                  setActiveTab('FriendsLeaderboardTab');
-                }}
-              >
-                Мои друзья
-              </TabsItem>
-            </Tabs>
-
-            <LeaderboardGallery
-              friendsLeaderboard={friendsLeaderboard}
-              worldLeaderboard={worldLeaderboard}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
+        <PanelHeaderContent
+          onClick={() => {
+            setContextIsOpened(!contextIsOpened);
+          }}
+          aside={(
+            <Icon16Dropdown
+              width={20}
+              height={16}
+              className="BrainLeaderboard--icon BrainLeaderboard__panelHeader--icon"
+              style={{ marginLeft: '4px', transform: `rotate(${contextIsOpened ? '180deg' : '0'})` }}
             />
-          </Group>
-          {(activeTab === 'FriendsLeaderboardTab' && (
-            <Placeholder
-              className="LeaderboardGallery__placeholder"
-              icon={<Icon24UserAddOutline width={56} height={36} style={{ color: 'var(--button_primary_background)' }} />}
-              header="Пригласить друзей"
-              action={(
-                <Button
-                  size="l"
-                  onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
-                >
-                  Пригласить
-                </Button>
-              )}
-            >
-              Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
-            </Placeholder>
-          ))}
-        </Div>
-      </Group>
+          )}
+        >
+          Лидеры
+        </PanelHeaderContent>
+      </PanelHeader>
+      <PanelHeaderContext opened={contextIsOpened} onClose={() => setContextIsOpened(false)}>
+        <List>
+          <Cell
+            before={<Icon28BrainOutline className="BrainLeaderboard--icon" />}
+            asideContent={ratingType === 'score'
+              ? <Icon24Done className="BrainLeaderboard--icon" /> : null}
+            onClick={() => {
+              setRatingType('score');
+              setContextIsOpened(false);
+            }}
+          >
+            По очкам гения
+          </Cell>
+          <Cell
+            before={<Icon28GridSquareOutline className="BrainLeaderboard--icon" />}
+            asideContent={ratingType === 'categories'
+              ? <Icon24Done className="BrainLeaderboard--icon" /> : null}
+            onClick={() => {
+              setRatingType('categories');
+              setContextIsOpened(false);
+            }}
+          >
+            По категориям
+          </Cell>
+        </List>
+      </PanelHeaderContext>
+
+      <div
+        className="BrainLeaderboard"
+      >
+        {(ratingType === 'score' && (
+          <LeaderboardGenius />
+        ))}
+        {(ratingType === 'categories' && (
+          <LeaderboardCategories />
+        ))}
+      </div>
     </Panel>
 
   );

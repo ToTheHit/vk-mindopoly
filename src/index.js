@@ -6,21 +6,21 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
-import {schemeChanger, quiz, userInfo, mainViewModal, workViewModal} from './ReduxReducers';
+import {schemeChanger, quiz, userInfo, mainViewModal, workViewModal, userToken} from './ReduxReducers';
 
 const rootReducer = combineReducers({
   schemeChanger,
   quiz,
   userInfo,
   mainViewModal,
-  workViewModal
+  workViewModal,
+  userToken
 });
 
 const store = createStore(rootReducer, {});
 
 // Init VK  Mini App
-bridge.send("VKWebAppInit", {})
-  .then(() => console.log('Vk app init!'))
+bridge.send("VKWebAppInit");
 
 ReactDOM.render(
   <Provider store={store}>

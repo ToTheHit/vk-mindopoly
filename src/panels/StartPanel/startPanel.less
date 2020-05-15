@@ -46,18 +46,24 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: -10px;
+    transition: opacity linear 500ms;
+    &-hidden {
+      opacity: 0;
+    }
   }
 
   &--title {
     position: relative;
+    margin-top: 15px;
   }
   &--text {
     margin: 15px 0;
     text-align: center;
-    max-width: 305px;
     white-space: pre-line;
     line-height: 1.33;
     letter-spacing: -0.24px;
+    max-width: 280px;
   }
 
   &--time {
@@ -102,6 +108,23 @@
     position: absolute;
     width: 140px;
     height: 100%;
+  }
+
+  &--image {
+    height: 214px;
+    margin-bottom: 5px;
+  }
+
+  &--button {
+    position: absolute;
+    width: 180px;
+    height: 44px;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    &-hidden {
+      opacity: 0;
+    }
   }
 
 }

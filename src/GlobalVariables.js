@@ -7,7 +7,10 @@ const globalVariables = {
     page404: 'Page404',
   },
   authToken: 'authToken',
+  friendsAccessToken: 'friendsAccessToken',
+  notificationAllow: 'notificationAllow',
   serverURL: 'https://320748-cp98857.tmweb.ru',
+  quizResult: 'quizResult',
   translateEnToRu(category) {
     switch (category) {
       case 'Math':
@@ -70,7 +73,9 @@ const globalVariables = {
   },
   mainViewModal(name) {
     switch (name) {
+      case 'Tax': return null;
       case 'GPtoday': return 'GPDetailsModalPage';
+      case 'CoinsToday': return null;
       default: return null;
     }
   },

@@ -12,6 +12,7 @@
     padding-top: 0;
     padding-bottom: 0;
   }
+
   &--scoreRow {
     height: 45px;
     display: flex;
@@ -27,12 +28,36 @@
     padding-right: 12px;
   }
 
-  &--buttonRow {
-    margin-top: 20px;
+  &--buttonColumn {
+    margin-top: 15px;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-direction: column;
+
+    &__title {
+      text-align: center;
+      line-height: normal;
+      white-space: pre-line;
+    }
+
+    &__card {
+      margin-top: 20px;
+
+      &--title {
+        text-align: center;
+      }
+      &--button {
+        margin-top: 20px;
+      }
+      &--awards {
+        margin-top: 10px;
+        text-align: center;
+        color: var(--text_secondary);
+      }
+
+    }
 
     &__description {
       margin-top: 10px;

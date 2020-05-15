@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Div, SimpleCell } from '@vkontakte/vkui';
-import { useDispatch } from 'react-redux';
+import {
+  Card, classNames, Div, SimpleCell,
+} from '@vkontakte/vkui';
+import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
 
 const BalanceItem = (props) => {
@@ -9,6 +11,7 @@ const BalanceItem = (props) => {
     count, currency, icon, description, name,
   } = props;
   const [renderedIcon, setRenderedIcon] = useState(null);
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
   const dispatch = useDispatch();
 
   function openModal() {
@@ -38,7 +41,7 @@ const BalanceItem = (props) => {
     <Card
       mode="shadow"
       onClick={() => openModal()}
-      className="Balance__cardEffect"
+      className={classNames('Balance__cardEffect', { 'Balance__cardEffect-dark': scheme === 'space_gray' })}
     >
       <Div style={{ padding: '0 12px' }}>
         <SimpleCell

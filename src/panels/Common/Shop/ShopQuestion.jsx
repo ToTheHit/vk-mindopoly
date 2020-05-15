@@ -20,8 +20,8 @@ import {
 } from '@vkontakte/vkui';
 import Icon56CheckCircleOutline from '@vkontakte/icons/dist/56/check_circle_outline';
 import Icon28CancelCircleOutline from '@vkontakte/icons/dist/28/cancel_circle_outline';
-import bridge from '@vkontakte/vk-bridge';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../../GlobalVariables';
 
 const ShopQuestion = (props) => {
@@ -30,6 +30,10 @@ const ShopQuestion = (props) => {
     rejected: 'rejected',
     alreadyExist: 'alreadyExist',
   };
+  const dispatch = useDispatch();
+  const userBalance = useSelector((state) => state.userInfo.coins.overall);
+  const userToken = useSelector((state) => state.userToken.token);
+
   const inputPlaceholders = {
     Math: {
       question: 'Что извлекают математики?',
@@ -88,7 +92,7 @@ const ShopQuestion = (props) => {
     Sport: {
       question: 'Фамилия российского футбольного комментатора?',
       answers: [
-        'Уткин', 'Гусев', 'Голубев', 'Белкин',
+        'Уткин', 'Коршунов', 'Голубев', 'Белкин',
       ],
     },
     Other: {
@@ -105,6 +109,21 @@ const ShopQuestion = (props) => {
     },
   };
   const { id, questionData, setActivePanel } = props;
+  const maxSymbolsInInput = {
+    question: 300,
+    answers: [128, 128, 128, 128],
+    explanation: 300,
+  };
+  const [symbolCounter, setSymbolCounter] = useState({
+    question: maxSymbolsInInput.question,
+    answers: [
+      maxSymbolsInInput.answers[0],
+      maxSymbolsInInput.answers[1],
+      maxSymbolsInInput.answers[2],
+      maxSymbolsInInput.answers[3],
+    ],
+    explanation: maxSymbolsInInput.explanation,
+  });
 
   const refQuestionText = useRef(null);
   const refQuestionCorrectAnswer = useRef(null);
@@ -155,64 +174,105 @@ const ShopQuestion = (props) => {
 
   function sendQuestion() {
     let canSend = true;
-    if (!refQuestionText.current.value) { canSend = false; setEmptyInput((prevState) => ({ ...prevState, ...{ input0: true } })); }
-    if (!refQuestionCorrectAnswer.current.value) { canSend = false; setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true } })); }
-    if (!refQuestionIncorrectAnswer1.current.value) { canSend = false; setEmptyInput((prevState) => ({ ...prevState, ...{ input2: true } })); }
-    if (!refQuestionIncorrectAnswer2.current.value) { canSend = false; setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true } })); }
-    if (!refQuestionIncorrectAnswer3.current.value) { canSend = false; setEmptyInput((prevState) => ({ ...prevState, ...{ input4: true } })); }
+    if (!refQuestionText.current.value) {
+      canSend = false;
+      setEmptyInput((prevState) => ({ ...prevState, ...{ input0: true } }));
+    }
+    if (refQuestionText.current.value.length > maxSymbolsInInput.question) canSend = false;
+
+    if (!refQuestionCorrectAnswer.current.value) {
+      canSend = false;
+      setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true } }));
+    }
+    if (refQuestionCorrectAnswer.current.value.length > maxSymbolsInInput.answers[0]) canSend = false;
+
+    if (!refQuestionIncorrectAnswer1.current.value) {
+      canSend = false;
+      setEmptyInput((prevState) => ({ ...prevState, ...{ input2: true } }));
+    }
+    if (refQuestionIncorrectAnswer1.current.value.length > maxSymbolsInInput.answers[1]) canSend = false;
+
+    if (!refQuestionIncorrectAnswer2.current.value) {
+      canSend = false;
+      setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true } }));
+    }
+    if (refQuestionIncorrectAnswer2.current.value.length > maxSymbolsInInput.answers[2]) canSend = false;
+
+    if (!refQuestionIncorrectAnswer3.current.value) {
+      canSend = false;
+      setEmptyInput((prevState) => ({ ...prevState, ...{ input4: true } }));
+    }
+    if (refQuestionIncorrectAnswer3.current.value.length > maxSymbolsInInput.answers[3]) canSend = false;
+
 
     if (!canSend) return;
     setCheckingProgress(true);
     // Отсылаем вопрос на сервер
-    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
-      .then(((bridgeData) => {
-        const urlParams = new URLSearchParams(window.location.search);
 
-        if (bridgeData.keys[0].value) {
-          axios.post(`${globalVariables.serverURL}/api/buy/question`, {
-            text: savedUserQuestion.text,
-            answers: savedUserQuestion.answers,
-            explanation: savedUserQuestion.explanation,
-            category: questionData.category,
-          }, {
-            params: {
-              token: bridgeData.keys[0].value,
-              id: urlParams.get('vk_user_id'),
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (userToken) {
+      axios.post(`${globalVariables.serverURL}/api/buy/question`, {
+        text: savedUserQuestion.text,
+        answers: savedUserQuestion.answers,
+        explanation: savedUserQuestion.explanation,
+        category: questionData.category,
+      }, {
+        params: {
+          token: userToken,
+          id: urlParams.get('vk_user_id'),
+        },
+      })
+        .then(() => {
+          setResultType(resultTypeOptions.accepted);
+          dispatch({
+            type: 'UPDATE_USER_INFO',
+            payload: {
+              coins: {
+                overall: userBalance - questionData.price,
+              },
             },
-          })
-            .then(() => {
-              setResultType(resultTypeOptions.accepted);
-              setSavedUserQuestion({
-                text: '',
-                answers: [
-                  '',
-                  '',
-                  '',
-                  '',
-                ],
-                category: questionData.category,
-                correctAnswer: 0,
-                cost: questionData.price,
-              });
-            })
-            .catch((err) => {
-              console.info('Main, get/getCategoriesState', err);
-              console.info(err.response.status);
-              setCheckingProgress(false);
+          });
+          setSavedUserQuestion({
+            text: '',
+            answers: [
+              '',
+              '',
+              '',
+              '',
+            ],
+            category: questionData.category,
+            correctAnswer: 0,
+            cost: questionData.price,
+          });
+          setSymbolCounter({
+            question: maxSymbolsInInput.question,
+            answers: [
+              maxSymbolsInInput.answers[0],
+              maxSymbolsInInput.answers[1],
+              maxSymbolsInInput.answers[2],
+              maxSymbolsInInput.answers[3],
+            ],
+            explanation: maxSymbolsInInput.explanation,
+          });
+        })
+        .catch((err) => {
+          console.error('Main, get/getCategoriesState', err);
+          console.error(err.response.status);
+          setCheckingProgress(false);
 
-              if (err.response.status === 403) {
-                // Не хватает монет
-              } else if (500) {
-                // Уже зарегистрирован
-                setResultType('alreadyExist');
-              } else {
-                setResultType(resultTypeOptions.rejected);
-              }
-            });
-        } else {
-          // Перемещение на стартовый экран
-        }
-      }));
+          if (err.response.status === 403) {
+            // Не хватает монет
+          } else if (err.response.status === 500) {
+            // Уже зарегистрирован
+            setResultType('alreadyExist');
+          } else {
+            setResultType(resultTypeOptions.rejected);
+          }
+        });
+    } else {
+      // Перемещение на стартовый экран
+    }
   }
 
   return (
@@ -224,7 +284,10 @@ const ShopQuestion = (props) => {
         activePanel={activeSubviewPanel}
         popout={(checkingProgress && <ScreenSpinner />)}
       >
-        <Panel id="ShopQuestionSubview-makeQuestion">
+        <Panel
+          id="ShopQuestionSubview-makeQuestion"
+          className="ShopQuestion__Subview"
+        >
           <PanelHeader
             left={(
               <PanelHeaderBack
@@ -239,15 +302,24 @@ const ShopQuestion = (props) => {
           <Group
             description="Ваш вопрос будет проверен администрацией Мозгополии. Обычно проверка занимает не более одного дня."
           >
-            <FormLayout>
+            <FormLayout className="ShopQuestion--form">
               <Textarea
                 top="Вопрос"
                 placeholder={`Например, «${inputPlaceholders[questionData.category].question}»`}
                 getRef={refQuestionText}
-                status={((resultType === resultTypeOptions.alreadyExist) || emptyInput.input0) && 'error'}
-                bottom={(resultType === resultTypeOptions.alreadyExist) && 'К сожалению, этот вопрос уже зарегистрирован кем-то другим.'}
+                status={((resultType === resultTypeOptions.alreadyExist) || emptyInput.input0 || symbolCounter.question < 0) && 'error'}
+                bottom={(resultType === resultTypeOptions.alreadyExist)
+                  ? 'К сожалению, этот вопрос уже зарегистрирован кем-то другим.'
+                  : (symbolCounter.question >= 0 ? `Осталось символов: ${symbolCounter.question}` : `Вопрос не может содержать более ${maxSymbolsInInput.question} символов`)}
                 value={savedUserQuestion.text}
                 onChange={(e) => {
+                  setSymbolCounter(
+                    (prevState) => (
+                      {
+                        ...prevState,
+                        ...{ question: maxSymbolsInInput.question - e.target.value.length },
+                      }),
+                  );
                   setSavedUserQuestion({ ...savedUserQuestion, ...{ text: e.target.value } });
                   if (resultType === resultTypeOptions.alreadyExist) {
                     setResultType('');
@@ -256,76 +328,142 @@ const ShopQuestion = (props) => {
                 }}
               />
 
-              <FormLayoutGroup top="Правильный ответ" className="ShopQuestion--correctAnswer">
+              <FormLayoutGroup
+                top="Правильный ответ"
+                className="ShopQuestion--correctAnswer"
+                status={((symbolCounter.answers[0] < 0) || emptyInput.input1) && 'error'}
+                bottom={(symbolCounter.answers[0] >= 0 ? `Осталось символов: ${symbolCounter.answers[0]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[0]} символов`)}
+                // bottom={(symbolCounter.answers[0] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[0]} символов`)}
+              >
                 <Input
                   type="text"
                   placeholder={inputPlaceholders[questionData.category].answers[0]}
                   getRef={refQuestionCorrectAnswer}
                   value={savedUserQuestion.answers[0]}
-                  status={(emptyInput.input1 && 'error')}
+                  status={((symbolCounter.answers[0] < 0) || emptyInput.input1) && 'error'}
                   onChange={(e) => {
                     const answersTemp = savedUserQuestion.answers;
                     answersTemp[0] = e.target.value;
                     setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
                     setEmptyInput((prevState) => ({ ...prevState, ...{ input1: false } }));
+
+                    const tempCounter = symbolCounter.answers;
+                    tempCounter[0] = maxSymbolsInInput.answers[0] - e.target.value.length;
+                    setSymbolCounter(
+                      (prevState) => (
+                        {
+                          ...prevState,
+                          ...{ answers: tempCounter },
+                        }),
+                    );
                   }}
+
                 />
               </FormLayoutGroup>
 
-              <FormLayoutGroup top="Неправильные ответы" className="ShopQuestion--badAnswer">
-                <Input
-                  type="text"
-                  placeholder={inputPlaceholders[questionData.category].answers[1]}
-                  className="ShopQuestion--incorrectAnswer_input"
-                  getRef={refQuestionIncorrectAnswer1}
-                  value={savedUserQuestion.answers[1]}
-                  status={(emptyInput.input2 && 'error')}
-                  onChange={(e) => {
-                    const answersTemp = savedUserQuestion.answers;
-                    answersTemp[1] = e.target.value;
-                    setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
-                    setEmptyInput((prevState) => ({ ...prevState, ...{ input2: false } }));
-                  }}
-                />
-                <Input
-                  type="text"
-                  placeholder={inputPlaceholders[questionData.category].answers[2]}
-                  className="ShopQuestion--incorrectAnswer_input"
-                  getRef={refQuestionIncorrectAnswer2}
-                  value={savedUserQuestion.answers[2]}
-                  status={(emptyInput.input3 && 'error')}
-                  onChange={(e) => {
-                    const answersTemp = savedUserQuestion.answers;
-                    answersTemp[2] = e.target.value;
-                    setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
-                    setEmptyInput((prevState) => ({ ...prevState, ...{ input3: false } }));
-                  }}
-                />
-                <Input
-                  type="text"
-                  placeholder={inputPlaceholders[questionData.category].answers[3]}
-                  className="ShopQuestion--incorrectAnswer_input"
-                  getRef={refQuestionIncorrectAnswer3}
-                  value={savedUserQuestion.answers[3]}
-                  status={(emptyInput.input4 && 'error')}
-                  onChange={(e) => {
-                    const answersTemp = savedUserQuestion.answers;
-                    answersTemp[3] = e.target.value;
-                    setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
-                    setEmptyInput((prevState) => ({ ...prevState, ...{ input4: false } }));
-                  }}
-                />
+              <Input
+                top={<div className="ShopQuestion--incorrectAnswers_input-top">Неправильные ответы</div>}
+                type="text"
+                placeholder={inputPlaceholders[questionData.category].answers[1]}
+                className="ShopQuestion--incorrectAnswers_input"
+                status={((symbolCounter.answers[1] < 0) || emptyInput.input2) && 'error'}
+                // bottom={(symbolCounter.answers[1] >= 0 ? `Осталось символов: ${symbolCounter.answers[1]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[1]} символов`)}
+                bottom={(symbolCounter.answers[1] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[1]} символов`)}
 
-              </FormLayoutGroup>
+                getRef={refQuestionIncorrectAnswer1}
+                value={savedUserQuestion.answers[1]}
+                onChange={(e) => {
+                  const answersTemp = savedUserQuestion.answers;
+                  answersTemp[1] = e.target.value;
+                  setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
+                  setEmptyInput((prevState) => ({ ...prevState, ...{ input2: false } }));
+
+                  const tempCounter = symbolCounter.answers;
+                  tempCounter[1] = maxSymbolsInInput.answers[1] - e.target.value.length;
+                  setSymbolCounter(
+                    (prevState) => (
+                      {
+                        ...prevState,
+                        ...{ answers: tempCounter },
+                      }),
+                  );
+                }}
+              />
+              <Input
+                type="text"
+                placeholder={inputPlaceholders[questionData.category].answers[2]}
+                className="ShopQuestion--incorrectAnswers_input"
+                getRef={refQuestionIncorrectAnswer2}
+                value={savedUserQuestion.answers[2]}
+                status={((symbolCounter.answers[2] < 0) || emptyInput.input3) && 'error'}
+                // bottom={(symbolCounter.answers[2] >= 0 ? `Осталось символов: ${symbolCounter.answers[2]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[2]} символов`)}
+                bottom={(symbolCounter.answers[2] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[2]} символов`)}
+                onChange={(e) => {
+                  const answersTemp = savedUserQuestion.answers;
+                  answersTemp[2] = e.target.value;
+                  setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
+                  setEmptyInput((prevState) => ({ ...prevState, ...{ input3: false } }));
+
+                  const tempCounter = symbolCounter.answers;
+                  tempCounter[2] = maxSymbolsInInput.answers[2] - e.target.value.length;
+                  setSymbolCounter(
+                    (prevState) => (
+                      {
+                        ...prevState,
+                        ...{ answers: tempCounter },
+                      }),
+                  );
+                }}
+              />
+              <Input
+                type="text"
+                placeholder={inputPlaceholders[questionData.category].answers[3]}
+                className="ShopQuestion--incorrectAnswers_input"
+                getRef={refQuestionIncorrectAnswer3}
+                value={savedUserQuestion.answers[3]}
+                status={((symbolCounter.answers[3] < 0) || emptyInput.input4) && 'error'}
+                // bottom={(symbolCounter.answers[3] >= 0 ? `Осталось символов: ${symbolCounter.answers[3]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[3]} символов`)}
+                bottom={(symbolCounter.answers[3] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[3]} символов`)}
+
+                onChange={(e) => {
+                  const answersTemp = savedUserQuestion.answers;
+                  answersTemp[3] = e.target.value;
+                  setSavedUserQuestion({ ...savedUserQuestion, ...{ answers: answersTemp } });
+                  setEmptyInput((prevState) => ({ ...prevState, ...{ input4: false } }));
+
+                  const tempCounter = symbolCounter.answers;
+                  tempCounter[3] = maxSymbolsInInput.answers[3] - e.target.value.length;
+                  setSymbolCounter(
+                    (prevState) => (
+                      {
+                        ...prevState,
+                        ...{ answers: tempCounter },
+                      }),
+                  );
+                }}
+              />
+
               <Textarea
                 top="Пояснение"
                 placeholder="Введите текст пояснения для Вашего вопроса"
                 value={savedUserQuestion.explanation}
+                status={(symbolCounter.explanation < 0) && 'error'}
+                bottom={(symbolCounter.explanation >= 0 ? `Осталось символов: ${symbolCounter.explanation}` : `Пояснение не может содержать более ${maxSymbolsInInput.explanation} символов`)}
+                // bottom={(symbolCounter.answers[4] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[4]} символов`)}
+
                 onChange={(e) => {
                   setSavedUserQuestion({
                     ...savedUserQuestion,
                     ...{ explanation: e.target.value },
                   });
+                  const tempCount = maxSymbolsInInput.explanation - e.target.value.length;
+                  setSymbolCounter(
+                    (prevState) => (
+                      {
+                        ...prevState,
+                        ...{ explanation: tempCount },
+                      }),
+                  );
                 }}
               />
             </FormLayout>

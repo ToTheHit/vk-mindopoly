@@ -22,14 +22,34 @@
   background-position: inherit;
   padding-right: 12px;
 }
-.QuizResult--buttonRow {
-  margin-top: 20px;
+.QuizResult--buttonColumn {
+  margin-top: 15px;
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  flex-direction: column;
 }
-.QuizResult--buttonRow__description {
+.QuizResult--buttonColumn__title {
+  text-align: center;
+  line-height: normal;
+  white-space: pre-line;
+}
+.QuizResult--buttonColumn__card {
+  margin-top: 20px;
+}
+.QuizResult--buttonColumn__card--title {
+  text-align: center;
+}
+.QuizResult--buttonColumn__card--button {
+  margin-top: 20px;
+}
+.QuizResult--buttonColumn__card--awards {
+  margin-top: 10px;
+  text-align: center;
+  color: var(--text_secondary);
+}
+.QuizResult--buttonColumn__description {
   margin-top: 10px;
   text-align: center;
   font-size: 13px;

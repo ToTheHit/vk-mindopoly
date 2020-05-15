@@ -8,8 +8,9 @@ import {
 import axios from 'axios';
 
 import bridge from '@vkontakte/vk-bridge';
-import TestPanel from "./TestPanel";
-import TestPanel2 from "./TestPanel2";
+import TestPanel from './TestPanel';
+import TestPanel2 from './TestPanel2';
+import globalVariables from "../../GlobalVariables";
 
 const TestView = (props) => {
   const { id } = props;
@@ -92,7 +93,12 @@ const TestView = (props) => {
           })
           .catch((err) => console.info(err));
       }); */
-    bridge.send("VKWebAppShowStoryBox", { "background_type" : "image", "url" : "https://sun9-65.userapi.com/c850136/v850136098/1b77eb/0YK6suXkY24.jpg" })
+    // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: null });
+/*            bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
+      .then((data) => {
+        bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: data.access_token });
+      });*/
+    /*    bridge.send("VKWebAppShowStoryBox", { "background_type" : "image", "url" : "https://sun9-65.userapi.com/c850136/v850136098/1b77eb/0YK6suXkY24.jpg" })
       .then((data) => {
         setTimeout(() => {
           console.info('Вай красавец какой', data);
@@ -102,14 +108,20 @@ const TestView = (props) => {
         setTimeout(() => {
           console.info('Ээээ... Так нельзя', err);
         }, 1000)
-      })
+      }) */
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.friendsAccessToken] })
+      .then(((data) => {
+        setTimeout(() => {
+            console.info('token', data.keys[0].value)
+        }, 5000);
+      }));
   }, []);
 
   const [activePanel, setAcitvePanel] = useState('1');
   return (
     <View id={id} activePanel={activePanel} className="TestView">
-      <TestPanel id={'1'} setActivePanel={setAcitvePanel} />
-      <TestPanel2 id={'2'} setActivePanel={setAcitvePanel} />
+      <TestPanel id="1" setActivePanel={setAcitvePanel} />
+      <TestPanel2 id="2" setActivePanel={setAcitvePanel} />
     </View>
   );
 };

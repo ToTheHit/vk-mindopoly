@@ -1,8 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './shop.css';
 import {
-  Group, Panel, PanelHeader, Header, Button, SimpleCell, Div, Snackbar,
+  Button,
+  Div,
+  Group,
+  Header,
+  Panel,
+  PanelHeader,
+  SimpleCell,
+  Snackbar,
 } from '@vkontakte/vkui';
 
 import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
@@ -24,7 +31,6 @@ import Icon64Other from '../../../assets/Icons/icn64_other.png';
 import Icon64Geography from '../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../GlobalVariables';
 
-
 const Shop = (props) => {
   const {
     id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView,
@@ -36,19 +42,32 @@ const Shop = (props) => {
 
   function getIcon(category) {
     switch (category) {
-      case 'Math': return Icon64Math;
-      case 'Russian': return Icon64Russian;
-      case 'Literature': return Icon64Litra;
-      case 'Physics': return Icon64Physics;
-      case 'Chemistry': return Icon64Chemistry;
-      case 'Astronomy': return Icon64Astro;
-      case 'Biology': return Icon64Biology;
-      case 'History': return Icon64History;
-      case 'Art': return Icon64Art;
-      case 'Sport': return Icon64Sport;
-      case 'Other': return Icon64Other;
-      case 'Geography': return Icon64Geography;
-      default: return '';
+      case 'Math':
+        return Icon64Math;
+      case 'Russian':
+        return Icon64Russian;
+      case 'Literature':
+        return Icon64Litra;
+      case 'Physics':
+        return Icon64Physics;
+      case 'Chemistry':
+        return Icon64Chemistry;
+      case 'Astronomy':
+        return Icon64Astro;
+      case 'Biology':
+        return Icon64Biology;
+      case 'History':
+        return Icon64History;
+      case 'Art':
+        return Icon64Art;
+      case 'Sport':
+        return Icon64Sport;
+      case 'Other':
+        return Icon64Other;
+      case 'Geography':
+        return Icon64Geography;
+      default:
+        return '';
     }
   }
 
@@ -62,22 +81,16 @@ const Shop = (props) => {
   }, [setActivePanel, setQuestionData, userBalance]);
 
   useEffect(() => {
-    axios.get(`${globalVariables.serverURL}/api/getCategoriesState`, {
-      params: {
-      },
-    })
+    axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
+        console.info(data);
         setCategories(data.data);
         setPopoutShopView(false);
       })
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
-        // Сервер не нашёл токен в БД.
-        // Перемещение на стартовый экран
       });
   }, [setPopoutShopView, checkBalance]);
-
-
 
   useEffect(() => {
     const rendered = categories.map((item) => (
@@ -88,7 +101,9 @@ const Shop = (props) => {
         after={(
           <Button
             mode="secondary"
-            onClick={() => { checkBalance(item.name, item.price); }}
+            onClick={() => {
+              checkBalance(item.name, item.price);
+            }}
           >
             {`${item.price} монет`}
           </Button>
@@ -97,7 +112,7 @@ const Shop = (props) => {
           <div className="Shop--iconOuter">
             <div className="Shop--icon" style={{ backgroundImage: `url(${getIcon(item.name)})` }} />
           </div>
-)}
+        )}
       >
         {globalVariables.translateEnToRu(item.name)}
       </SimpleCell>

@@ -50,6 +50,7 @@ export function userInfo(state = {
   questions: [],
   caregoriesHorizontalScroll: 0,
   selectedTab: '',
+  notificationsAllow: false,
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
@@ -79,6 +80,15 @@ export function workViewModal(state = { modalIsActive: false, questionsLength: 0
         modalIsActive: action.payload.modalIsActive,
         questionsLength: action.payload.questionsLength,
       };
+    default:
+      return state;
+  }
+}
+
+export function userToken(state = { token: '', friendsAccessToken: '' }, action) {
+  switch (action.type) {
+    case 'UPDATE_TOKEN':
+      return { ...state, ...action.payload };
     default:
       return state;
   }

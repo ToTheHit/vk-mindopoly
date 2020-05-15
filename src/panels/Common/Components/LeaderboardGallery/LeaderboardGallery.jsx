@@ -29,8 +29,8 @@ const LeaderboardGallery = (props) => {
       >
         <SimpleCell
           disabled
-          before={<Avatar size={48} src={item.photo_200} />}
-          indicator={`${item.score} BR`}
+          before={<Avatar size={48} src={item.photo} />}
+          indicator={`${item.bp} GP`}
         >
           {`${item.first_name} `}
           <b>{item.last_name}</b>
@@ -49,8 +49,8 @@ const LeaderboardGallery = (props) => {
       >
         <SimpleCell
           disabled
-          before={<Avatar size={48} src={item.photo_200} />}
-          indicator={`${item.score} BP`}
+          before={<Avatar size={48} src={item.photo} />}
+          indicator={`${item.bp} GP`}
         >
           {`${item.first_name} `}
           <b>{item.last_name}</b>
@@ -110,14 +110,14 @@ LeaderboardGallery.propTypes = {
   friendsLeaderboard: PropTypes.arrayOf(PropTypes.shape({
     first_name: PropTypes.string,
     last_name: PropTypes.string,
-    photo_200: PropTypes.string,
-    score: PropTypes.number,
+    photo: PropTypes.string,
+    bp: PropTypes.number,
   })).isRequired,
   worldLeaderboard: PropTypes.arrayOf(PropTypes.shape({
     first_name: PropTypes.string,
     last_name: PropTypes.string,
-    photo_200: PropTypes.string,
-    score: PropTypes.number,
+    photo: PropTypes.string,
+    bp: PropTypes.number,
   })).isRequired,
   activeTab: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,

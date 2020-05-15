@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { View } from '@vkontakte/vkui';
+import { View, ScreenSpinner, PopoutWrapper } from '@vkontakte/vkui';
 import StartPanel from '../../panels/StartPanel/StartPanel';
 
 const StartView = (props) => {
   const { id, nextView } = props;
-  const [activePanel, setActivePanel] = useState('StartPanel');
-  const [popout, setPopout] = useState(/* <ScreenSpinner size="large" /> */);
+  const popout = (
+    <PopoutWrapper alignY="center" alignX="center">
+      {' '}
+      <ScreenSpinner />
+      {' '}
+    </PopoutWrapper>
+  );
+  const [popoutIsActive, setPopoutIsActive] = useState(true);
 
   return (
     <View
       id={id}
-      activePanel={activePanel}
-      popout={popout}
+      activePanel={'StartPanel'}
+      popout={(popoutIsActive && popout)}
       header={false}
       style={{ position: 'fixed', top: '-2px' }}
     >
-      <StartPanel id="StartPanel" nextView={nextView} />
+      <StartPanel id="StartPanel" nextView={nextView} popoutState={{ popoutIsActive, setPopoutIsActive }} />
     </View>
   );
 };

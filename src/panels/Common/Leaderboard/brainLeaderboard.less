@@ -1,29 +1,15 @@
 .BrainLeaderboard {
-
-  .Tabs {
-    margin-top: 0 !important;
-    margin-left: -15px;
-    margin-right: -12px;
-
-
-  }
-
-  .Gallery {
-    box-shadow: 0 2px 24px 0 rgba(0,0,0,.08), 0 0 2px 0 rgba(0,0,0,.08);
-    height: auto;
-    border-radius: 10px;
-    transition: height ease 500ms;
-    background: var(--modal_card_background);
-    &__slide {
-      height: auto;
+  &__panelHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &--icon {
+      margin-top: 2px;
     }
   }
-
-  .Header{
-    &__content {
-      padding-bottom: 0 !important;
-    }
+  &--icon {
+    color: var(--button_primary_background);
+    transition: transform linear 200ms;
   }
-
 
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './questionDetails.css';
 import {
-  Card,
+  Card, classNames,
   Div,
   Group,
   Header,
@@ -17,12 +17,15 @@ import {
   Title,
   usePlatform,
 } from '@vkontakte/vkui';
-import AnswerButton from '../../CustomComponents/AnswerButton';
+import { useSelector } from 'react-redux';
+import AnswerButton from '../../CustomComponents/AnswerButton/AnswerButton';
 import globalVariables from '../../../GlobalVariables';
 
 const QuestionDetails = (props) => {
   const { id, setActivePanel, selectedQuestion } = props;
   const platform = usePlatform();
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
+
 
   const [activeTab, setActiveTab] = useState('Today');
 
@@ -82,7 +85,10 @@ const QuestionDetails = (props) => {
               Общая информация
             </Header>
 
-            <Card mode="outline">
+            <Card
+              mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+              className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
+            >
               <Div>
                 <InfoRow header="Категория вопроса">
                   {globalVariables.translateEnToRu(selectedQuestion.category)}
@@ -121,7 +127,10 @@ const QuestionDetails = (props) => {
                 Все время
               </TabsItem>
             </Tabs>
-            <Card mode="outline">
+            <Card
+              mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+              className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
+            >
               <Div>
                 <InfoRow header="Показов игрокам">
                   {(activeTab === 'Today') && (selectedQuestion.views.today)}

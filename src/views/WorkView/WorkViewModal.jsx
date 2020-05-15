@@ -7,17 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../GlobalVariables';
 
 const WorkViewModal = (props) => {
-  const { nextView } = props;
+  const { nextView, setPopoutIsActive } = props;
   const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
   const questionsLength = useSelector((state) => state.workViewModal.questionsLength);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.info('modal', modalIsActive);
-  }, [modalIsActive]);
-
   function closeModal() {
-    console.info('close modal');
     dispatch({
       type: 'UPDATE_WORK-VIEW-MODAL',
       payload: {
@@ -25,6 +20,10 @@ const WorkViewModal = (props) => {
       },
     });
   }
+
+  useEffect(() => {
+    if (questionsLength > 0) setPopoutIsActive(false);
+  }, [questionsLength]);
 
   return (
     <ModalRoot
@@ -34,7 +33,6 @@ const WorkViewModal = (props) => {
       <ModalCard
         id="Work--readyCheck"
         icon={<Icon56ErrorOutline style={{ transform: 'rotate(180deg)' }} />}
-        // header={`${questions.length} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`}
         header={`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`}
 
         actions={[
@@ -60,6 +58,7 @@ const WorkViewModal = (props) => {
 
 WorkViewModal.propTypes = {
   nextView: PropTypes.func.isRequired,
+  setPopoutIsActive: PropTypes.func.isRequired,
 };
 WorkViewModal.defaultProps = {};
 export default WorkViewModal;

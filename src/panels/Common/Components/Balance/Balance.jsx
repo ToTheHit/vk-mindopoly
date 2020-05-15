@@ -4,14 +4,12 @@ import './balance.css';
 import {
   HorizontalScroll, Text, Title,
 } from '@vkontakte/vkui';
-import Icon32Income from '../../../../assets/Common/icn32_income.svg';
-import Icon32Genius from '../../../../assets/Common/icn32_genius.svg';
 
 import BalanceItem from './BalanceItem';
 
 const Balance = (props) => {
   const {
-    coins, GP, tax, GPgrowth, effects,
+    coins, GP, effects,
   } = props;
   const [renderedEffects, setRenderedEffects] = useState([]);
 
@@ -102,8 +100,6 @@ Balance.propTypes = {
   })).isRequired,
   coins: PropTypes.number.isRequired,
   GP: PropTypes.number.isRequired,
-  tax: PropTypes.number.isRequired,
-  GPgrowth: PropTypes.number.isRequired,
 };
 Balance.defaultProps = {};
 export default Balance;

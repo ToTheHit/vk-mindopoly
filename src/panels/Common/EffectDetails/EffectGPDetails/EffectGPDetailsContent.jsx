@@ -21,12 +21,14 @@ import Icon64Geography from '../../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../../GlobalVariables';
 
 const EffectGPDetailsContent = (props) => {
-  const { updateModalHeight, status } = props;
+  const { updateModalHeight } = props;
 
   const questions = useSelector((state) => state.userInfo.questions);
   const GPToday = useSelector((state) => state.userInfo.GP.today);
+  const quizIncome = useSelector((state) => state.userInfo.lastExamReward.bp);
+  const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);
   const [categoryIncome, setCategoryIncome] = useState([]);
-  const [quizIncome, setQuizIncome] = useState(0);
+  // const [quizIncome, setQuizIncome] = useState(0);
   const [questionsIncome, setQuestionIncome] = useState(0);
 
   function getIcon(category) {
@@ -77,9 +79,7 @@ const EffectGPDetailsContent = (props) => {
     Object.keys(sortedQuestions).map((item) => {
       tempQuestionsIncome += sortedQuestions[item];
     });
-    setQuizIncome(GPToday - tempQuestionsIncome);
     setQuestionIncome(tempQuestionsIncome);
-    console.info(tempQuestionsIncome, GPToday )
 
     const rendered = Object.keys(sortedQuestions).map((item) => (
       <SimpleCell
@@ -115,7 +115,7 @@ const EffectGPDetailsContent = (props) => {
           : 'Пока что у Вас нет прироста очков гения. Приобретайте больше вопросов в магазине, чтобы получать больше GP.')}
       />
       <Div style={{ paddingTop: '7px' }}>
-        {(quizIncome > 0 && (
+        {(((quizIncome > 0) && !isExamAvailable) && (
           <SimpleCell
             disabled
             before={(

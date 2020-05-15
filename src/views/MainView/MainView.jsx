@@ -5,10 +5,7 @@ import bridge from '@vkontakte/vk-bridge';
 import { useSelector } from 'react-redux';
 import Main from '../../panels/Common/Main/Main';
 import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
-import TestPanel2 from '../TestView/TestPanel2';
-import TestPanel from '../TestView/TestPanel';
 import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetailsSelector';
-
 
 const MainView = (props) => {
   const { id, nextView, setActiveStory } = props;
@@ -67,8 +64,6 @@ const MainView = (props) => {
           setActivePanel={setActivePanel}
           selectedQuestion={selectedQuestion}
         />
-        <TestPanel setActivePanel={setActivePanel} id="1" />
-        <TestPanel2 setActivePanel={setActivePanel} id="2" />
       </View>
     </ConfigProvider>
   );

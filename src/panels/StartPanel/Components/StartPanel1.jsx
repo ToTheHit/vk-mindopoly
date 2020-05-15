@@ -48,15 +48,16 @@ const StartPanel1 = (props) => {
           {`Добро пожаловать в Мозгополию.\nПишите ежедневные мозговые отчёты, зарабатывайте очки гения
           и станьте настоящим мозгополистом!`}
         </Text>
-        <Button
-          size="l"
-          onClick={() => {
-            goToNextSlide(1);
-          }}
-        >
-          Продолжить
-        </Button>
       </div>
+      <Button
+        size="xl"
+        stretched
+        onClick={() => {
+          goToNextSlide(1);
+        }}
+      >
+        Продолжить
+      </Button>
     </Panel>
   );
 };

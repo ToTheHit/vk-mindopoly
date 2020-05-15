@@ -24,6 +24,7 @@ const Mindbreakers = (props) => {
   const dispatch = useDispatch();
   const caregoriesHorizontalScroll = useSelector((state) => state.userInfo.caregoriesHorizontalScroll);
   const selectedTab = useSelector((state) => state.userInfo.selectedTab);
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   const {
     setActivePanel, setSelectedQuestion, setActiveStory, questions,
@@ -54,23 +55,23 @@ const Mindbreakers = (props) => {
       switch (selectedTab) {
         case 'Все': { setRefCurrentThemeButton(refThemeButton1); break; }
         case 'Математика': { setRefCurrentThemeButton(refThemeButton2); break; }
-        case 'Русский язык': {  setRefCurrentThemeButton(refThemeButton3); break; }
+        case 'Русский язык': { setRefCurrentThemeButton(refThemeButton3); break; }
         case 'Литература': { setRefCurrentThemeButton(refThemeButton4); break; }
         case 'Физика': { setRefCurrentThemeButton(refThemeButton5); break; }
         case 'Химия': { setRefCurrentThemeButton(refThemeButton6); break; }
         case 'Астрономия': { setRefCurrentThemeButton(refThemeButton7); break; }
-        case 'Биология': {  setRefCurrentThemeButton(refThemeButton8); break; }
-        case 'История': { ; setRefCurrentThemeButton(refThemeButton9); break; }
-        case 'Искусство': {  setRefCurrentThemeButton(refThemeButton10); break; }
+        case 'Биология': { setRefCurrentThemeButton(refThemeButton8); break; }
+        case 'История': { setRefCurrentThemeButton(refThemeButton9); break; }
+        case 'Искусство': { setRefCurrentThemeButton(refThemeButton10); break; }
         case 'Спорт': { setRefCurrentThemeButton(refThemeButton11); break; }
-        case 'География': {  setRefCurrentThemeButton(refThemeButton12); break; }
-        case 'Другое': {  setRefCurrentThemeButton(refThemeButton13); break; }
-        default: {  setRefCurrentThemeButton(refThemeButton1); break; }
+        case 'География': { setRefCurrentThemeButton(refThemeButton12); break; }
+        case 'Другое': { setRefCurrentThemeButton(refThemeButton13); break; }
+        default: { setRefCurrentThemeButton(refThemeButton1); break; }
       }
 
-            setTimeout(() => {
-              scrollRef.current.parentNode.scrollLeft = caregoriesHorizontalScroll;
-            }, 50);
+      setTimeout(() => {
+        scrollRef.current.parentNode.scrollLeft = caregoriesHorizontalScroll;
+      }, 50);
     }
   }, []);
 
@@ -80,16 +81,14 @@ const Mindbreakers = (props) => {
         type: 'UPDATE_USER_INFO',
         payload: { selectedTab: refCurrentThemeButton.current.getAttribute('data-theme'), caregoriesHorizontalScroll: scrollRef.current.parentNode.scrollLeft },
       });
-
-
     }
   }, [refCurrentThemeButton]);
 
   useEffect(() => {
     const rendered = questions.map((item) => (
       <Card
-        mode="outline"
-        className="Mindbreakers--card"
+        mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+        className={classNames('Mindbreakers--card', { 'Mindbreakers--card-dark': scheme === 'space_gray' })}
         key={`Mindbreakers--card_${item.text}`}
         onClick={() => {
           setSelectedQuestion(item);
@@ -149,231 +148,229 @@ const Mindbreakers = (props) => {
       )}
     >
 
-      <div >
+      <div>
+        <HorizontalScroll>
+          <div className="Mindbreakers__themes" ref={scrollRef}>
+            <div
+              ref={refThemeButton1}
+              className="Mindbreakers__themes-divider"
+              data-theme="Все"
+              style={{ display: (!renderedCards['Все'] && 'none') }}
+            >
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton1 })}
+                onClick={() => {
+                  setRefCurrentThemeButton(refThemeButton1);
+                }}
+              >
+                <Text>
+                  Все
+                </Text>
+              </Button>
+            </div>
 
-      <HorizontalScroll >
-        <div className="Mindbreakers__themes" ref={scrollRef}>
-          <div
-            ref={refThemeButton1}
-            className="Mindbreakers__themes-divider"
-            data-theme="Все"
-            style={{ display: (!renderedCards['Все'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton1 })}
-              onClick={() => {
-                setRefCurrentThemeButton(refThemeButton1);
-              }}
+            <div
+              ref={refThemeButton2}
+              className="Mindbreakers__themes-divider"
+              data-theme="Математика"
+              style={{ display: (!renderedCards['Математика'] && 'none') }}
             >
-              <Text>
-                Все
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton2 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton2)}
+              >
+                <Text>
+                  Математика
+                </Text>
+              </Button>
+            </div>
+            <div
+              ref={refThemeButton3}
+              className="Mindbreakers__themes-divider"
+              data-theme="Русский язык"
+              style={{ display: (!renderedCards['Русский язык'] && 'none') }}
+            >
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton3 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton3)}
+              >
+                <Text>
+                  Русский язык
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton2}
-            className="Mindbreakers__themes-divider"
-            data-theme="Математика"
-            style={{ display: (!renderedCards['Математика'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton2 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton2)}
+            <div
+              ref={refThemeButton4}
+              className="Mindbreakers__themes-divider"
+              data-theme="Литература"
+              style={{ display: (!renderedCards['Литература'] && 'none') }}
+            >
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton4 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton4)}
+              >
+                <Text>
+                  Литература
+                </Text>
+              </Button>
+            </div>
 
+            <div
+              ref={refThemeButton5}
+              className="Mindbreakers__themes-divider"
+              data-theme="Физика"
+              style={{ display: (!renderedCards['Физика'] && 'none') }}
             >
-              <Text>
-                Математика
-              </Text>
-            </Button>
-          </div>
-          <div
-            ref={refThemeButton3}
-            className="Mindbreakers__themes-divider"
-            data-theme="Русский язык"
-            style={{ display: (!renderedCards['Русский язык'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton3 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton3)}
-            >
-              <Text>
-                Русский язык
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton5 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton5)}
+              >
+                <Text>
+                  Физика
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton4}
-            className="Mindbreakers__themes-divider"
-            data-theme="Литература"
-            style={{ display: (!renderedCards['Литература'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton4 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton4)}
+            <div
+              ref={refThemeButton6}
+              className="Mindbreakers__themes-divider"
+              data-theme="Химия"
+              style={{ display: (!renderedCards['Химия'] && 'none') }}
             >
-              <Text>
-                Литература
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton6 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton6)}
+              >
+                <Text>
+                  Химия
+                </Text>
+              </Button>
+            </div>
+            <div
+              ref={refThemeButton7}
+              className="Mindbreakers__themes-divider"
+              data-theme="Астрономия"
+              style={{ display: (!renderedCards['Астрономия'] && 'none') }}
+            >
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton7 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton7)}
+              >
+                <Text>
+                  Астрономия
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton5}
-            className="Mindbreakers__themes-divider"
-            data-theme="Физика"
-            style={{ display: (!renderedCards['Физика'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton5 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton5)}
+            <div
+              ref={refThemeButton8}
+              className="Mindbreakers__themes-divider"
+              data-theme="Биология"
+              style={{ display: (!renderedCards['Биология'] && 'none') }}
             >
-              <Text>
-                Физика
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton8 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton8)}
+              >
+                <Text>
+                  Биология
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton6}
-            className="Mindbreakers__themes-divider"
-            data-theme="Химия"
-            style={{ display: (!renderedCards['Химия'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton6 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton6)}
+            <div
+              ref={refThemeButton9}
+              className="Mindbreakers__themes-divider"
+              data-theme="История"
+              style={{ display: (!renderedCards['История'] && 'none') }}
             >
-              <Text>
-                Химия
-              </Text>
-            </Button>
-          </div>
-          <div
-            ref={refThemeButton7}
-            className="Mindbreakers__themes-divider"
-            data-theme="Астрономия"
-            style={{ display: (!renderedCards['Астрономия'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton7 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton7)}
-            >
-              <Text>
-                Астрономия
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton9 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton9)}
+              >
+                <Text>
+                  История
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton8}
-            className="Mindbreakers__themes-divider"
-            data-theme="Биология"
-            style={{ display: (!renderedCards['Биология'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton8 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton8)}
+            <div
+              ref={refThemeButton10}
+              className="Mindbreakers__themes-divider"
+              data-theme="Искусство"
+              style={{ display: (!renderedCards['Искусство'] && 'none') }}
             >
-              <Text>
-                Биология
-              </Text>
-            </Button>
-          </div>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton10 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton10)}
+              >
+                <Text>
+                  Искусство
+                </Text>
+              </Button>
+            </div>
 
-          <div
-            ref={refThemeButton9}
-            className="Mindbreakers__themes-divider"
-            data-theme="История"
-            style={{ display: (!renderedCards['История'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton9 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton9)}
+            <div
+              ref={refThemeButton11}
+              className="Mindbreakers__themes-divider"
+              data-theme="Спорт"
+              style={{ display: (!renderedCards['Спорт'] && 'none') }}
             >
-              <Text>
-                История
-              </Text>
-            </Button>
-          </div>
-
-          <div
-            ref={refThemeButton10}
-            className="Mindbreakers__themes-divider"
-            data-theme="Искусство"
-            style={{ display: (!renderedCards['Искусство'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton10 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton10)}
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton11 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton11)}
+              >
+                <Text>
+                  Спорт
+                </Text>
+              </Button>
+            </div>
+            <div
+              ref={refThemeButton12}
+              className="Mindbreakers__themes-divider"
+              data-theme="География"
+              style={{ display: (!renderedCards['География'] && 'none') }}
             >
-              <Text>
-                Искусство
-              </Text>
-            </Button>
-          </div>
-
-          <div
-            ref={refThemeButton11}
-            className="Mindbreakers__themes-divider"
-            data-theme="Спорт"
-            style={{ display: (!renderedCards['Спорт'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton11 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton11)}
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton12 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton12)}
+              >
+                <Text>
+                  География
+                </Text>
+              </Button>
+            </div>
+            <div
+              ref={refThemeButton13}
+              className="Mindbreakers__themes-divider"
+              data-theme="Другое"
+              style={{ display: (!renderedCards['Другое'] && 'none') }}
             >
-              <Text>
-                Спорт
-              </Text>
-            </Button>
+              <Button
+                mode="tertiary"
+                className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton13 })}
+                onClick={() => setRefCurrentThemeButton(refThemeButton13)}
+              >
+                <Text>
+                  Другое
+                </Text>
+              </Button>
+            </div>
           </div>
-          <div
-            ref={refThemeButton12}
-            className="Mindbreakers__themes-divider"
-            data-theme="География"
-            style={{ display: (!renderedCards['География'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton12 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton12)}
-            >
-              <Text>
-                География
-              </Text>
-            </Button>
-          </div>
-          <div
-            ref={refThemeButton13}
-            className="Mindbreakers__themes-divider"
-            data-theme="Другое"
-            style={{ display: (!renderedCards['Другое'] && 'none') }}
-          >
-            <Button
-              mode="tertiary"
-              className={classNames('Mindbreakers__themes--button', { 'Mindbreakers__themes--button-selected': refCurrentThemeButton === refThemeButton13 })}
-              onClick={() => setRefCurrentThemeButton(refThemeButton13)}
-            >
-              <Text>
-                Другое
-              </Text>
-            </Button>
-          </div>
-        </div>
-      </HorizontalScroll>
+        </HorizontalScroll>
       </div>
 
       {(refCurrentThemeButton && renderedCards[refCurrentThemeButton.current.getAttribute('data-theme')] && (renderedCards[refCurrentThemeButton.current.getAttribute('data-theme')].length > 0) ? (

@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import './quizBlock.css';
 import { Avatar, Div, Group, Headline, Text, Title, } from '@vkontakte/vkui';
-import AnswerButton from '../../CustomComponents/AnswerButton';
+import AnswerButton from '../../CustomComponents/AnswerButton/AnswerButton';
 
 const QuizBlock = (props) => {
   const {
-    data, time, onComplete, correctAnswerNumber,
+    data, time, onComplete,
   } = props;
   const refButton1 = useRef(null);
   const refButton2 = useRef(null);

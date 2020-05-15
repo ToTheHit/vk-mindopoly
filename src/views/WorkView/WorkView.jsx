@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './workView.less';
-import { View } from '@vkontakte/vkui';
+import { PopoutWrapper, ScreenSpinner, View } from '@vkontakte/vkui';
 import WorkGallery from '../../panels/Work/WorkGallery/WorkGallery';
 import QuizResult from '../../panels/QuizResult/QuizResult';
-import WorkViewModal from "./WorkViewModal";
+import WorkViewModal from './WorkViewModal';
 
 const WorkView = (props) => {
+  const popout = (
+    <ScreenSpinner />
+  );
+
+  const popoutShadow = (
+    <PopoutWrapper alignY="center" alignX="center">
+      <ScreenSpinner />
+    </PopoutWrapper>
+  );
+
   const { id, nextView } = props;
   const [activePanel, setActivePanel] = useState('WorkGallery');
+  const [popoutIsActive, setPopoutIsActive] = useState(true);
+  const [popoutShadowIsActive, setPopoutShadowIsActive] = useState(false);
+
   return (
-    <View id={id} activePanel={activePanel} className="WorkView" modal={<WorkViewModal nextView={nextView} />}>
+    <View
+      id={id}
+      activePanel={activePanel}
+      className="WorkView"
+      modal={<WorkViewModal nextView={nextView} setPopoutIsActive={setPopoutIsActive} />}
+      popout={(popoutIsActive ? popout : (popoutShadowIsActive && popoutShadow))}
+    >
       <WorkGallery id="WorkGallery" setActivePanel={setActivePanel} nextView={nextView} />
-      <QuizResult id="QuizResultPanel" setActivePanel={setActivePanel} nextView={nextView} />
+      <QuizResult id="QuizResultPanel" setActivePanel={setActivePanel} nextView={nextView} setPopoutShadowIsActive={setPopoutShadowIsActive} />
     </View>
   );
 };

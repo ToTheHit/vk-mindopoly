@@ -22,10 +22,6 @@ const WorkGalleryPanel = (props) => {
     setStartInterval(start);
   }, [start]);
 
-  useEffect(() => {
-    // console.log(questionIndex, start);
-  }, [start]);
-
   // Интервал
   useEffect(() => {
     let intervalId;
@@ -59,7 +55,6 @@ const WorkGalleryPanel = (props) => {
     selectedAnswerNumber,
     correctAnswerNumber,
   ) {
-    console.info('id',questionId);
     setStartInterval(false);
     setShowArrowNext(true);
 
@@ -120,7 +115,7 @@ const WorkGalleryPanel = (props) => {
             <div className="Work--timer__gradient" />
             <div className="Work--timer__gradient-mask" />
             <div className="Work--timer__time">
-              <Title level={2}>{(time > 0 ? time.toFixed(0) : 0)}</Title>
+              <Title level={2} weight={'semibold'}>{(time > 0 ? time.toFixed(0) : 0)}</Title>
             </div>
           </div>
         )}

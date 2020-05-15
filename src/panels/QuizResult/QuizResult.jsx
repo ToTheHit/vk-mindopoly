@@ -1,42 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Button,
+  Caption,
+  Card,
+  Div,
   Group,
   IOS,
   Panel,
   PanelHeader,
   PanelHeaderBack,
+  Separator,
   SimpleCell,
   Text,
+  Title,
   usePlatform,
-  Div,
-  Card,
-  Separator,
-  Button,
 } from '@vkontakte/vkui';
+import bridge from '@vkontakte/vk-bridge';
 import PropTypes from 'prop-types';
 import './quizResult.css';
 
 import { useSelector } from 'react-redux';
-import bridge from '@vkontakte/vk-bridge';
 import axios from 'axios';
-import Icon32Coins from '../../assets/Quiz/icn32_coins.png';
-import Icon32Genius from '../../assets/Quiz/icn32_genius.png';
 
-import QuizResultNew from './Components/QuizResiltNew/QuizResultNew';
 import globalVariables from '../../GlobalVariables';
 
 const QuizResult = (props) => {
-  const { id, setActivePanel, nextView } = props;
+  const { id, nextView, setPopoutShadowIsActive } = props;
   const platform = usePlatform();
-
+  const userToken = useSelector((state) => state.userToken.token);
   const quizResult = useSelector((state) => state.quiz.quizResult);
+
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [resultGP, setResultGP] = useState(0);
   const [resultCoins, setResultCoins] = useState(0);
 
   const [phrase, setPhrase] = useState('-');
   const [wordScore, setWordScore] = useState('');
-
+  const [storyQuestion, setStoryQuestion] = useState({
+    question: '',
+    _id: '',
+    isCorrectAnswer: false,
+  });
+  const [storySent, setStorySent] = useState(false);
 
   useEffect(() => {
     const cases = [2, 0, 1, 1, 1, 2];
@@ -45,37 +50,57 @@ const QuizResult = (props) => {
   }, [resultGP]);
 
   useEffect(() => {
-    const answers = quizResult.map((item) => {
-      return ({_id: item.questionId, text: item.selectedAnswer})});
-    console.info(answers)
-    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
-      .then(((bridgeData) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        console.info(answers);
-        if (bridgeData.keys[0].value) {
-          axios.post(`${globalVariables.serverURL}/api/examResults`, {
-            answers,
-          }, {
-            params: {
-              token: bridgeData.keys[0].value,
-              id: urlParams.get('vk_user_id'),
-            },
-          })
-            .then((data) => {
-              console.info(data);
-            })
-            .catch((err) => {
-              console.info('QuizResult, post/examResults', err);
-              if (err.response) {
-                console.info(err.response.status);
-              } else {
-                console.info('Error 404');
-              }
-            });
-        } else {
-          // Перемещение на стартовый экран
-        }
-      }));
+    const answers = quizResult.map((item) => ({ _id: item.questionId, text: item.selectedAnswer }));
+    // eslint-disable-next-line array-callback-return,consistent-return
+    const correctAnswersPack = quizResult.map((item) => {
+      if (item.selectedAnswerNumber === item.correctAnswerNumber) {
+        return { _id: item.questionId, question: item.question };
+      }
+    }).filter((el) => el != null);
+
+    if (correctAnswersPack.length > 0) {
+      const tempQuestion = correctAnswersPack[
+        Math.round(Math.random() * (correctAnswersPack.length - 1))
+      ];
+      setStoryQuestion({
+        question: tempQuestion.question,
+        _id: tempQuestion._id,
+        isCorrectAnswer: true,
+      });
+    } else {
+      const incorrectAnswersPack = quizResult.map(
+        (item) => ({ _id: item.questionId, question: item.question }),
+      );
+      const tempQuestion = incorrectAnswersPack[
+        Math.round(Math.random() * (incorrectAnswersPack.length - 1))
+      ];
+      setStoryQuestion({
+        question: tempQuestion.question,
+        _id: tempQuestion._id,
+        isCorrectAnswer: false,
+      });
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    if (userToken) {
+      axios.post(`${globalVariables.serverURL}/api/examResults`, {
+        answers,
+      }, {
+        params: {
+          token: userToken,
+          id: urlParams.get('vk_user_id'),
+        },
+      })
+        .catch((err) => {
+          console.info('QuizResult, post/examResults', err);
+          if (err.response) {
+            console.info(err.response.status);
+          } else {
+            console.info('Error 404');
+          }
+        });
+    } else {
+      // Перемещение на стартовый экран
+    }
   }, [quizResult]);
 
   useEffect(() => {
@@ -97,6 +122,133 @@ const QuizResult = (props) => {
       else setPhrase('Хороший результат!');
     }
   }, quizResult);
+
+  function sendStory() {
+    setPopoutShadowIsActive(true);
+    const urlParams = new URLSearchParams(window.location.search);
+    axios.get(`${globalVariables.serverURL}/api/sticker`, {
+      params: {
+        questionID: storyQuestion._id,
+        id: urlParams.get('vk_user_id'),
+      },
+    })
+      .then((data) => {
+        bridge.send('VKWebAppShowStoryBox', {
+          background_type: 'image',
+          locked: true,
+          url: 'https://psv4.userapi.com/c856532/u28455889/docs/d4/acdc54079b01/mp-story-bg.png?extra=oYOOgLFa8AFJqddSRgLj3Qbij-TTH8oLWxaZNtu7byYmQfColHD5VNcNSyr8Bl0ZFmEpQSpyTaKfsZi1EOXY1Dw57bXsVnjVelT1t2NT6kr3bLusKTLLjxTFCXfM7MkBPcZwHi5yigBH4201cnWEeng',
+          stickers: [
+            {
+              sticker_type: 'renderable',
+              sticker: {
+                can_delete: 0,
+                content_type: 'image',
+                url: 'https://psv4.userapi.com/c856536/u28455889/docs/d6/7b1535a3db93/mp-sticker-logo.png?extra=jw3Z9TO34TJkNlWEgmLNVOpF9X_akkIcmeb9ZGCUvkb2zynR-H4P1oc6jZYu7jg-kl3VUkgOePJsNdCjUobIpmDunQx5f1XHAYhvpVw1GEWeKOBWjDzGMuO2sazuHznk8Szzs88pxPwDxXPnUSPQY-Y',
+                transform: {
+                  gravity: 'center_top',
+                  relation_width: 0.7,
+                  translation_y: 0.1,
+                },
+                clickable_zones: [
+                  {
+                    action_type: 'link',
+                    action: {
+                      link: 'https://vk.com/app7441788',
+                      tooltip_text_key: 'Перейти в Мозгополию',
+                    },
+                    clickable_area: [
+                      {
+                        x: 0,
+                        y: 0,
+                      },
+                      {
+                        x: 536,
+                        y: 0,
+                      },
+                      {
+                        x: 536,
+                        y: 96,
+                      },
+                      {
+                        x: 0,
+                        y: 96,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              sticker_type: 'renderable',
+              sticker: {
+                content_type: 'image',
+                url: data.data.attachment.stickerURL,
+                transform: {
+                  gravity: 'center',
+                  relation_width: 0.9,
+                },
+                can_delete: false,
+                clickable_zones: [
+                  {
+                    action_type: 'link',
+                    action: {
+                      link: 'https://vk.com/app7441788',
+                      tooltip_text_key: 'fill',
+                    },
+                    clickable_area: [
+                      {
+                        x: 0,
+                        y: 0,
+                      },
+                      {
+                        x: 1170,
+                        y: 0,
+                      },
+                      {
+                        x: 1170,
+                        y: 1500,
+                      },
+                      {
+                        x: 0,
+                        y: 1500,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        })
+          .then((storyData) => {
+            if (storyData.result) {
+              setResultCoins(resultCoins + 100);
+              axios.post(`${globalVariables.serverURL}/api/confirmStory`, {}, {
+                params: {
+                  token: userToken,
+                  id: urlParams.get('vk_user_id'),
+                },
+              })
+                .then(() => {
+                  setPopoutShadowIsActive(false);
+                  setStorySent(true);
+                })
+                .catch(() => {
+                  setPopoutShadowIsActive(false);
+                  setStorySent(true);
+                });
+            }
+
+          })
+          .catch((err) => {
+            console.info('Ээээ... Так нельзя', err);
+            setPopoutShadowIsActive(false);
+          });
+      })
+      .catch((error) => {
+        console.info(error);
+        setPopoutShadowIsActive(false);
+      });
+  }
 
   return (
     <Panel className="QuizResult" id={id}>
@@ -137,9 +289,20 @@ const QuizResult = (props) => {
           <Div className="QuizResult--rowContainer">
             <SimpleCell
               before={(
-                <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" className="QuizResult--icon">
+                <svg
+                  width="32px"
+                  height="32px"
+                  viewBox="0 0 32 32"
+                  version="1.1"
+                  className="QuizResult--icon"
+                >
                   <g id="icn32_income" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                    <path d="M16.0507812,28.4921875 C22.578125,28.4921875 28.0039062,23.078125 28.0039062,16.5390625 C28.0039062,10.0117188 22.5664062,4.5859375 16.0390625,4.5859375 C9.5,4.5859375 4.09765625,10.0117188 4.09765625,16.5390625 C4.09765625,23.078125 9.51171875,28.4921875 16.0507812,28.4921875 Z M16.0507812,26.5 C10.5195312,26.5 6.1015625,22.0703125 6.1015625,16.5390625 C6.1015625,11.0195312 10.5078125,6.578125 16.0390625,6.578125 C21.5585938,6.578125 26,11.0195312 26.0117418,16.5390625 C26.0234375,22.0703125 21.5703125,26.5 16.0507812,26.5 Z M16.109375,22.2929688 C16.4375,22.2929688 16.6953125,22.046875 16.6953125,21.7070312 L16.6953125,20.8398438 C18.171875,20.6640625 19.2265625,19.8203125 19.578125,18.7773438 C19.6015625,18.6601562 19.6484375,18.5195312 19.6484375,18.3671875 C19.6484375,17.9570312 19.34375,17.6757812 18.9335938,17.6757812 C18.6171875,17.6757812 18.3945312,17.875 18.265625,18.1796875 C17.9960938,18.8359375 17.46875,19.3164062 16.6953125,19.4570312 L16.6953125,13.6328125 C17.4570312,13.7734375 17.984375,14.2539062 18.2421875,14.9101562 C18.3828125,15.2382812 18.6171875,15.4140625 18.9453125,15.4140625 C19.3554688,15.4140625 19.6367188,15.1328125 19.6367188,14.7226562 C19.6367188,14.5820312 19.5898438,14.4414062 19.5664062,14.3242188 C19.2148438,13.2929688 18.1601562,12.4375 16.6953125,12.2617188 L16.6953125,11.3828125 C16.6953125,11.0429688 16.4375,10.8085938 16.109375,10.8085938 C15.78125,10.8085938 15.5351562,11.0429688 15.5351562,11.3828125 L15.5351562,12.2734375 C13.5078125,12.5429688 12.2070312,14.1484375 12.2070312,16.5390625 C12.2070312,18.9648438 13.5078125,20.5585938 15.5351562,20.828125 L15.5351562,21.7070312 C15.5351562,22.046875 15.78125,22.2929688 16.109375,22.2929688 Z M15.5351562,19.4335938 C14.3984375,19.1757812 13.6953125,18.15625 13.6953125,16.5507812 C13.6953125,14.96875 14.4101562,13.9375 15.5351562,13.65625 L15.5351562,19.4335938 Z" id="icon" fill="#FFA000" fillRule="nonzero" />
+                    <path
+                      d="M16.0507812,28.4921875 C22.578125,28.4921875 28.0039062,23.078125 28.0039062,16.5390625 C28.0039062,10.0117188 22.5664062,4.5859375 16.0390625,4.5859375 C9.5,4.5859375 4.09765625,10.0117188 4.09765625,16.5390625 C4.09765625,23.078125 9.51171875,28.4921875 16.0507812,28.4921875 Z M16.0507812,26.5 C10.5195312,26.5 6.1015625,22.0703125 6.1015625,16.5390625 C6.1015625,11.0195312 10.5078125,6.578125 16.0390625,6.578125 C21.5585938,6.578125 26,11.0195312 26.0117418,16.5390625 C26.0234375,22.0703125 21.5703125,26.5 16.0507812,26.5 Z M16.109375,22.2929688 C16.4375,22.2929688 16.6953125,22.046875 16.6953125,21.7070312 L16.6953125,20.8398438 C18.171875,20.6640625 19.2265625,19.8203125 19.578125,18.7773438 C19.6015625,18.6601562 19.6484375,18.5195312 19.6484375,18.3671875 C19.6484375,17.9570312 19.34375,17.6757812 18.9335938,17.6757812 C18.6171875,17.6757812 18.3945312,17.875 18.265625,18.1796875 C17.9960938,18.8359375 17.46875,19.3164062 16.6953125,19.4570312 L16.6953125,13.6328125 C17.4570312,13.7734375 17.984375,14.2539062 18.2421875,14.9101562 C18.3828125,15.2382812 18.6171875,15.4140625 18.9453125,15.4140625 C19.3554688,15.4140625 19.6367188,15.1328125 19.6367188,14.7226562 C19.6367188,14.5820312 19.5898438,14.4414062 19.5664062,14.3242188 C19.2148438,13.2929688 18.1601562,12.4375 16.6953125,12.2617188 L16.6953125,11.3828125 C16.6953125,11.0429688 16.4375,10.8085938 16.109375,10.8085938 C15.78125,10.8085938 15.5351562,11.0429688 15.5351562,11.3828125 L15.5351562,12.2734375 C13.5078125,12.5429688 12.2070312,14.1484375 12.2070312,16.5390625 C12.2070312,18.9648438 13.5078125,20.5585938 15.5351562,20.828125 L15.5351562,21.7070312 C15.5351562,22.046875 15.78125,22.2929688 16.109375,22.2929688 Z M15.5351562,19.4335938 C14.3984375,19.1757812 13.6953125,18.15625 13.6953125,16.5507812 C13.6953125,14.96875 14.4101562,13.9375 15.5351562,13.65625 L15.5351562,19.4335938 Z"
+                      id="icon"
+                      fill="#FFA000"
+                      fillRule="nonzero"
+                    />
                   </g>
                 </svg>
               )}
@@ -185,46 +348,55 @@ const QuizResult = (props) => {
             </SimpleCell>
           </Div>
         </Card>
-        <div className="QuizResult--buttonRow">
-          <Button
-            mode="secondary"
-            onClick={() => nextView(globalVariables.view.main)}
-          >
-            Закончить
-          </Button>
-          <div>
-            <Button
-              mode="primary"
-              onClick={() => {
-                bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })
-                  .then((data) => {
-                    console.info('AppShare -> success', data);
-                    nextView(globalVariables.view.main);
-                  });
-              }}
-            >
-              Поделиться
-            </Button>
-            <Text className="QuizResult--buttonRow__description">
-              +50 монет
-            </Text>
-          </div>
 
+        {(!storySent && (
+        <div className="QuizResult--buttonColumn">
+          <Div style={{ paddingRight: 0, paddingLeft: 0 }}>
+            <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
+              {(storyQuestion.isCorrectAnswer && 'Вы ответили верно')}
+            </Title>
+            <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
+              {(storyQuestion.isCorrectAnswer ? 'Смогут ли Ваши друзья?' : 'Возможно, друзья знают ответ?')}
+            </Title>
+            <Card mode="shadow" style={{ marginTop: '20px' }}>
+              <Div style={{ paddingTop: '20px', paddingBottom: '10px' }}>
+                <Title
+                  level="2"
+                  weight="semibold"
+                  className="QuizResult--buttonColumn__card--title"
+                >
+                  {storyQuestion.question}
+                </Title>
+                <Button
+                  mode="primary"
+                  size="xl"
+                  className="QuizResult--buttonColumn__card--button"
+                  onClick={() => sendStory()}
+                >
+                  Создать историю
+                </Button>
+                <Caption
+                  level="1"
+                  weight="regular"
+                  className="QuizResult--buttonColumn__card--awards"
+                >
+                  +100 монет
+                </Caption>
+              </Div>
+            </Card>
+          </Div>
         </div>
+        )
+        )}
       </Div>
-
-      <QuizResultNew />
-      {/*      {(rightAnswers === quizResult.length
-        ? <QuizResultExcellent correctQuestionCount={rightAnswers} />
-        : <QuizResultMain quizResult={quizResult} correctQuestionCount={rightAnswers} />)} */}
     </Panel>
   );
 };
 
 QuizResult.propTypes = {
   id: PropTypes.string.isRequired,
-  setActivePanel: PropTypes.func.isRequired,
   nextView: PropTypes.func.isRequired,
+  setPopoutShadowIsActive: PropTypes.func.isRequired,
 };
 QuizResult.defaultProps = {};
 export default QuizResult;

@@ -3,17 +3,16 @@ import bridge from '@vkontakte/vk-bridge';
 import { Root } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
 import './app.css';
-// import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
+
 import '@vkontakte/vkui/dist/vkui.css';
 import StartView from './views/StartView/StartView';
 import CommonView from './views/CommonView/CommonView';
 import TestView from './views/TestView/TestView';
 import globalVariables from './GlobalVariables';
-import Page404 from './views/Page404/Page404';
 import WorkView from './views/WorkView/WorkView';
 
 const App = () => {
-  const [activeView, setActiveView] = useState(globalVariables.view.main);
+  const [activeView, setActiveView] = useState(globalVariables.view.start);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,19 +29,30 @@ const App = () => {
           break;
         }
         case 'VKWebAppAllowNotificationsResult':
-          console.info('Notification accepted!');
+          dispatch({
+            type: 'UPDATE_USER_INFO',
+            payload: { notificationsAllow: true },
+          });
           break;
         case 'VKWebAppDenyNotificationsResult':
-          console.info('Notification deny');
+          dispatch({
+            type: 'UPDATE_USER_INFO',
+            payload: { notificationsAllow: false },
+          });
           break;
         case 'VKWebAppAllowNotificationsFailed':
-          console.info('Why you hate me?');
+          console.info('Notificatiom rejected');
           break;
         default:
           // console.info('UknownType:', type);
           break;
       }
+    });
 
+    const urlParams = new URLSearchParams(window.location.search);
+    dispatch({
+      type: 'UPDATE_USER_INFO',
+      payload: { notificationsAllow: (urlParams.get('vk_are_notifications_enabled') === '1') },
     });
   }, []);
 
@@ -53,7 +63,6 @@ const App = () => {
       <WorkView id={globalVariables.view.work} nextView={setActiveView} />
 
       <TestView id={globalVariables.view.test} />
-      <Page404 id={globalVariables.view.page404} nextView={setActiveView} />
     </Root>
 
   );
