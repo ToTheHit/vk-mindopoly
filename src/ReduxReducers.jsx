@@ -47,14 +47,51 @@ export function userInfo(state = {
   isExamAvailable: false,
   isExamSuccess: false,
   effects: [],
-  questions: [],
-  caregoriesHorizontalScroll: 0,
+  selectedQuestionsCategory: {
+    questions: [],
+    category: 'All',
+  },
   selectedTab: '',
   notificationsAllow: false,
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
       return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+
+export function userQuestions(state = {
+  questions: {
+    All: [],
+    Math: [],
+    Russian: [],
+    Literature: [],
+    Physics: [],
+    Chemistry: [],
+    Astronomy: [],
+    Biology: [],
+    History: [],
+    Art: [],
+    Sport: [],
+    Geography: [],
+    Other: [],
+  },
+  selectedQuestionsCategory: [],
+  category: 'All',
+  categoriesHorizontalScroll: 0,
+}, action) {
+  switch (action.type) {
+    case 'UPDATE_USER_QUESTIONS':
+      return { ...state, ...action.payload };
+    case 'UPDATE_USER_QUESTION_CATEGORY':
+      return {
+        ...state,
+        selectedQuestionsCategory: state.questions[action.payload.category],
+        category: action.payload.category,
+        categoriesHorizontalScroll: action.payload.categoriesHorizontalScroll,
+      };
     default:
       return state;
   }
@@ -88,6 +125,15 @@ export function workViewModal(state = { modalIsActive: false, questionsLength: 0
 export function userToken(state = { token: '', friendsAccessToken: '' }, action) {
   switch (action.type) {
     case 'UPDATE_TOKEN':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+
+export function pageCache(state = { shop: [] }, action) {
+  switch (action.type) {
+    case 'PAGE_CACHE':
       return { ...state, ...action.payload };
     default:
       return state;

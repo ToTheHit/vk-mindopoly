@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import './shopView.css';
 import { ScreenSpinner, View } from '@vkontakte/vkui';
 import Shop from '../../panels/Common/Shop/Shop';
 import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';

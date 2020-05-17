@@ -50,6 +50,9 @@ const QuizResult = (props) => {
   }, [resultGP]);
 
   useEffect(() => {
+    bridge.send('VKWebAppStorageSet', { key: globalVariables.quizResult, value: '[]' });
+    bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' });
+
     const answers = quizResult.map((item) => ({ _id: item.questionId, text: item.selectedAnswer }));
     // eslint-disable-next-line array-callback-return,consistent-return
     const correctAnswersPack = quizResult.map((item) => {
@@ -133,17 +136,18 @@ const QuizResult = (props) => {
       },
     })
       .then((data) => {
+        console.info('Server result:', data);
         bridge.send('VKWebAppShowStoryBox', {
           background_type: 'image',
           locked: true,
-          url: 'https://psv4.userapi.com/c856532/u28455889/docs/d4/acdc54079b01/mp-story-bg.png?extra=oYOOgLFa8AFJqddSRgLj3Qbij-TTH8oLWxaZNtu7byYmQfColHD5VNcNSyr8Bl0ZFmEpQSpyTaKfsZi1EOXY1Dw57bXsVnjVelT1t2NT6kr3bLusKTLLjxTFCXfM7MkBPcZwHi5yigBH4201cnWEeng',
+          url: 'https://320748-cp98857.tmweb.ru/static/images/mp-story-bg.png',
           stickers: [
             {
               sticker_type: 'renderable',
               sticker: {
                 can_delete: 0,
                 content_type: 'image',
-                url: 'https://psv4.userapi.com/c856536/u28455889/docs/d6/7b1535a3db93/mp-sticker-logo.png?extra=jw3Z9TO34TJkNlWEgmLNVOpF9X_akkIcmeb9ZGCUvkb2zynR-H4P1oc6jZYu7jg-kl3VUkgOePJsNdCjUobIpmDunQx5f1XHAYhvpVw1GEWeKOBWjDzGMuO2sazuHznk8Szzs88pxPwDxXPnUSPQY-Y',
+                url: 'https://320748-cp98857.tmweb.ru/static/images/mp-sticker-logo.png',
                 transform: {
                   gravity: 'center_top',
                   relation_width: 0.7,
@@ -220,6 +224,7 @@ const QuizResult = (props) => {
           ],
         })
           .then((storyData) => {
+            console.info('Story data', storyData)
             if (storyData.result) {
               setResultCoins(resultCoins + 100);
               axios.post(`${globalVariables.serverURL}/api/confirmStory`, {}, {

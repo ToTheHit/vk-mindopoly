@@ -1,0 +1,109 @@
+.RenderedQuestionCard--card {
+  transition: all 0.1s linear;
+  user-select: none !important;
+  /*    &:hover {
+          transform: scale(0.97);
+          box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .04), 0 0 2px 0 rgba(0, 0, 0, .04);
+        }*/
+  height: auto;
+  margin-top: 10px;
+}
+.RenderedQuestionCard--card-dark {
+  background: var(--content_tint_background);
+}
+.RenderedQuestionCard--card:first-child {
+  margin-top: 0;
+}
+.RenderedQuestionCard--card:last-child {
+  margin-bottom: 20px;
+}
+.RenderedQuestionCard--card__header {
+  position: relative;
+  padding-left: 12px;
+  font-size: 12px;
+  color: var(--text_secondary);
+  user-select: none !important;
+}
+.RenderedQuestionCard--card__header-dot {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background-color: var(--toolbar_attach_background_from);
+}
+.RenderedQuestionCard--card__text {
+  margin-top: 10px;
+  user-select: none !important;
+}
+.RenderedQuestionCard--card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  user-select: none !important;
+}
+.RenderedQuestionCard--card__footer-item {
+  color: var(--text_secondary);
+  font-size: 12px;
+  user-select: none !important;
+}
+.RenderedQuestionCard--description {
+  user-select: none !important;
+  font-size: 12px;
+  white-space: pre-line;
+  line-height: normal;
+}
+.RenderedQuestionCard--ShopButton {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+.RenderedQuestionCard--ShopButton_icon {
+  padding-right: 7px;
+}
+.RenderedQuestionCard--ShopButton .SimpleCell__main {
+  padding: 0;
+}
+.RenderedQuestionCard--ShopButton_textAfter {
+  color: var(--text_secondary);
+  font-size: 14px;
+  margin-left: 12px;
+  white-space: pre-wrap;
+}
+.RenderedQuestionCard .Group__description {
+  padding-bottom: 0;
+}
+.RenderedQuestionCard--placeholder_icon {
+  width: 38px !important;
+  height: 43px !important;
+}
+.RenderedQuestionCard__themes {
+  display: flex;
+}
+.RenderedQuestionCard__themes-divider {
+  margin-left: 10px;
+}
+.RenderedQuestionCard__themes-divider:first-child {
+  margin-left: 12px;
+}
+.RenderedQuestionCard__themes-divider:last-child {
+  padding-right: 12px;
+}
+.RenderedQuestionCard__themes--button {
+  white-space: nowrap;
+  color: var(--overlay_status_icon);
+  padding: 0 12px;
+}
+.RenderedQuestionCard__themes--button .Button__content {
+  padding: 3px 0;
+}
+.RenderedQuestionCard__themes--button-selected {
+  color: var(--stories_create_button_foreground);
+  background-color: var(--panel_tab_active_background);
+}
+/*# sourceMappingURL=renderedQuestionCard.css.map */

@@ -23,7 +23,7 @@ import globalVariables from '../../../../GlobalVariables';
 const EffectGPDetailsContent = (props) => {
   const { updateModalHeight } = props;
 
-  const questions = useSelector((state) => state.userInfo.questions);
+  const questions = useSelector((state) => state.userQuestions.questions.All);
   const GPToday = useSelector((state) => state.userInfo.GP.today);
   const quizIncome = useSelector((state) => state.userInfo.lastExamReward.bp);
   const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);

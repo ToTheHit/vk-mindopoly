@@ -1,0 +1,19 @@
+.QuizCard {
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.QuizCard .Cell {
+  flex-grow: 1;
+}
+.QuizCard__icon {
+  margin-top: 10px;
+  padding-right: 10px;
+  color: var(--button_primary_background);
+}
+.QuizCard--description {
+  margin-top: 4px;
+}
+/*# sourceMappingURL=quizCard.css.map */

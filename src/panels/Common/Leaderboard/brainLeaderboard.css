@@ -1,0 +1,13 @@
+.BrainLeaderboard__panelHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.BrainLeaderboard__panelHeader--icon {
+  margin-top: 2px;
+}
+.BrainLeaderboard--icon {
+  color: var(--button_primary_background);
+  transition: transform linear 200ms;
+}
+/*# sourceMappingURL=brainLeaderboard.css.map */

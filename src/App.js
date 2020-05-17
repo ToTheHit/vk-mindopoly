@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { Root } from '@vkontakte/vkui';
-import { useDispatch } from 'react-redux';
+import { ConfigProvider, Root } from '@vkontakte/vkui';
+import { useDispatch, useSelector } from 'react-redux';
 import './app.css';
 
 import '@vkontakte/vkui/dist/vkui.css';
@@ -14,6 +14,7 @@ import WorkView from './views/WorkView/WorkView';
 const App = () => {
   const [activeView, setActiveView] = useState(globalVariables.view.start);
   const dispatch = useDispatch();
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
     bridge.subscribe(({ detail: { type, data } }) => {
@@ -57,13 +58,18 @@ const App = () => {
   }, []);
 
   return (
-    <Root activeView={activeView}>
-      <StartView id={globalVariables.view.start} nextView={setActiveView} />
-      <CommonView id={globalVariables.view.main} nextView={setActiveView} />
-      <WorkView id={globalVariables.view.work} nextView={setActiveView} />
+    <ConfigProvider
+      webviewType="vkapps"
+      scheme={(((scheme === 'light' || scheme === 'bright_light') || scheme === 'client_light') ? 'bright_light' : 'space_gray')}
+    >
+      <Root activeView={activeView}>
+        <StartView id={globalVariables.view.start} nextView={setActiveView} />
+        <CommonView id={globalVariables.view.main} nextView={setActiveView} />
+        <WorkView id={globalVariables.view.work} nextView={setActiveView} />
 
-      <TestView id={globalVariables.view.test} />
-    </Root>
+        <TestView id={globalVariables.view.test} />
+      </Root>
+    </ConfigProvider>
 
   );
 };

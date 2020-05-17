@@ -10,7 +10,9 @@ import axios from 'axios';
 import bridge from '@vkontakte/vk-bridge';
 import TestPanel from './TestPanel';
 import TestPanel2 from './TestPanel2';
-import globalVariables from "../../GlobalVariables";
+import globalVariables from '../../GlobalVariables';
+import Shop from '../../panels/Common/Shop/Shop';
+import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';
 
 const TestView = (props) => {
   const { id } = props;
@@ -94,10 +96,10 @@ const TestView = (props) => {
           .catch((err) => console.info(err));
       }); */
     // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: null });
-/*            bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
+    /*            bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
       .then((data) => {
         bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: data.access_token });
-      });*/
+      }); */
     /*    bridge.send("VKWebAppShowStoryBox", { "background_type" : "image", "url" : "https://sun9-65.userapi.com/c850136/v850136098/1b77eb/0YK6suXkY24.jpg" })
       .then((data) => {
         setTimeout(() => {
@@ -109,19 +111,59 @@ const TestView = (props) => {
           console.info('Ээээ... Так нельзя', err);
         }, 1000)
       }) */
-    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.friendsAccessToken] })
+    /*    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.friendsAccessToken] })
       .then(((data) => {
         setTimeout(() => {
             console.info('token', data.keys[0].value)
         }, 5000);
-      }));
+      })); */
+
+
+    /*    bridge.send('VKWebAppStorageSet', {
+      key: globalVariables.quizResult,
+      value: '[]',
+    });
+    bridge.send('VKWebAppStorageSet', {
+      key: globalVariables.quizQuestions,
+      value: '',
+    }); */
+
+
+
+/*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
+      .then((data) => {
+        setTimeout(() => console.info(data), 1000)
+
+        bridge.send('VKWebAppCallAPIMethod', {
+          method: 'stories.getPhotoUploadServer',
+          request_id: 'test123321test',
+          params: {
+            v: '5.103',
+            access_token: data.access_token,
+            add_to_news: 1,
+            link_url: 'https://vk.com/app7441788',
+          }
+        })
+          .then((data) => setTimeout(() => console.info(data), 1000))
+          .catch((error) => setTimeout(() => console.info(error), 1000));
+
+/!*        bridge.send('stories.getPhotoUploadServer', {
+          access_token: data.access_token,
+          add_to_news: 1,
+          link_url: 'https://vk.com/app7441788',
+        })*!/
+
+      })*/
+
+
   }, []);
 
   const [activePanel, setAcitvePanel] = useState('1');
   return (
     <View id={id} activePanel={activePanel} className="TestView">
-      <TestPanel id="1" setActivePanel={setAcitvePanel} />
-      <TestPanel2 id="2" setActivePanel={setAcitvePanel} />
+      <TestPanel setActivePanel={setAcitvePanel} id="1" />
+      <TestPanel2 setActivePanel={setAcitvePanel} id="2" />
+
     </View>
   );
 };
@@ -131,22 +173,3 @@ TestView.propTypes = {
 };
 TestView.defaultProps = {};
 export default TestView;
-
-
-const TestViewChild = (props) => {
-  const { testFunc, testFunc1 } = props;
-
-  useEffect(() => {
-    console.log(1);
-  }, [testFunc, testFunc1]);
-  return (
-    <div>
-      12321
-    </div>
-  );
-};
-
-TestViewChild.propTypes = {
-  testFunc: PropTypes.func.isRequired,
-  testFunc1: PropTypes.func.isRequired,
-};

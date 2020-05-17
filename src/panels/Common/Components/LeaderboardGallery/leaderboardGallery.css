@@ -1,0 +1,13 @@
+.LeaderboardGallery .Card {
+  box-shadow: inherit;
+}
+.LeaderboardGallery--card {
+  box-shadow: inherit;
+}
+.LeaderboardGallery .Card--md-shadow {
+  box-shadow: inherit;
+}
+.LeaderboardGallery .Gallery__slide {
+  background: var(--modal_card_background);
+}
+/*# sourceMappingURL=leaderboardGallery.css.map */

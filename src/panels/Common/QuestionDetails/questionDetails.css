@@ -1,0 +1,10 @@
+.QuestionDetails__answersGroup {
+  margin-top: 20px;
+}
+.QuestionDetails__answer {
+  margin-top: 10px;
+}
+.QuestionDetails__generalInfo--card-dark {
+  background: var(--content_tint_background);
+}
+/*# sourceMappingURL=questionDetails.css.map */

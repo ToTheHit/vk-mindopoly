@@ -1,0 +1,13 @@
+.NotificationSwitch__card {
+  background: var(--button_secondary_background);
+}
+.NotificationSwitch__card-dark {
+  background: var(--content_tint_background);
+}
+.NotificationSwitch .SimpleCell__main {
+  padding-bottom: 9px;
+}
+.NotificationSwitch .Switch__pseudo {
+  background-color: var(--switch_ios_off_border);
+}
+/*# sourceMappingURL=notificationSwitch.css.map */

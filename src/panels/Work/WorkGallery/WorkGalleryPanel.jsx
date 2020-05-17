@@ -4,11 +4,13 @@ import {
   Button, Cell, Div, Panel, Text, Title,
 } from '@vkontakte/vkui';
 import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outline';
+import bridge from '@vkontakte/vk-bridge';
 import QuizBlock from '../QuizBlock/QuizBlock';
+import globalVariables from '../../../GlobalVariables';
 
 const WorkGalleryPanel = (props) => {
   const {
-    id, questionIndex, data, totalQuestions, timeToAnswer, setResult, start, goToNextQuestion,
+    id, questionIndex, data, totalQuestions, timeToAnswer, setResult, start, goToNextQuestion, lastQuestionInStorage,
   } = props;
 
   const panelRef = useRef(null);
@@ -16,7 +18,8 @@ const WorkGalleryPanel = (props) => {
   const [time, setTime] = useState(timeToAnswer);
   const [systemTime, setSystemTime] = useState(0);
   const [startInterval, setStartInterval] = useState(false);
-
+  const [test, setTest] = useState('1111');
+  const [test1, setTest1] = useState('3333');
   useEffect(() => {
     setSystemTime(Date.now());
     setStartInterval(start);
@@ -40,11 +43,21 @@ const WorkGalleryPanel = (props) => {
 
   // Остановка интервала
   useEffect(() => {
+    //
     if (time <= 0) {
       setStartInterval(false);
       setShowArrowNext(true);
     }
   }, [time]);
+
+  useEffect(() => {
+    if (data._id === lastQuestionInStorage.id) {
+      setShowArrowNext(true);
+      setTest(lastQuestionInStorage.selectedAnswerNumber)
+      // setTime(-1);
+    }
+  }, [lastQuestionInStorage.id]);
+
 
   // Вызывается после окончания таймера, либо после выбранного ответа
   function onCompleteQuestion(
@@ -71,10 +84,6 @@ const WorkGalleryPanel = (props) => {
     }
   }
 
-  function nextQuestion() {
-    goToNextQuestion(questionIndex + 1);
-  }
-
   return (
     <Panel id={id} className="WorkGalleryPanel" getRootRef={panelRef}>
       <Div className="Work--subTitle">
@@ -93,14 +102,17 @@ const WorkGalleryPanel = (props) => {
             description={data.theme}
           >
             <Text>
-              Вопрос
-              {' '}
-              {questionIndex}
-              {' '}
-              из
-              {' '}
-              {totalQuestions - 1}
+              {`Вопрос ${questionIndex} из ${totalQuestions - 1}`}
             </Text>
+{/*                        <Text>
+              {`Storage last ID: ${lastQuestionInStorage.id}`}
+            </Text>
+            <Text>
+              {`This quiz ID: ${data._id}`}
+            </Text>
+            <Text>
+              {`${test}`}
+            </Text>*/}
           </Cell>
         ))}
 
@@ -115,7 +127,7 @@ const WorkGalleryPanel = (props) => {
             <div className="Work--timer__gradient" />
             <div className="Work--timer__gradient-mask" />
             <div className="Work--timer__time">
-              <Title level={2} weight={'semibold'}>{(time > 0 ? time.toFixed(0) : 0)}</Title>
+              <Title level={2} weight="semibold">{(time > 0 ? time.toFixed(0) : 0)}</Title>
             </div>
           </div>
         )}
@@ -132,6 +144,7 @@ const WorkGalleryPanel = (props) => {
         }}
         time={time}
         onComplete={onCompleteQuestion}
+        lastQuestionInStorage={lastQuestionInStorage}
       />
     </Panel>
   );
@@ -159,8 +172,16 @@ WorkGalleryPanel.propTypes = {
   setResult: PropTypes.func.isRequired,
   start: PropTypes.bool.isRequired,
   goToNextQuestion: PropTypes.func.isRequired,
+  lastQuestionInStorage: PropTypes.shape({
+    id: PropTypes.string,
+    selectedAnswerNumber: PropTypes.number,
+  }),
 };
 WorkGalleryPanel.defaultProps = {
   timeToAnswer: 10,
+  lastQuestionInStorage: {
+    id: '',
+    selectedAnswerNumber: -1,
+  },
 };
 export default WorkGalleryPanel;

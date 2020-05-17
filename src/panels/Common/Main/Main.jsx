@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import {
-  Panel, PanelHeader, PullToRefresh, Separator,
-} from '@vkontakte/vkui';
+import { Panel, PanelHeader, PullToRefresh, Separator, } from '@vkontakte/vkui';
 import axios from 'axios';
 
 import './main.css';
 import { useDispatch, useSelector } from 'react-redux';
-import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
 import Balance from '../Components/Balance/Balance';
 import QuizCard from '../Components/QuizCard/QuizCard';
 import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
+import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
 
 const Main = (props) => {
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.userToken.token);
   const userInfo = useSelector((state) => state.userInfo);
+  const userQuestions = useSelector((state) => state.userQuestions);
 
   const {
     id, setActivePanel,
@@ -26,28 +25,10 @@ const Main = (props) => {
     setActiveStory, setPopoutMainView,
     popoutMainView,
   } = props;
-  const [quizCard, setQuizCard] = useState({
-    isAvailable: false, date: '25 апреля',
-  });
-  const [effects, setEffects] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [VKuser, setVKuser] = useState({
-    first_name: 'Test',
-    last_name: 'User',
-    photo_200: 'https://vk.com/images/deactivated_100.png?ava=1',
-    GP: {
-      today: 0,
-      overall: 0,
-    },
-    GPgrowth: 0,
-    tax: 0,
-    coins: {
-      today: 0,
-      overall: 0,
-    },
-    worldPlace: 12803312,
-    friendsPlace: 4,
-  });
+
+  const [effects, setEffects] = useState(userInfo.effects);
+  const [questions, setQuestions] = useState(userQuestions.questions);
+  const [VKuser, setVKuser] = useState(userInfo);
   const [updatingView, setUpdatingView] = useState(false);
 
   function updateView() {
@@ -62,8 +43,8 @@ const Main = (props) => {
         }),
         axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
           params: {
-            token: userToken,
-            id: urlParams.get('vk_user_id'),
+            token: '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
+            id: '31818927',
           },
         }),
       ])
@@ -85,9 +66,6 @@ const Main = (props) => {
             effects: [],
           };
           // console.info(user)
-          setQuizCard({
-            isAvailable: srvData.isExamAvailable,
-          });
 
           // TODO: К этому обязательно нужно будет вернутся, когда доделаются эффекты на Бэке
           const effectsArray = [];
@@ -214,10 +192,36 @@ const Main = (props) => {
   }, [VKuser]);
 
   useEffect(() => {
-    dispatch({
-      type: 'UPDATE_USER_INFO',
-      payload: { ...VKuser, ...{ questions } },
-    });
+    if (Array.isArray(questions)) {
+      // Вопросы с сервера
+      const questionsCategories = {
+        All: [],
+        Math: [],
+        Russian: [],
+        Literature: [],
+        Physics: [],
+        Chemistry: [],
+        Astronomy: [],
+        Biology: [],
+        History: [],
+        Art: [],
+        Sport: [],
+        Geography: [],
+        Other: [],
+      };
+      for (let i = 0; i < questions.length; i += 1) {
+        questionsCategories.All.push(questions[i]);
+        questionsCategories[questions[i].category].push(questions[i]);
+      }
+      dispatch({
+        type: 'UPDATE_USER_QUESTIONS',
+        payload: {
+          category: (userQuestions.category === 'All' ? 'All' : userQuestions.category),
+          questions: questionsCategories,
+          selectedQuestionsCategory: (userQuestions.category === 'All' ? questionsCategories.All : questionsCategories[userQuestions.category]),
+        },
+      });
+    }
   }, [questions]);
 
   useEffect(() => {
@@ -228,18 +232,28 @@ const Main = (props) => {
       setTimeout(() => {
         setPopoutMainView(false);
       }, 1);
-      setQuestions(userInfo.questions);
       setEffects(userInfo.effects);
-      setQuizCard({ isAvailable: userInfo.isExamAvailable });
       setVKuser({ ...VKuser, ...userInfo });
       setUpdatingView(false);
     }
+
+    /*        axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
+      params: {
+        token: '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
+        id: '31818927',
+      },
+    })
+      .then((data) => {
+        // console.info(data);
+        setQuestions(data.data.attachment);
+
+      }) */
     updateView();
 
-/*    // TODO: Для разработки. Удалить для релиза
+    /*    // TODO: Для разработки. Удалить для релиза
     setTimeout(() => {
       setPopoutMainView(false);
-    }, 500);*/
+    }, 500); */
   }, []);
 
   return (
@@ -259,14 +273,14 @@ const Main = (props) => {
           />
 
           <div>
-            {quizCard.isAvailable ? (
-              <QuizCard nextView={nextView} />
-            )
+            {VKuser.isExamAvailable ? (
+                <QuizCard nextView={nextView} />
+              )
               : (<NotificationSwitch />)}
 
           </div>
 
-          {((!effects.length && !quizCard.isAvailable) && (
+          {((!effects.length && !VKuser.isExamAvailable) && (
             <Separator />
           ))}
 
@@ -274,7 +288,6 @@ const Main = (props) => {
             setActivePanel={setActivePanel}
             setSelectedQuestion={setSelectedQuestion}
             setActiveStory={setActiveStory}
-            questions={questions}
           />
         </div>
       </PullToRefresh>

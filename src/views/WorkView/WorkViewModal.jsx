@@ -7,10 +7,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../GlobalVariables';
 
 const WorkViewModal = (props) => {
-  const { nextView, setPopoutIsActive } = props;
+  const { nextView, setPopoutIsActive, isPreviousQuiz } = props;
   const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
   const questionsLength = useSelector((state) => state.workViewModal.questionsLength);
+  const answersLength = useSelector((state) => state.quiz.quizResult.length);
   const dispatch = useDispatch();
+
+  const [modalText, setModalText] = useState('');
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.info('answersLength', answersLength);
+    }, 1000);
+
+    if (answersLength === 0) {
+      setModalText(`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`);
+    } else {
+      setModalText(`Вы ответили на ${answersLength} из ${questionsLength - 1} вопросов.\n Чтобы начать новый отчёт, необходимо закончить текущий.\nПродолжить?`);
+    }
+  }, [answersLength, questionsLength]);
 
   function closeModal() {
     dispatch({
@@ -33,7 +48,7 @@ const WorkViewModal = (props) => {
       <ModalCard
         id="Work--readyCheck"
         icon={<Icon56ErrorOutline style={{ transform: 'rotate(180deg)' }} />}
-        header={`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`}
+        header={modalText}
 
         actions={[
           {
@@ -45,7 +60,8 @@ const WorkViewModal = (props) => {
             },
           },
           {
-            title: 'Начать',
+            // title: 'Начать',
+            title: (answersLength === 0 ? 'Начать' : 'Продолжить'),
             mode: 'primary',
             action: () => closeModal(),
           },
@@ -59,6 +75,7 @@ const WorkViewModal = (props) => {
 WorkViewModal.propTypes = {
   nextView: PropTypes.func.isRequired,
   setPopoutIsActive: PropTypes.func.isRequired,
+  isPreviousQuiz: PropTypes.bool.isRequired,
 };
 WorkViewModal.defaultProps = {};
 export default WorkViewModal;

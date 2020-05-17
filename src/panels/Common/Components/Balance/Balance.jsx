@@ -83,7 +83,23 @@ const Balance = (props) => {
 
       <HorizontalScroll>
         <div className="Balance__row-scroll">
-          {renderedEffects}
+          {/*{renderedEffects}*/}
+          {(
+            effects.map((effect) => (
+              <div
+                key={`BalanceItem__${effect.currency}`}
+                className="Balance__row-scroll__item"
+              >
+                <BalanceItem
+                  count={effect.count}
+                  currency={effect.currency}
+                  icon={effect.icon}
+                  description={effect.description}
+                  name={effect.name}
+                />
+              </div>
+            ))
+          )}
         </div>
       </HorizontalScroll>
 

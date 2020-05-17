@@ -1,0 +1,50 @@
+.Main--BrainHeader {
+  padding: 23px 12px 0 12px;
+}
+.Main--user {
+  margin-top: 6px;
+}
+.Main--user .Group__description {
+  padding-bottom: 20px;
+}
+.Main .SimpleCell__indicator {
+  font-size: 14px !important;
+}
+.Main--button__showAllQuestions {
+  padding-right: 0;
+}
+.Main--CustomQuestionBlock {
+  padding-top: 0;
+}
+.Main--ShopButton {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+.Main--ShopButton_icon {
+  padding-right: 7px;
+}
+.Main--ShopButton .SimpleCell__main {
+  padding: 0;
+}
+.Main--ShopButton_textAfter {
+  color: var(--text_secondary);
+  font-size: 14px;
+  margin-left: 12px;
+  white-space: pre-wrap;
+}
+.Main .Cell__in {
+  padding-left: 0;
+  padding-right: 0;
+}
+.Main--shop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 112px;
+  height: 30px;
+  background-color: #4BB34B;
+  border-radius: 10px;
+  color: #FFFFFF;
+}
+/*# sourceMappingURL=main.css.map */

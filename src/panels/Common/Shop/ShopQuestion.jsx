@@ -333,8 +333,7 @@ const ShopQuestion = (props) => {
                 className="ShopQuestion--correctAnswer"
                 status={((symbolCounter.answers[0] < 0) || emptyInput.input1) && 'error'}
                 bottom={(symbolCounter.answers[0] >= 0 ? `Осталось символов: ${symbolCounter.answers[0]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[0]} символов`)}
-                // bottom={(symbolCounter.answers[0] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[0]} символов`)}
-              >
+               >
                 <Input
                   type="text"
                   placeholder={inputPlaceholders[questionData.category].answers[0]}
@@ -367,7 +366,6 @@ const ShopQuestion = (props) => {
                 placeholder={inputPlaceholders[questionData.category].answers[1]}
                 className="ShopQuestion--incorrectAnswers_input"
                 status={((symbolCounter.answers[1] < 0) || emptyInput.input2) && 'error'}
-                // bottom={(symbolCounter.answers[1] >= 0 ? `Осталось символов: ${symbolCounter.answers[1]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[1]} символов`)}
                 bottom={(symbolCounter.answers[1] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[1]} символов`)}
 
                 getRef={refQuestionIncorrectAnswer1}
@@ -396,7 +394,6 @@ const ShopQuestion = (props) => {
                 getRef={refQuestionIncorrectAnswer2}
                 value={savedUserQuestion.answers[2]}
                 status={((symbolCounter.answers[2] < 0) || emptyInput.input3) && 'error'}
-                // bottom={(symbolCounter.answers[2] >= 0 ? `Осталось символов: ${symbolCounter.answers[2]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[2]} символов`)}
                 bottom={(symbolCounter.answers[2] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[2]} символов`)}
                 onChange={(e) => {
                   const answersTemp = savedUserQuestion.answers;
@@ -422,7 +419,6 @@ const ShopQuestion = (props) => {
                 getRef={refQuestionIncorrectAnswer3}
                 value={savedUserQuestion.answers[3]}
                 status={((symbolCounter.answers[3] < 0) || emptyInput.input4) && 'error'}
-                // bottom={(symbolCounter.answers[3] >= 0 ? `Осталось символов: ${symbolCounter.answers[3]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[3]} символов`)}
                 bottom={(symbolCounter.answers[3] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[3]} символов`)}
 
                 onChange={(e) => {
@@ -449,7 +445,6 @@ const ShopQuestion = (props) => {
                 value={savedUserQuestion.explanation}
                 status={(symbolCounter.explanation < 0) && 'error'}
                 bottom={(symbolCounter.explanation >= 0 ? `Осталось символов: ${symbolCounter.explanation}` : `Пояснение не может содержать более ${maxSymbolsInInput.explanation} символов`)}
-                // bottom={(symbolCounter.answers[4] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[4]} символов`)}
 
                 onChange={(e) => {
                   setSavedUserQuestion({

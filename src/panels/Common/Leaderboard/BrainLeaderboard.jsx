@@ -20,7 +20,7 @@ const BrainLeaderboard = (props) => {
 
   return (
     <Panel id={id}>
-      <PanelHeader>
+      <PanelHeader separator={false}>
         <PanelHeaderContent
           onClick={() => {
             setContextIsOpened(!contextIsOpened);

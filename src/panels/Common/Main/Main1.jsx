@@ -9,7 +9,6 @@ import axios from 'axios';
 import './main1.css';
 import bridge from '@vkontakte/vk-bridge';
 import { useDispatch } from 'react-redux';
-import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
 import Balance from '../Components/Balance/Balance';
 import QuizCard from '../Components/QuizCard/QuizCard';
 import globalVariables from '../../../GlobalVariables';

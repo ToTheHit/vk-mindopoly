@@ -1,0 +1,32 @@
+.LeaderboardCategories__Category--header {
+  display: flex;
+  align-items: center;
+}
+.LeaderboardCategories__Category--header-counter {
+  color: var(--text_secondary);
+  margin-left: 8px;
+  margin-top: 3px;
+}
+.LeaderboardCategories__Category--leader {
+  margin-bottom: 8px;
+}
+.LeaderboardCategories__Category--leader_description {
+  font-size: 14px;
+}
+.LeaderboardCategories .Group__description {
+  padding: 0 12px;
+}
+.LeaderboardCategories .Group > :not(.Header):first-child {
+  margin-top: 0;
+}
+.LeaderboardCategories .Separator {
+  margin-top: 19px;
+}
+.LeaderboardCategories--icon {
+  height: 28px;
+  width: 28px;
+  background-size: 28px 28px;
+  background-repeat: no-repeat;
+  margin-right: 11px;
+}
+/*# sourceMappingURL=leaderboardCategories.css.map */

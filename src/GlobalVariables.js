@@ -11,8 +11,11 @@ const globalVariables = {
   notificationAllow: 'notificationAllow',
   serverURL: 'https://320748-cp98857.tmweb.ru',
   quizResult: 'quizResult',
+  quizQuestions: 'quizQuestions',
   translateEnToRu(category) {
     switch (category) {
+      case 'All':
+        return 'Все';
       case 'Math':
         return 'Математика';
       case 'Russian':
@@ -33,12 +36,12 @@ const globalVariables = {
         return 'Искусство';
       case 'Sport':
         return 'Спорт';
-      case 'Other':
-        return 'Другое';
       case 'Geography':
         return 'География';
+      case 'Other':
+        return 'Другое';
       default:
-        return '';
+        return category;
     }
   },
   categoryColor(category) {

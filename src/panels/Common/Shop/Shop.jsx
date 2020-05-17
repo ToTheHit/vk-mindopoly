@@ -15,7 +15,7 @@ import {
 import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Icon64Russian from '../../../assets/Icons/icn64_rus.png';
 import Icon64Math from '../../../assets/Icons/icn64_math.png';
@@ -30,15 +30,20 @@ import Icon64Sport from '../../../assets/Icons/icn64_sport.png';
 import Icon64Other from '../../../assets/Icons/icn64_other.png';
 import Icon64Geography from '../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../GlobalVariables';
+import RenderedCategories from './Components/RenderedCategories';
+
 
 const Shop = (props) => {
   const {
     id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView,
   } = props;
-  const [categories, setCategories] = useState([]);
+  const pageCache = useSelector((state) => state.pageCache.shop);
+  const [categories, setCategories] = useState(pageCache);
+
   const [renderedCategories, setRenderedCategories] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
+  const dispatch = useDispatch();
 
   function getIcon(category) {
     switch (category) {
@@ -72,7 +77,7 @@ const Shop = (props) => {
   }
 
   const checkBalance = useCallback((category, price) => {
-    if (userBalance >= price) {
+    if (userBalance <= price) {
       setQuestionData({ category, price });
       setActivePanel('ShopQuestion');
     } else {
@@ -83,19 +88,26 @@ const Shop = (props) => {
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
-        console.info(data);
+        // console.info(data);
         setCategories(data.data);
+        dispatch({
+          type: 'PAGE_CACHE',
+          payload: { shop: data.data },
+        });
         setPopoutShopView(false);
       })
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
       });
-  }, [setPopoutShopView, checkBalance]);
+    return () => {
+      // setRenderedCategories([]);
+    };
+  }, []);
 
   useEffect(() => {
     const rendered = categories.map((item) => (
       <SimpleCell
-        key={`ShopItem_${item.name}`}
+        key={`ShopItem_${item._id}`}
         className="Shop--item"
         disabled
         after={(
@@ -118,7 +130,7 @@ const Shop = (props) => {
       </SimpleCell>
     ));
     setRenderedCategories(rendered);
-  }, [categories, checkBalance]);
+  }, [categories]);
 
   return (
     <Panel id={id} className="Shop">
@@ -140,13 +152,15 @@ const Shop = (props) => {
       {!popoutShopView && (
         <Group
           header={(
-            <Header>
+            <Header
+              subtitle="Чем больше вопросов в категории, тем выше их цена. Однако, дешёвые вопросы более востребованы и принесут больше GP."
+            >
               Вопросы
             </Header>
           )}
         >
-          <Div>
-            {renderedCategories}
+          <Div style={{ paddingTop: '4px' }}>
+            <RenderedCategories checkBalance={checkBalance} categories={categories} />
           </Div>
         </Group>
       )}

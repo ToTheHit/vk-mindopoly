@@ -1,0 +1,88 @@
+.Balance {
+  margin-top: 20px;
+}
+.Balance__cardEffect {
+  transition: all 0.1s linear;
+  user-select: none !important;
+  /*    &:hover {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .04), 0 0 2px 0 rgba(0, 0, 0, .04);
+
+    }*/
+}
+.Balance__cardEffect-dark {
+  background: var(--content_tint_background);
+}
+.Balance__row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.Balance__row-scroll {
+  margin: 22px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+.Balance__row-scroll__item {
+  padding-left: 12px;
+}
+.Balance__row-scroll__item:last-child {
+  padding-right: 12px;
+}
+.Balance__row:nth-child(3) {
+  justify-content: flex-start;
+  background-color: #4bb34b;
+}
+.Balance__row:nth-child(3) .Card {
+  margin-left: 12px;
+}
+.Balance__title {
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text_secondary);
+  font-size: 13px;
+  line-height: 1.23;
+  letter-spacing: -0.08px;
+}
+.Balance__item {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+.Balance__icon {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  background-position: inherit;
+  padding-right: 6px;
+}
+.Balance--GPcounter .Header__in .Header__content {
+  font-size: 24px;
+  line-height: 28px;
+  padding: 13px 0 9px;
+}
+.Balance--GPcounter_currency {
+  color: var(--text_secondary);
+  padding-left: 5px;
+}
+.Balance__effect {
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: -0.15px;
+}
+.Balance__effect .SimpleCell__main {
+  padding-right: 0;
+}
+.Balance__effect .SimpleCell__description {
+  margin-top: 0;
+}
+.Balance__effect--description {
+  /*      margin-top: 0;
+      padding-top: 0;*/
+}
+/*# sourceMappingURL=balance.css.map */

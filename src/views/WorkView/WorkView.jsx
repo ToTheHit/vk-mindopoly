@@ -21,17 +21,34 @@ const WorkView = (props) => {
   const [activePanel, setActivePanel] = useState('WorkGallery');
   const [popoutIsActive, setPopoutIsActive] = useState(true);
   const [popoutShadowIsActive, setPopoutShadowIsActive] = useState(false);
+  const [isPreviousQuiz, setIsPreviousQuiz] = useState(false);
 
   return (
     <View
       id={id}
       activePanel={activePanel}
       className="WorkView"
-      modal={<WorkViewModal nextView={nextView} setPopoutIsActive={setPopoutIsActive} />}
+      modal={(
+        <WorkViewModal
+          nextView={nextView}
+          setPopoutIsActive={setPopoutIsActive}
+          isPreviousQuiz={isPreviousQuiz}
+        />
+      )}
       popout={(popoutIsActive ? popout : (popoutShadowIsActive && popoutShadow))}
     >
-      <WorkGallery id="WorkGallery" setActivePanel={setActivePanel} nextView={nextView} />
-      <QuizResult id="QuizResultPanel" setActivePanel={setActivePanel} nextView={nextView} setPopoutShadowIsActive={setPopoutShadowIsActive} />
+      <WorkGallery
+        id="WorkGallery"
+        setActivePanel={setActivePanel}
+        nextView={nextView}
+        setIsPreviousQuiz={setIsPreviousQuiz}
+      />
+      <QuizResult
+        id="QuizResultPanel"
+        setActivePanel={setActivePanel}
+        nextView={nextView}
+        setPopoutShadowIsActive={setPopoutShadowIsActive}
+      />
     </View>
   );
 };
