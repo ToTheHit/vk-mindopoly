@@ -47,6 +47,9 @@
   line-height: normal;
   color: var(--text_primary);
   text-align: left;
+  margin-block-start: 10px;
+  margin-block-end: 10px;
+  white-space: pre-line;
 }
 @keyframes AnswerPressed {
   0% {

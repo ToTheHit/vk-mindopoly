@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import './workView.less';
 import { PopoutWrapper, ScreenSpinner, View } from '@vkontakte/vkui';
 import WorkGallery from '../../panels/Work/WorkGallery/WorkGallery';
 import QuizResult from '../../panels/QuizResult/QuizResult';
@@ -21,7 +20,6 @@ const WorkView = (props) => {
   const [activePanel, setActivePanel] = useState('WorkGallery');
   const [popoutIsActive, setPopoutIsActive] = useState(true);
   const [popoutShadowIsActive, setPopoutShadowIsActive] = useState(false);
-  const [isPreviousQuiz, setIsPreviousQuiz] = useState(false);
 
   return (
     <View
@@ -32,7 +30,6 @@ const WorkView = (props) => {
         <WorkViewModal
           nextView={nextView}
           setPopoutIsActive={setPopoutIsActive}
-          isPreviousQuiz={isPreviousQuiz}
         />
       )}
       popout={(popoutIsActive ? popout : (popoutShadowIsActive && popoutShadow))}
@@ -41,7 +38,7 @@ const WorkView = (props) => {
         id="WorkGallery"
         setActivePanel={setActivePanel}
         nextView={nextView}
-        setIsPreviousQuiz={setIsPreviousQuiz}
+        setPopoutIsActive={setPopoutIsActive}
       />
       <QuizResult
         id="QuizResultPanel"

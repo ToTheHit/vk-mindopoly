@@ -4,9 +4,8 @@ import {
   Button, Cell, Div, Panel, Text, Title,
 } from '@vkontakte/vkui';
 import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outline';
-import bridge from '@vkontakte/vk-bridge';
 import QuizBlock from '../QuizBlock/QuizBlock';
-import globalVariables from '../../../GlobalVariables';
+import ProgressRing from '../../CustomComponents/ProgressRing/ProgressRing';
 
 const WorkGalleryPanel = (props) => {
   const {
@@ -18,12 +17,15 @@ const WorkGalleryPanel = (props) => {
   const [time, setTime] = useState(timeToAnswer);
   const [systemTime, setSystemTime] = useState(0);
   const [startInterval, setStartInterval] = useState(false);
-  const [test, setTest] = useState('1111');
-  const [test1, setTest1] = useState('3333');
+  const [timeProgress, setTimeProgress] = useState(0);
   useEffect(() => {
     setSystemTime(Date.now());
     setStartInterval(start);
   }, [start]);
+
+  useEffect(() => {
+    setTimeProgress(100 + (time / timeToAnswer) * -100);
+  }, [time]);
 
   // Интервал
   useEffect(() => {
@@ -53,11 +55,8 @@ const WorkGalleryPanel = (props) => {
   useEffect(() => {
     if (data._id === lastQuestionInStorage.id) {
       setShowArrowNext(true);
-      setTest(lastQuestionInStorage.selectedAnswerNumber)
-      // setTime(-1);
     }
   }, [lastQuestionInStorage.id]);
-
 
   // Вызывается после окончания таймера, либо после выбранного ответа
   function onCompleteQuestion(
@@ -104,14 +103,11 @@ const WorkGalleryPanel = (props) => {
             <Text>
               {`Вопрос ${questionIndex} из ${totalQuestions - 1}`}
             </Text>
-{/*                        <Text>
+{/*            <Text>
               {`Storage last ID: ${lastQuestionInStorage.id}`}
             </Text>
             <Text>
               {`This quiz ID: ${data._id}`}
-            </Text>
-            <Text>
-              {`${test}`}
             </Text>*/}
           </Cell>
         ))}
@@ -125,6 +121,14 @@ const WorkGalleryPanel = (props) => {
         ) : (
           <div className="Work--timer">
             <div className="Work--timer__gradient" />
+            <ProgressRing
+              className="Work--timer__circle"
+              radius={34}
+              stroke={5}
+              initialStrokeDashoffest={151}
+              progress={-1 * timeProgress}
+              transitionDuration={500}
+            />
             <div className="Work--timer__gradient-mask" />
             <div className="Work--timer__time">
               <Title level={2} weight="semibold">{(time > 0 ? time.toFixed(0) : 0)}</Title>

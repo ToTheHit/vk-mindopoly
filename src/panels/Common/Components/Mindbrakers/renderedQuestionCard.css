@@ -14,9 +14,6 @@
 .RenderedQuestionCard--card:first-child {
   margin-top: 0;
 }
-.RenderedQuestionCard--card:last-child {
-  margin-bottom: 20px;
-}
 .RenderedQuestionCard--card__header {
   position: relative;
   padding-left: 12px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Caption,
@@ -19,7 +19,7 @@ import bridge from '@vkontakte/vk-bridge';
 import PropTypes from 'prop-types';
 import './quizResult.css';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import globalVariables from '../../GlobalVariables';
@@ -27,12 +27,15 @@ import globalVariables from '../../GlobalVariables';
 const QuizResult = (props) => {
   const { id, nextView, setPopoutShadowIsActive } = props;
   const platform = usePlatform();
+  const dispatch = useDispatch();
   const userToken = useSelector((state) => state.userToken.token);
   const quizResult = useSelector((state) => state.quiz.quizResult);
+  const questions = useSelector((state) => state.quiz.questions);
 
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [resultGP, setResultGP] = useState(0);
   const [resultCoins, setResultCoins] = useState(0);
+  const [storyReward, setStoryReward] = useState(0);
 
   const [phrase, setPhrase] = useState('-');
   const [wordScore, setWordScore] = useState('');
@@ -42,6 +45,18 @@ const QuizResult = (props) => {
     isCorrectAnswer: false,
   });
   const [storySent, setStorySent] = useState(false);
+
+  const controlHardwareBackButton = useCallback(() => {
+      nextView(globalVariables.view.main);
+  }, []);
+  useEffect(() => {
+    // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
+    window.history.pushState({ page: 'QuizResult' }, 'QuizResult', `${window.location.search}`);
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, []);
 
   useEffect(() => {
     const cases = [2, 0, 1, 1, 1, 2];
@@ -55,15 +70,16 @@ const QuizResult = (props) => {
 
     const answers = quizResult.map((item) => ({ _id: item.questionId, text: item.selectedAnswer }));
     // eslint-disable-next-line array-callback-return,consistent-return
-    const correctAnswersPack = quizResult.map((item) => {
-      if (item.selectedAnswerNumber === item.correctAnswerNumber) {
-        return { _id: item.questionId, question: item.question };
+    const correctQuestions = [];
+    for (let i = 0; i < quizResult.length; i += 1) {
+      if (quizResult[i].selectedAnswerNumber === quizResult[i].correctAnswerNumber) {
+        correctQuestions.push(questions[i]);
       }
-    }).filter((el) => el != null);
+    }
 
-    if (correctAnswersPack.length > 0) {
-      const tempQuestion = correctAnswersPack[
-        Math.round(Math.random() * (correctAnswersPack.length - 1))
+    if (correctQuestions.length > 0) {
+      const tempQuestion = correctQuestions[
+        Math.round(Math.random() * (correctQuestions.length - 1))
       ];
       setStoryQuestion({
         question: tempQuestion.question,
@@ -71,11 +87,8 @@ const QuizResult = (props) => {
         isCorrectAnswer: true,
       });
     } else {
-      const incorrectAnswersPack = quizResult.map(
-        (item) => ({ _id: item.questionId, question: item.question }),
-      );
-      const tempQuestion = incorrectAnswersPack[
-        Math.round(Math.random() * (incorrectAnswersPack.length - 1))
+      const tempQuestion = questions[
+        Math.round(Math.random() * (questions.length - 1))
       ];
       setStoryQuestion({
         question: tempQuestion.question,
@@ -89,8 +102,10 @@ const QuizResult = (props) => {
         answers,
       }, {
         params: {
-          token: userToken,
           id: urlParams.get('vk_user_id'),
+        },
+        headers: {
+          'X-Access-Token': userToken,
         },
       })
         .catch((err) => {
@@ -104,7 +119,7 @@ const QuizResult = (props) => {
     } else {
       // Перемещение на стартовый экран
     }
-  }, [quizResult]);
+  }, []);
 
   useEffect(() => {
     let counter = 0;
@@ -124,7 +139,7 @@ const QuizResult = (props) => {
       else if (percentageCompleted <= 0.75) setPhrase('Неплохой результат!');
       else setPhrase('Хороший результат!');
     }
-  }, quizResult);
+  }, []);
 
   function sendStory() {
     setPopoutShadowIsActive(true);
@@ -134,9 +149,11 @@ const QuizResult = (props) => {
         questionID: storyQuestion._id,
         id: urlParams.get('vk_user_id'),
       },
+      headers: {
+        'X-Access-Token': userToken,
+      },
     })
       .then((data) => {
-        console.info('Server result:', data);
         bridge.send('VKWebAppShowStoryBox', {
           background_type: 'image',
           locked: true,
@@ -224,33 +241,33 @@ const QuizResult = (props) => {
           ],
         })
           .then((storyData) => {
-            console.info('Story data', storyData)
             if (storyData.result) {
-              setResultCoins(resultCoins + 100);
+              setStoryReward(100);
+              setPopoutShadowIsActive(false);
+              setStorySent(true);
               axios.post(`${globalVariables.serverURL}/api/confirmStory`, {}, {
                 params: {
-                  token: userToken,
                   id: urlParams.get('vk_user_id'),
                 },
-              })
-                .then(() => {
+                headers: {
+                  'X-Access-Token': userToken,
+                },
+              });
+              /*                .then(() => {
                   setPopoutShadowIsActive(false);
                   setStorySent(true);
                 })
                 .catch(() => {
                   setPopoutShadowIsActive(false);
                   setStorySent(true);
-                });
+                }); */
             }
-
           })
           .catch((err) => {
-            console.info('Ээээ... Так нельзя', err);
             setPopoutShadowIsActive(false);
           });
       })
       .catch((error) => {
-        console.info(error);
         setPopoutShadowIsActive(false);
       });
   }
@@ -351,48 +368,102 @@ const QuizResult = (props) => {
             >
               {`+${resultGP} ${wordScore} гения`}
             </SimpleCell>
+
+            {(storyReward > 0 && (
+              <>
+                <Separator wide />
+                <SimpleCell
+                  before={(
+                    <svg
+                      className="QuizResult--icon"
+                      width="32px"
+                      height="32px"
+                      viewBox="0 0 32 32"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g
+                        id="icn32_story_reward"
+                        stroke="none"
+                        strokeWidth="1"
+                        fill="none"
+                        fillRule="evenodd"
+                      >
+                        <path
+                          d="M19.924015,5 C21.8821943,5.02068193 22.8787201,5.23170254 23.9120025,5.78430803 C24.9010858,6.31327555 25.6833033,7.09549305 26.2122708,8.08457632 C26.7648763,9.11785875 26.9758969,10.1143845 26.9965788,12.0725638 L26.9965788,19.924015 C26.9758969,21.8821943 26.7648763,22.8787201 26.2122708,23.9120025 C25.6833033,24.9010858 24.9010858,25.6833033 23.9120025,26.2122708 C22.8787201,26.7648763 21.8821943,26.9758969 19.924015,26.9965788 L12.0725638,26.9965788 C10.1143845,26.9758969 9.11785875,26.7648763 8.08457632,26.2122708 C7.09549305,25.6833033 6.31327555,24.9010858 5.78430803,23.9120025 C5.23170254,22.8787201 5.02068193,21.8821943 5,19.924015 L5,12.0725638 C5.02068193,10.1143845 5.23170254,9.11785875 5.78430803,8.08457632 C6.31327555,7.09549305 7.09549305,6.31327555 8.08457632,5.78430803 C9.11785875,5.23170254 10.1143845,5.02068193 12.0725638,5 L19.924015,5 Z M19.5885764,6.99828935 L12.4080024,6.99828935 L11.8506203,7.00316804 C10.3713349,7.03121779 9.70896741,7.18362809 9.02777399,7.54793432 C8.38722763,7.89050226 7.89050226,8.38722763 7.54793432,9.02777399 C7.18362809,9.70896741 7.03121779,10.3713349 7.00316804,11.8506203 L6.99828935,12.4080024 L6.99828935,19.5885764 L7.00316804,20.1459585 C7.03121779,21.6252439 7.18362809,22.2876114 7.54793432,22.9688048 C7.89050226,23.6093512 8.38722763,24.1060766 9.02777399,24.4486445 C9.70896741,24.8129507 10.3713349,24.965361 11.8506203,24.9934108 L12.4080024,24.9982894 L19.5885764,24.9982894 L20.1459585,24.9934108 C21.6252439,24.965361 22.2876114,24.8129507 22.9688048,24.4486445 C23.6093512,24.1060766 24.1060766,23.6093512 24.4486445,22.9688048 C24.8129507,22.2876114 24.965361,21.6252439 24.9934108,20.1459585 L24.9982894,19.5885764 L24.9982894,12.4080024 L24.9934108,11.8506203 C24.965361,10.3713349 24.8129507,9.70896741 24.4486445,9.02777399 C24.1060766,8.38722763 23.6093512,7.89050226 22.9688048,7.54793432 C22.2876114,7.18362809 21.6252439,7.03121779 20.1459585,7.00316804 L19.5885764,6.99828935 Z M15.9982894,10.7482894 C18.8977843,10.7482894 21.2482894,13.0987945 21.2482894,15.9982894 C21.2482894,18.8977843 18.8977843,21.2482894 15.9982894,21.2482894 C13.0987945,21.2482894 10.7482894,18.8977843 10.7482894,15.9982894 C10.7482894,13.0987945 13.0987945,10.7482894 15.9982894,10.7482894 Z M15.9982894,12.7482894 C14.203364,12.7482894 12.7482894,14.203364 12.7482894,15.9982894 C12.7482894,17.7932148 14.203364,19.2482894 15.9982894,19.2482894 C17.7932148,19.2482894 19.2482894,17.7932148 19.2482894,15.9982894 C19.2482894,14.203364 17.7932148,12.7482894 15.9982894,12.7482894 Z"
+                          id="icon_story"
+                          fill="#3F8AE0"
+                          fillRule="nonzero"
+                        />
+                      </g>
+                    </svg>
+                  )}
+                >
+                  {`+${storyReward} монет за историю`}
+                </SimpleCell>
+              </>
+            ))}
           </Div>
         </Card>
 
-        {(!storySent && (
         <div className="QuizResult--buttonColumn">
-          <Div style={{ paddingRight: 0, paddingLeft: 0 }}>
-            <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
-              {(storyQuestion.isCorrectAnswer && 'Вы ответили верно')}
-            </Title>
-            <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
-              {(storyQuestion.isCorrectAnswer ? 'Смогут ли Ваши друзья?' : 'Возможно, друзья знают ответ?')}
-            </Title>
-            <Card mode="shadow" style={{ marginTop: '20px' }}>
-              <Div style={{ paddingTop: '20px', paddingBottom: '10px' }}>
-                <Title
-                  level="2"
-                  weight="semibold"
-                  className="QuizResult--buttonColumn__card--title"
-                >
-                  {storyQuestion.question}
+          {(!storySent && (
+            <>
+              <Div style={{ paddingRight: 0, paddingLeft: 0 }}>
+                <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
+                  {(storyQuestion.isCorrectAnswer && 'Вы ответили верно')}
                 </Title>
-                <Button
-                  mode="primary"
-                  size="xl"
-                  className="QuizResult--buttonColumn__card--button"
-                  onClick={() => sendStory()}
-                >
-                  Создать историю
-                </Button>
-                <Caption
-                  level="1"
-                  weight="regular"
-                  className="QuizResult--buttonColumn__card--awards"
-                >
-                  +100 монет
-                </Caption>
+                <Title level="3" weight="semibold" className="QuizResult--buttonColumn__title">
+                  {(storyQuestion.isCorrectAnswer ? 'Смогут ли Ваши друзья?' : 'Возможно, друзья знают ответ?')}
+                </Title>
+                <Card mode="shadow" style={{ marginTop: '20px' }}>
+                  <Div style={{ paddingTop: '20px', paddingBottom: '10px' }}>
+                    <Title
+                      level="2"
+                      weight="semibold"
+                      className="QuizResult--buttonColumn__card--title"
+                    >
+                      {storyQuestion.question}
+                    </Title>
+                    <Button
+                      mode="primary"
+                      size="xl"
+                      className="QuizResult--buttonColumn__card--button"
+                      onClick={() => sendStory()}
+                    >
+                      Создать историю
+                    </Button>
+                    <Caption
+                      level="1"
+                      weight="regular"
+                      className="QuizResult--buttonColumn__card--awards"
+                    >
+                      +100 монет
+                    </Caption>
+                  </Div>
+                </Card>
               </Div>
-            </Card>
-          </Div>
+              <Button
+                mode="secondary"
+                onClick={() => nextView(globalVariables.view.main)}
+                style={{ marginTop: '8px' }}
+              >
+                Пропустить
+              </Button>
+            </>
+          ))}
+          {(storySent && (
+            <Button
+              mode="secondary"
+              onClick={() => nextView(globalVariables.view.main)}
+              style={{ marginTop: '8px' }}
+            >
+              Завершить
+            </Button>
+          ))}
+
         </div>
-        )
-        )}
+
       </Div>
     </Panel>
   );

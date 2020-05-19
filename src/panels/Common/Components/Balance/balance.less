@@ -2,8 +2,6 @@
   margin-top: 20px;
 
   &__cardEffect {
-    transition: all .1s linear;
-    user-select: none !important;
     &-dark {
       background: var(--content_tint_background);
     }
@@ -26,9 +24,10 @@
       justify-content: flex-start;
 
       &__item {
-        padding-left: 12px;
+        margin-left: 12px;
 
         &:last-child {
+          margin-right: 12px;
           padding-right: 12px;
         }
       }

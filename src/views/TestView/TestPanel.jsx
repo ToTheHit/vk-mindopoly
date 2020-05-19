@@ -4,6 +4,9 @@ import { Panel, PanelHeader, SimpleCell } from "@vkontakte/vkui";
 import axios from "axios";
 import globalVariables from "../../GlobalVariables";
 import Shop from "../../panels/Common/Shop/Shop";
+import './testView.css';
+import ProgressRing from "../../panels/CustomComponents/ProgressRing/ProgressRing";
+import WorkViewModal from "../WorkView/WorkViewModal";
 
 const TestPanel = (props) => {
   const { setActivePanel, id } = props;
@@ -12,24 +15,7 @@ const TestPanel = (props) => {
 
 
   useEffect(() => {
-      axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
-        params: {
-          token: '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
-          id: '31818927',
-        },
-      })
-      .then((data) => {
 
-
-        setQuestions(data.data.attachment);
-
-      })
-      .catch((err) => {
-        setTimeout(() => {
-          console.error('Main, Get /api/', err);
-        }, 1000);
-      })
-    // updateView();
 
   }, []);
 
@@ -45,56 +31,14 @@ const TestPanel = (props) => {
       >
         Go to View #2
       </SimpleCell>
-      <div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
-
-{/*        <Mindbreakers
-          setActivePanel={setActivePanel}
-          questions={questions}
-
-        />*/}
-        <SimpleCell
-          onClick={() => {
-            setActivePanel('2')
-          }}
-        >
-          Go to View #2
-        </SimpleCell>
-      </div>
+      <ProgressRing
+        radius={34}
+        stroke={5}
+        initialStrokeDashoffest={151}
+        progress={-70}
+        stokeColor={'red'}
+      />
+      <WorkViewModal nextView={() => {}} setPopoutIsActive={() => {}} isPreviousQuiz={false} />
     </Panel>
 
   )

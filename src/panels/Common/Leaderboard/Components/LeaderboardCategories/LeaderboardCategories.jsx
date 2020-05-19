@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './leaderboardCategories.css';
-import {
-  Avatar, Caption, Div, Group, PanelSpinner, SimpleCell, Title,
-} from '@vkontakte/vkui';
+import { Avatar, Caption, Div, Group, PanelSpinner, SimpleCell, Title, } from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import globalVariables from '../../../../../GlobalVariables';
@@ -23,6 +21,7 @@ const LeaderboardCategories = (props) => {
   const [spinnerIsActive, setSpinnerIsActive] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
   const userInfo = useSelector((state) => state.userInfo);
+  const userQuestions = useSelector((state) => state.userQuestions.questions.All);
 
   function getIcon(category) {
     switch (category) {
@@ -64,12 +63,12 @@ const LeaderboardCategories = (props) => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
         const sortedQuestions = {};
-        for (let i = 0; i < userInfo.questions.length; i += 1) {
-          if (!sortedQuestions[userInfo.questions[i].category]) {
-            sortedQuestions[userInfo.questions[i].category] = 0;
+        for (let i = 0; i < userQuestions.length; i += 1) {
+          if (!sortedQuestions[userQuestions[i].category]) {
+            sortedQuestions[userQuestions[i].category] = 0;
           }
-          if (userInfo.questions[i].approved) {
-            sortedQuestions[userInfo.questions[i].category] += 1;
+          if (userQuestions[i].approved) {
+            sortedQuestions[userQuestions[i].category] += 1;
           }
         }
         // console.info(sortedQuestions);
@@ -87,7 +86,7 @@ const LeaderboardCategories = (props) => {
                 >
                   {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionCount)}`}
                 </div>
-)}
+              )}
             >
               {`${leader.first_name} ${leader.last_name}`}
             </SimpleCell>
@@ -99,7 +98,6 @@ const LeaderboardCategories = (props) => {
               separator="auto"
               header={(
                 <Div
-
                   style={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                   <SimpleCell
@@ -115,13 +113,13 @@ const LeaderboardCategories = (props) => {
                       <Title level="3" weight="semibold">
                         {`${globalVariables.translateEnToRu(category.name)}`}
                       </Title>
-                      <Caption
+{/*                      <Caption
                         className="LeaderboardCategories__Category--header-counter"
                         level="1"
                         weight="regular"
                       >
                         {`${category.count} ${getCorrectWord(category.count)}`}
-                      </Caption>
+                      </Caption>*/}
                     </div>
                   </SimpleCell>
                 </Div>

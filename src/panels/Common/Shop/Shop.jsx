@@ -32,10 +32,9 @@ import Icon64Geography from '../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../GlobalVariables';
 import RenderedCategories from './Components/RenderedCategories';
 
-
 const Shop = (props) => {
   const {
-    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView,
+    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView, setActiveStory
   } = props;
   const pageCache = useSelector((state) => state.pageCache.shop);
   const [categories, setCategories] = useState(pageCache);
@@ -76,8 +75,20 @@ const Shop = (props) => {
     }
   }
 
+  const controlHardwareBackButton = useCallback(() => {
+      setActiveStory(globalVariables.commonView.roots.main);
+  }, []);
+  useEffect(() => {
+    // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
+    window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, []);
+
   const checkBalance = useCallback((category, price) => {
-    if (userBalance <= price) {
+    if (userBalance >= price) {
       setQuestionData({ category, price });
       setActivePanel('ShopQuestion');
     } else {
@@ -176,6 +187,7 @@ Shop.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   setPopoutShopView: PropTypes.func.isRequired,
   popoutShopView: PropTypes.bool.isRequired,
+  setActiveStory: PropTypes.func.isRequired,
 };
 Shop.defaultProps = {};
 export default Shop;

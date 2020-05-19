@@ -6,6 +6,20 @@ const globalVariables = {
     test: 'TestView',
     page404: 'Page404',
   },
+  commonView: {
+    roots: {
+      main: 'MainRoot',
+      shop: 'ShopRoot',
+      leaderboard: 'LeaderboardRoot',
+    },
+    panels: {
+      main: 'Main',
+      questionDetails: 'QuestionDetails',
+      shop: 'Shop',
+      shopQuestion: 'ShopQuestion',
+      leaderboard: 'Leaderboard',
+    }
+  },
   authToken: 'authToken',
   friendsAccessToken: 'friendsAccessToken',
   notificationAllow: 'notificationAllow',
@@ -76,9 +90,9 @@ const globalVariables = {
   },
   mainViewModal(name) {
     switch (name) {
-      case 'Tax': return null;
+      case 'Tax': return 'TaxDetailsModalPage';
       case 'GPtoday': return 'GPDetailsModalPage';
-      case 'CoinsToday': return null;
+      case 'CoinsToday': return 'CoinsDetailsModalPage';
       default: return null;
     }
   },

@@ -37,13 +37,20 @@ const StartPanel = (props) => {
               token: bridgeData.keys[0].value,
             },
           });
+
           axios.get(`${globalVariables.serverURL}/api/getTest`, {
             params: {
-              token: bridgeData.keys[0].value,
               id: urlParams.get('vk_user_id'),
+              // token: bridgeData.keys[0].value,
+            },
+            headers: {
+              // 'Content-Type': 'application/json',
+              'X-Access-Token': bridgeData.keys[0].value,
             },
           })
             .then(() => {
+
+
               // Сервер нашёл токен в БД. Переключаемся на главный экран
               // Обновляем токен друзей для лидерборда
               if (localStorage.getItem(globalVariables.friendsAccessToken)) {
@@ -55,8 +62,11 @@ const StartPanel = (props) => {
 
               nextView(globalVariables.view.main);
             })
-            .catch(() => {
+            .catch((err) => {
               // Сервер не нашёл токен в БД. Продолжаем регистрацию
+              setTimeout(() => {
+                console.info(err);
+              }, 1000);
               setReadyToShow(true);
               popoutState.setPopoutIsActive(false);
             });
@@ -66,7 +76,7 @@ const StartPanel = (props) => {
         }
         // popoutState.setPopoutIsActive(false);
       }));
-  }, [nextView]);
+  }, []);
 
   function Registration() {
     popoutState.setPopoutIsActive(true);
@@ -84,8 +94,7 @@ const StartPanel = (props) => {
           key: globalVariables.authToken,
           value: data.data.attachment.token,
         })
-          .then((data) => {
-            console.info('success', data);
+          .then(() => {
             nextView(globalVariables.view.main);
           });
       })

@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import './shopQuestion.css';
 import {
@@ -22,6 +24,7 @@ import Icon56CheckCircleOutline from '@vkontakte/icons/dist/56/check_circle_outl
 import Icon28CancelCircleOutline from '@vkontakte/icons/dist/28/cancel_circle_outline';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import bridge from '@vkontakte/vk-bridge';
 import globalVariables from '../../../GlobalVariables';
 
 const ShopQuestion = (props) => {
@@ -30,9 +33,23 @@ const ShopQuestion = (props) => {
     rejected: 'rejected',
     alreadyExist: 'alreadyExist',
   };
+  const { id, questionData, setActivePanel } = props;
+
   const dispatch = useDispatch();
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
   const userToken = useSelector((state) => state.userToken.token);
+
+  const controlHardwareBackButton = useCallback(() => {
+      setActivePanel(globalVariables.commonView.panels.shop);
+  }, []);
+  useEffect(() => {
+    // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
+    window.history.pushState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, []);
 
   const inputPlaceholders = {
     Math: {
@@ -108,7 +125,6 @@ const ShopQuestion = (props) => {
       ],
     },
   };
-  const { id, questionData, setActivePanel } = props;
   const maxSymbolsInInput = {
     question: 300,
     answers: [128, 128, 128, 128],
@@ -144,18 +160,20 @@ const ShopQuestion = (props) => {
   const [resultType, setResultType] = useState(''); // accepted, rejected, alreadyExist
   const [savedUserQuestion, setSavedUserQuestion] = useState({
     text: '',
-    answers: [
-      '',
-      '',
-      '',
-      '',
-    ],
+    answers: ['', '', '', ''],
     explanation: '',
     category: questionData.category,
     correctAnswer: 0,
     cost: questionData.price,
   });
   const platform = usePlatform();
+  useEffect(() => {
+    if (resultType) {
+      if (resultType === 'accepted') {
+        bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' });
+      } else bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' });
+    }
+  }, [resultType]);
 
   useEffect(() => {
     if (activeSubviewPanel === 'ShopQuestionSubview-makeQuestion') {
@@ -196,14 +214,13 @@ const ShopQuestion = (props) => {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true } }));
     }
-    if (refQuestionIncorrectAnswer2.current.value.length > maxSymbolsInInput.answers[2]) canSend = false;
+    if (refQuestionIncorrectAnswer2.current.value.length > maxSymbolsInInput.answers[2]) { canSend = false; }
 
     if (!refQuestionIncorrectAnswer3.current.value) {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input4: true } }));
     }
     if (refQuestionIncorrectAnswer3.current.value.length > maxSymbolsInInput.answers[3]) canSend = false;
-
 
     if (!canSend) return;
     setCheckingProgress(true);
@@ -212,15 +229,19 @@ const ShopQuestion = (props) => {
     const urlParams = new URLSearchParams(window.location.search);
 
     if (userToken) {
-      axios.post(`${globalVariables.serverURL}/api/buy/question`, {
+      const data = {
         text: savedUserQuestion.text,
         answers: savedUserQuestion.answers,
-        explanation: savedUserQuestion.explanation,
         category: questionData.category,
-      }, {
+      };
+      if (savedUserQuestion.explanation) data.explanation = savedUserQuestion.explanation;
+      axios.post(`${globalVariables.serverURL}/api/buy/question`, data, {
         params: {
           token: userToken,
           id: urlParams.get('vk_user_id'),
+        },
+        headers: {
+          'X-Access-Token': userToken,
         },
       })
         .then(() => {
@@ -333,7 +354,7 @@ const ShopQuestion = (props) => {
                 className="ShopQuestion--correctAnswer"
                 status={((symbolCounter.answers[0] < 0) || emptyInput.input1) && 'error'}
                 bottom={(symbolCounter.answers[0] >= 0 ? `Осталось символов: ${symbolCounter.answers[0]}` : `Ответ не может содержать более ${maxSymbolsInInput.answers[0]} символов`)}
-               >
+              >
                 <Input
                   type="text"
                   placeholder={inputPlaceholders[questionData.category].answers[0]}
@@ -361,7 +382,12 @@ const ShopQuestion = (props) => {
               </FormLayoutGroup>
 
               <Input
-                top={<div className="ShopQuestion--incorrectAnswers_input-top">Неправильные ответы</div>}
+                top={(
+                  <div className="ShopQuestion--incorrectAnswers_input-top">
+                    Неправильные
+                    ответы
+                  </div>
+)}
                 type="text"
                 placeholder={inputPlaceholders[questionData.category].answers[1]}
                 className="ShopQuestion--incorrectAnswers_input"

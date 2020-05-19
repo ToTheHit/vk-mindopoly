@@ -6,31 +6,13 @@ import {
 } from '@vkontakte/vkui';
 
 import BalanceItem from './BalanceItem';
+import ScalableButton from "../../../CustomComponents/ScalableButton/ScalableButton";
 
 const Balance = (props) => {
   const {
     coins, GP, effects,
   } = props;
-  const [renderedEffects, setRenderedEffects] = useState([]);
 
-  useEffect(() => {
-    const render = effects.map((effect) => (
-      <div
-        key={`BalanceItem__${effect.currency}`}
-        className="Balance__row-scroll__item"
-      >
-        <BalanceItem
-          count={effect.count}
-          currency={effect.currency}
-          icon={effect.icon}
-          description={effect.description}
-          name={effect.name}
-        />
-      </div>
-    ));
-
-    setRenderedEffects(render);
-  }, [effects]);
 
   return (
     <div className="Balance">
@@ -83,13 +65,13 @@ const Balance = (props) => {
 
       <HorizontalScroll>
         <div className="Balance__row-scroll">
-          {/*{renderedEffects}*/}
           {(
             effects.map((effect) => (
               <div
                 key={`BalanceItem__${effect.currency}`}
                 className="Balance__row-scroll__item"
               >
+                {/*<ScalableButton borderRadius={'Card'}>*/}
                 <BalanceItem
                   count={effect.count}
                   currency={effect.currency}
@@ -97,6 +79,7 @@ const Balance = (props) => {
                   description={effect.description}
                   name={effect.name}
                 />
+                {/*</ScalableButton>*/}
               </div>
             ))
           )}

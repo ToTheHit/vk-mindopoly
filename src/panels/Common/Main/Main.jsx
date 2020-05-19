@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import { Panel, PanelHeader, PullToRefresh, Separator, } from '@vkontakte/vkui';
+import {
+  Panel, PanelHeader, PullToRefresh, Separator,
+} from '@vkontakte/vkui';
 import axios from 'axios';
 
 import './main.css';
@@ -12,6 +14,7 @@ import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
+import bridge from "@vkontakte/vk-bridge";
 
 const Main = (props) => {
   const dispatch = useDispatch();
@@ -31,20 +34,32 @@ const Main = (props) => {
   const [VKuser, setVKuser] = useState(userInfo);
   const [updatingView, setUpdatingView] = useState(false);
 
+
   function updateView() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (userToken) {
+    if (!userToken) {
+      // Перемещение на стартовый экран
+      nextView(globalVariables.view.start);
+    } else {
       axios.all([
         axios.get(`${globalVariables.serverURL}/api/userInfo`, {
           params: {
-            token: userToken,
+            // id: '31818927',
             id: urlParams.get('vk_user_id'),
+          },
+          headers: {
+            'X-Access-Token': userToken,
+            // 'X-Access-Token': '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
           },
         }),
         axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
           params: {
-            token: '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
-            id: '31818927',
+            // id: '31818927',
+            id: urlParams.get('vk_user_id'),
+          },
+          headers: {
+            'X-Access-Token': userToken,
+            // 'X-Access-Token': '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
           },
         }),
       ])
@@ -61,6 +76,8 @@ const Main = (props) => {
             coins: srvData.coins,
             tax: srvData.tax,
             isExamAvailable: srvData.isExamAvailable,
+            isExamSuccess: srvData.isExamSuccess,
+            isStoryConfirmed: srvData.isStoryConfirmed,
             lastExamReward: srvData.lastExamReward,
             confirmReward: srvData.confirmReward,
             effects: [],
@@ -172,9 +189,6 @@ const Main = (props) => {
           // Перемещение на стартовый экран
           nextView(globalVariables.view.start);
         });
-    } else {
-      // Перемещение на стартовый экран
-      nextView(globalVariables.view.start);
     }
   }
 
@@ -236,24 +250,10 @@ const Main = (props) => {
       setVKuser({ ...VKuser, ...userInfo });
       setUpdatingView(false);
     }
-
-    /*        axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
-      params: {
-        token: '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
-        id: '31818927',
-      },
-    })
-      .then((data) => {
-        // console.info(data);
-        setQuestions(data.data.attachment);
-
-      }) */
     updateView();
-
-    /*    // TODO: Для разработки. Удалить для релиза
-    setTimeout(() => {
-      setPopoutMainView(false);
-    }, 500); */
+    dispatch({
+      type: 'CLEAR_QUIZ_RESULT',
+    });
   }, []);
 
   return (
@@ -274,8 +274,8 @@ const Main = (props) => {
 
           <div>
             {VKuser.isExamAvailable ? (
-                <QuizCard nextView={nextView} />
-              )
+              <QuizCard nextView={nextView} />
+            )
               : (<NotificationSwitch />)}
 
           </div>

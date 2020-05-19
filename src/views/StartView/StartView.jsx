@@ -7,9 +7,7 @@ const StartView = (props) => {
   const { id, nextView } = props;
   const popout = (
     <PopoutWrapper alignY="center" alignX="center">
-      {' '}
       <ScreenSpinner />
-      {' '}
     </PopoutWrapper>
   );
   const [popoutIsActive, setPopoutIsActive] = useState(true);
@@ -17,7 +15,7 @@ const StartView = (props) => {
   return (
     <View
       id={id}
-      activePanel={'StartPanel'}
+      activePanel="StartPanel"
       popout={(popoutIsActive && popout)}
       header={false}
       style={{ position: 'fixed', top: '-2px' }}

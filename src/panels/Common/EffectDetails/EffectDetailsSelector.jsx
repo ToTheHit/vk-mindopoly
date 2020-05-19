@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ModalPage, ModalRoot } from '@vkontakte/vkui';
+import { ModalPage, ModalRoot, Separator } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import EffectGPDetailsContent from './EffectGPDetails/EffectGPDetailsContent';
-import EffectGPDetailsHeader from './EffectGPDetails/EffectGPDetailsHeader';
+import EffectDetailsHeader from './EffectDetailsHeader';
+import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent';
+import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
 
 const EffectDetailsSelector = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -27,17 +29,34 @@ const EffectDetailsSelector = (props) => {
       activeModal={(isActive ? mainViewModalName : null)}
       onClose={() => setIsActive(false)}
     >
+      <ModalPage
+        id="TaxDetailsModalPage"
+        header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Мозговой налог" />}
+      >
+        <Separator wide />
+        <EffectTaxDetailsContent />
+      </ModalPage>
 
       <ModalPage
         id="GPDetailsModalPage"
-        header={<EffectGPDetailsHeader status={{ isActive, setIsActive }} />}
+        header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Прибыль GP" />}
         dynamicContentHeight
       >
+        <Separator wide />
         <EffectGPDetailsContent status={{
           isActive,
           setIsActive,
         }}
         />
+      </ModalPage>
+
+      <ModalPage
+        id="CoinsDetailsModalPage"
+        header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Дневной доход" />}
+        dynamicContentHeight
+      >
+        <Separator wide />
+        <EffectCoinsDetailsContent />
       </ModalPage>
     </ModalRoot>
 

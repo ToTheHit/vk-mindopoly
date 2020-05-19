@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './questionDetails.css';
 import {
-  Card, classNames,
+  Card,
+  classNames,
   Div,
   Group,
   Header,
@@ -11,6 +12,7 @@ import {
   Panel,
   PanelHeader,
   PanelHeaderBack,
+  Placeholder,
   Separator,
   Tabs,
   TabsItem,
@@ -18,6 +20,7 @@ import {
   usePlatform,
 } from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
+import Icon56RecentOutline from '@vkontakte/icons/dist/56/recent_outline';
 import AnswerButton from '../../CustomComponents/AnswerButton/AnswerButton';
 import globalVariables from '../../../GlobalVariables';
 
@@ -26,11 +29,19 @@ const QuestionDetails = (props) => {
   const platform = usePlatform();
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
-
   const [activeTab, setActiveTab] = useState('Today');
 
+  const controlHardwareBackButton = useCallback(() => {
+      setActivePanel(globalVariables.commonView.panels.main);
+  }, []);
   useEffect(() => {
-  }, [selectedQuestion]);
+    // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
+    window.history.pushState({ page: 'QuestionDetails' }, 'QuestionDetails', `${window.location.search}`);
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, []);
 
   return (
     <Panel id={id} className="QuestionDetails">
@@ -107,62 +118,82 @@ const QuestionDetails = (props) => {
             >
               Статистика
             </Header>
-            <Tabs>
-              <TabsItem
-                selected={activeTab === 'Today'}
-                onClick={() => setActiveTab('Today')}
+
+            {(selectedQuestion.approved && (
+              <>
+                <Tabs>
+                  <TabsItem
+                    selected={activeTab === 'Today'}
+                    onClick={() => setActiveTab('Today')}
+                  >
+                    Сегодня
+                  </TabsItem>
+                  <TabsItem
+                    selected={activeTab === 'Yesterday'}
+                    onClick={() => setActiveTab('Yesterday')}
+                  >
+                    Вчера
+                  </TabsItem>
+                  <TabsItem
+                    selected={activeTab === 'Overall'}
+                    onClick={() => setActiveTab('Overall')}
+                  >
+                    Все время
+                  </TabsItem>
+                </Tabs>
+                <Card
+                  mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+                  className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
+                >
+                  <Div>
+                    <InfoRow header="Показов игрокам">
+                      {(activeTab === 'Today') && (selectedQuestion.views.today)}
+                      {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday)}
+                      {(activeTab === 'Overall') && (selectedQuestion.views.overall)}
+                    </InfoRow>
+                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                    <InfoRow header="Правильных ответов">
+                      {(activeTab === 'Today') && (selectedQuestion.views.today - selectedQuestion.error_count.today)}
+                      {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday - selectedQuestion.error_count.yesterday)}
+                      {(activeTab === 'Overall') && (selectedQuestion.views.overall - selectedQuestion.error_count.overall)}
+                    </InfoRow>
+                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                    <InfoRow header="Неправильных ответов">
+                      {(activeTab === 'Today') && (selectedQuestion.error_count.today)}
+                      {(activeTab === 'Yesterday') && (selectedQuestion.error_count.yesterday)}
+                      {(activeTab === 'Overall') && (selectedQuestion.error_count.overall)}
+                    </InfoRow>
+                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                    <InfoRow header="Получено GP">
+                      {(activeTab === 'Today') && (selectedQuestion.bpEarned.today)}
+                      {(activeTab === 'Yesterday') && (selectedQuestion.bpEarned.yesterday)}
+                      {(activeTab === 'Overall') && (selectedQuestion.bpEarned.overall)}
+                    </InfoRow>
+                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                    <InfoRow header="Получено монет">
+                      {(activeTab === 'Today') && (selectedQuestion.coinsEarned.today)}
+                      {(activeTab === 'Yesterday') && (selectedQuestion.coinsEarned.yesterday)}
+                      {(activeTab === 'Overall') && (selectedQuestion.coinsEarned.overall)}
+                    </InfoRow>
+                  </Div>
+                </Card>
+              </>
+            ))}
+            {(!selectedQuestion.approved && (
+              <Placeholder
+                icon={(
+                  <Icon56RecentOutline
+                    height={48}
+                    width={48}
+                    style={{ color: 'var(--button_primary_background)' }}
+                  />
+                )}
               >
-                Сегодня
-              </TabsItem>
-              <TabsItem
-                selected={activeTab === 'Yesterday'}
-                onClick={() => setActiveTab('Yesterday')}
-              >
-                Вчера
-              </TabsItem>
-              <TabsItem
-                selected={activeTab === 'Overall'}
-                onClick={() => setActiveTab('Overall')}
-              >
-                Все время
-              </TabsItem>
-            </Tabs>
-            <Card
-              mode={scheme === 'space_gray' ? 'tint' : 'outline'}
-              className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
-            >
-              <Div>
-                <InfoRow header="Показов игрокам">
-                  {(activeTab === 'Today') && (selectedQuestion.views.today)}
-                  {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday)}
-                  {(activeTab === 'Overall') && (selectedQuestion.views.overall)}
-                </InfoRow>
-                <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                <InfoRow header="Правильных ответов">
-                  {(activeTab === 'Today') && (selectedQuestion.views.today - selectedQuestion.error_count.today)}
-                  {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday - selectedQuestion.error_count.yesterday)}
-                  {(activeTab === 'Overall') && (selectedQuestion.views.overall - selectedQuestion.error_count.overall)}
-                </InfoRow>
-                <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                <InfoRow header="Неправильных ответов">
-                  {(activeTab === 'Today') && (selectedQuestion.error_count.today)}
-                  {(activeTab === 'Yesterday') && (selectedQuestion.error_count.yesterday)}
-                  {(activeTab === 'Overall') && (selectedQuestion.error_count.overall)}
-                </InfoRow>
-                <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                <InfoRow header="Получено GP">
-                  {(activeTab === 'Today') && (selectedQuestion.bpEarned.today)}
-                  {(activeTab === 'Yesterday') && (selectedQuestion.bpEarned.yesterday)}
-                  {(activeTab === 'Overall') && (selectedQuestion.bpEarned.overall)}
-                </InfoRow>
-                <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                <InfoRow header="Получено монет">
-                  {(activeTab === 'Today') && (selectedQuestion.coinsEarned.today)}
-                  {(activeTab === 'Yesterday') && (selectedQuestion.coinsEarned.yesterday)}
-                  {(activeTab === 'Overall') && (selectedQuestion.coinsEarned.overall)}
-                </InfoRow>
-              </Div>
-            </Card>
+                Сейчас этот вопрос проверяется правительством Мозгополии.
+                Статистика будет доступна после одобрения вопроса.
+              </Placeholder>
+            ))}
+
           </div>
         </Div>
       </Group>
@@ -178,6 +209,7 @@ QuestionDetails.propTypes = {
   selectedQuestion: PropTypes.shape({
     text: PropTypes.string,
     answers: PropTypes.arrayOf(PropTypes.string),
+    approved: PropTypes.bool,
     category: PropTypes.string,
     bpForError: PropTypes.number,
     coinsEarned: PropTypes.shape({

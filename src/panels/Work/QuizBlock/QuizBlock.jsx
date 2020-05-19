@@ -4,6 +4,7 @@ import './quizBlock.css';
 import {
   Avatar, Div, Group, Headline, Text, Title,
 } from '@vkontakte/vkui';
+import bridge from '@vkontakte/vk-bridge';
 import AnswerButton from '../../CustomComponents/AnswerButton/AnswerButton';
 
 const QuizBlock = (props) => {
@@ -11,10 +12,15 @@ const QuizBlock = (props) => {
     data, time, onComplete, lastQuestionInStorage,
   } = props;
 
-  const refsButton = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
+  const refsButton = useRef([
+    React.createRef(),
+    React.createRef(),
+    React.createRef(),
+    React.createRef(),
+  ]);
   const [stop, setStop] = useState(false);
   const [selectedButton, setSelectedButton] = useState(null);
-  const [correctButton, setcorrectButton] = useState();
+  const [correctButton, setcorrectButton] = useState(-1);
 
   useEffect(() => {
     switch (data.correctAnswerNumber) {
@@ -33,36 +39,46 @@ const QuizBlock = (props) => {
       default:
         break;
     }
+
     return () => {
-      setSelectedButton(null);
-      setcorrectButton(null);
-      setStop(false);
+      // setSelectedButton(null);
+      // setcorrectButton(null);
+      // setStop(false);
     };
   }, [data.question]);
 
   useEffect(() => {
-    if (lastQuestionInStorage.selectedAnswerNumber > -1) {
+    if (lastQuestionInStorage.selectedAnswerNumber > -1 && time > 0) {
       if (data._id === lastQuestionInStorage.id) {
+        // console.info('quizBlock', lastQuestionInStorage)
         const arr = refsButton.current;
         setSelectedButton(arr[lastQuestionInStorage.selectedAnswerNumber]);
         setStop(true);
       }
-
     }
-  }, [lastQuestionInStorage.selectedAnswerNumber]);
-
+  }, [lastQuestionInStorage]);
 
   useEffect(() => {
     if (time <= 0) {
-      if (!selectedButton) {
-        const rndNumber = Math.floor(Math.random() * 3);
-        const arr = refsButton.current;
-        arr.splice(arr.indexOf(correctButton), 1);
-        setSelectedButton(arr[rndNumber]);
-      }
-      onComplete(data._id, data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], -1, data.correctAnswerNumber);
+      let incorrectAnswerNumber = -2;
+      const arrayAnswersNumber = [0, 1, 2, 3];
+      const rndNumber = Math.floor(Math.random() * 3);
+      const arr = refsButton.current.slice(0);
+      arrayAnswersNumber.splice(arr.indexOf(correctButton), 1);
+      arr.splice(arr.indexOf(correctButton), 1);
+      incorrectAnswerNumber = arrayAnswersNumber[rndNumber];
+      setSelectedButton(arr[rndNumber]);
+      bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' });
+      onComplete(data._id, data.question, 'Нет ответа', data.answers[data.correctAnswerNumber], incorrectAnswerNumber, data.correctAnswerNumber);
     }
   }, [time]);
+
+  useEffect(() => {
+    if (selectedButton && selectedButton.current) {
+      if (selectedButton === correctButton) bridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' });
+      else bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' });
+    }
+  }, [selectedButton]);
 
   function getType(ref) {
     if (time > 0 && !stop) {
@@ -79,7 +95,7 @@ const QuizBlock = (props) => {
   return (
     <div style={{ paddingTop: 0 }}>
       <Div style={{ paddingBottom: 0 }}>
-        <Title level={1} weight="bold" className="Work--title">
+        <Title level={1} weight="bold" className="Work--title" onClick={() => console.info(refsButton, selectedButton, correctButton)}>
           {data.question}
         </Title>
       </Div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Epic, Root, ScreenSpinner, Tabbar, TabbarItem, View, } from '@vkontakte/vkui';
+import {
+  Epic, Root, ScreenSpinner, Tabbar, TabbarItem, View,
+} from '@vkontakte/vkui';
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
@@ -13,10 +15,11 @@ import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';
 import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetailsSelector';
 import Main from '../../panels/Common/Main/Main';
 import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
+import globalVariables from "../../GlobalVariables";
 
 const CommonView = (props) => {
   const { id, nextView } = props;
-  const [activeStory, setActiveStory] = useState('MainRoot');
+  const [activeStory, setActiveStory] = useState(globalVariables.commonView.roots.main);
 
   // Main activity
   const [mainSelectedQuestion, setMainSelectedQuestion] = useState({});
@@ -34,20 +37,43 @@ const CommonView = (props) => {
     }
   }, [mainActivePanel]);
 
-  const goBack = () => {
-    const historyTemp = mainHistory;
-    historyTemp.pop();
-    setMainActivePanel(historyTemp[historyTemp.length - 1]);
-  };
-
   // Shop activity
   const [shopActivePanel, setShopActivePanel] = useState('Shop');
   const [questionData, setQuestionData] = useState({});
   const [popoutShopView, setPopoutShopView] = useState(true);
+  const [shopHistory, setShopHistory] = useState(['Shop']);
+  useEffect(() => {
+    if (shopActivePanel === 'Shop') {
+      setShopHistory(['Shop']);
+      bridge.send('VKWebAppDisableSwipeBack');
+    } else {
+      setShopHistory(((prevState) => [...prevState, shopActivePanel]));
+      bridge.send('VKWebAppEnableSwipeBack');
+    }
+  }, [shopActivePanel]);
 
   function changeStory(e) {
     setActiveStory(e.currentTarget.dataset.story);
   }
+
+
+  const SwipeBack = (view) => {
+    switch (view) {
+      case 'MainView': {
+        const historyTemp = mainHistory;
+        historyTemp.pop();
+        setMainActivePanel(historyTemp[historyTemp.length - 1]);
+        break;
+      }
+      case 'ShopView': {
+        const historyTemp = shopHistory;
+        historyTemp.pop();
+        setShopActivePanel(historyTemp[historyTemp.length - 1]);
+        break;
+      }
+      default: break;
+    }
+  };
 
   return (
     <Epic
@@ -57,39 +83,39 @@ const CommonView = (props) => {
         <Tabbar>
           <TabbarItem
             onClick={changeStory}
-            selected={activeStory === 'MainRoot'}
-            data-story="MainRoot"
+            selected={activeStory === globalVariables.commonView.roots.main}
+            data-story={globalVariables.commonView.roots.main}
           >
             <Icon28UserCircleOutline height={28} width={28} />
           </TabbarItem>
           <TabbarItem
             onClick={changeStory}
-            selected={activeStory === 'ShopRoot'}
-            data-story="ShopRoot"
+            selected={activeStory === globalVariables.commonView.roots.shop}
+            data-story={globalVariables.commonView.roots.shop}
           >
             <Icon28MarketOutline height={28} width={28} />
           </TabbarItem>
           <TabbarItem
             onClick={changeStory}
-            selected={activeStory === 'LeaderboardRoot'}
-            data-story="LeaderboardRoot"
+            selected={activeStory === globalVariables.commonView.roots.leaderboard}
+            data-story={globalVariables.commonView.roots.leaderboard}
           >
             <Icon28ListOutline height={28} width={28} />
           </TabbarItem>
         </Tabbar>
       )}
     >
-      <Root id="MainRoot" activeView="MainView">
+      <Root id={globalVariables.commonView.roots.main} activeView="MainView">
         <View
           activePanel={mainActivePanel}
           id="MainView"
-          // popout={(mainPopoutView && (<ScreenSpinner />))}
-          onSwipeBack={goBack}
+          popout={(mainPopoutView && (<ScreenSpinner />))}
+          onSwipeBack={() => SwipeBack('MainView')}
           history={mainHistory}
           modal={<EffectDetailsSelector />}
         >
           <Main
-            id="Main"
+            id={globalVariables.commonView.panels.main}
             setActivePanel={setMainActivePanel}
             setSelectedQuestion={setMainSelectedQuestion}
             nextView={nextView}
@@ -98,38 +124,43 @@ const CommonView = (props) => {
             popoutMainView={mainPopoutView}
           />
           <QuestionDetails
-            id="QuestionDetails"
+            id={globalVariables.commonView.panels.questionDetails}
             setActivePanel={setMainActivePanel}
             selectedQuestion={mainSelectedQuestion}
           />
         </View>
       </Root>
 
-      <Root id="ShopRoot" activeView="ShopView">
+      <Root id={globalVariables.commonView.roots.shop} activeView="ShopView">
         <View
           className="ShopView"
           activePanel={shopActivePanel}
           id="ShopView"
+          onSwipeBack={() => SwipeBack('ShopView')}
+          history={shopHistory}
           popout={(popoutShopView && (<ScreenSpinner />))}
         >
           <Shop
-            id="Shop"
+            id={globalVariables.commonView.panels.shop}
             setActivePanel={setShopActivePanel}
             setQuestionData={setQuestionData}
             setPopoutShopView={setPopoutShopView}
             popoutShopView={false}
+            setActiveStory={setActiveStory}
           />
-
           <ShopQuestion
-            id="ShopQuestion"
+            id={globalVariables.commonView.panels.shopQuestion}
             questionData={questionData}
             setActivePanel={setShopActivePanel}
           />
         </View>
       </Root>
-      <Root id="LeaderboardRoot" activeView="LeaderboardView">
+      <Root id={globalVariables.commonView.roots.leaderboard} activeView="LeaderboardView">
         <View activePanel="Leaderboard" id="LeaderboardView">
-          <BrainLeaderboard id="Leaderboard" />
+          <BrainLeaderboard
+            id={globalVariables.commonView.panels.leaderboard}
+            setActiveStory={setActiveStory}
+          />
         </View>
       </Root>
 

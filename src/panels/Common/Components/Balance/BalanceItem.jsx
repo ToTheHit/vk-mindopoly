@@ -5,6 +5,7 @@ import {
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
+import bridge from "@vkontakte/vk-bridge";
 
 const BalanceItem = (props) => {
   const {
@@ -15,6 +16,7 @@ const BalanceItem = (props) => {
   const dispatch = useDispatch();
 
   function openModal() {
+    bridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
     dispatch({
       type: 'OPEN_MODAL',
       payload: globalVariables.mainViewModal(name),

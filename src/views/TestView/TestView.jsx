@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './testView.css';
-import {
-  Div, Panel, PanelHeader, Separator, SimpleCell, View,
-} from '@vkontakte/vkui';
-
-import axios from 'axios';
+import { View, } from '@vkontakte/vkui';
 
 import bridge from '@vkontakte/vk-bridge';
 import TestPanel from './TestPanel';
 import TestPanel2 from './TestPanel2';
 import globalVariables from '../../GlobalVariables';
-import Shop from '../../panels/Common/Shop/Shop';
-import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';
+import WorkViewModal from "../WorkView/WorkViewModal";
+import { useDispatch } from "react-redux";
 
 const TestView = (props) => {
   const { id } = props;
   const [result, setResult] = useState({});
   const [error, setError] = useState({});
   const { VK } = window;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     /*    bridge.send('VKWebAppAllowNotifications', {})
@@ -118,49 +115,59 @@ const TestView = (props) => {
         }, 5000);
       })); */
 
-
-    /*    bridge.send('VKWebAppStorageSet', {
+    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
       value: '[]',
     });
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizQuestions,
-      value: '',
-    }); */
+      value: '[]',
+    });
+    dispatch({
+      type: 'CLEAR_QUIZ_RESULT',
+    });
 
+    /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
+          .then((data) => {
+            setTimeout(() => console.info(data), 1000)
 
+            bridge.send('VKWebAppCallAPIMethod', {
+              method: 'stories.getPhotoUploadServer',
+              request_id: 'test123321test',
+              params: {
+                v: '5.103',
+                access_token: data.access_token,
+                add_to_news: 1,
+                link_url: 'https://vk.com/app7441788',
+              }
+            })
+              .then((data) => setTimeout(() => console.info(data), 1000))
+              .catch((error) => setTimeout(() => console.info(error), 1000));
 
-/*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
-      .then((data) => {
-        setTimeout(() => console.info(data), 1000)
+    /!*        bridge.send('stories.getPhotoUploadServer', {
+              access_token: data.access_token,
+              add_to_news: 1,
+              link_url: 'https://vk.com/app7441788',
+            })*!/
 
-        bridge.send('VKWebAppCallAPIMethod', {
-          method: 'stories.getPhotoUploadServer',
-          request_id: 'test123321test',
-          params: {
-            v: '5.103',
-            access_token: data.access_token,
-            add_to_news: 1,
-            link_url: 'https://vk.com/app7441788',
-          }
-        })
-          .then((data) => setTimeout(() => console.info(data), 1000))
-          .catch((error) => setTimeout(() => console.info(error), 1000));
-
-/!*        bridge.send('stories.getPhotoUploadServer', {
-          access_token: data.access_token,
-          add_to_news: 1,
-          link_url: 'https://vk.com/app7441788',
-        })*!/
-
-      })*/
-
+          })*/
 
   }, []);
 
   const [activePanel, setAcitvePanel] = useState('1');
   return (
-    <View id={id} activePanel={activePanel} className="TestView">
+    <View
+      id={id}
+      activePanel={activePanel}
+      className="TestView"
+      modal={(
+        <WorkViewModal
+          nextView={() => {}}
+          setPopoutIsActive={() => {}}
+          isPreviousQuiz={false}
+        />
+      )}
+    >
       <TestPanel setActivePanel={setAcitvePanel} id="1" />
       <TestPanel2 setActivePanel={setAcitvePanel} id="2" />
 

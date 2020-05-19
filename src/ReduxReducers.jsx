@@ -10,17 +10,17 @@ export function schemeChanger(state = { scheme: 'light', quizResult: [] }, actio
   }
 }
 
-export function quiz(state = { quizResult: [] }, action) {
+export function quiz(state = { quizResult: [], questions: [] }, action) {
   switch (action.type) {
     case 'UPDATE_QUIZ_RESULT':
       return {
         ...state,
-        quizResult: action.payload,
+        ...action.payload,
       };
     case 'CLEAR_QUIZ_RESULT':
       return {
-        ...state,
         quizResult: [],
+        questions: [],
       };
     default:
       return state;
@@ -37,6 +37,10 @@ export function userInfo(state = {
     today: 0,
     overall: 0,
   },
+  confirmReward: {
+    bp: 0,
+    coins: 0,
+  },
   first_name: '',
   last_name: '',
   photo_200: '',
@@ -46,16 +50,24 @@ export function userInfo(state = {
   date: 0,
   isExamAvailable: false,
   isExamSuccess: false,
+  isStoryConfirmed: false,
   effects: [],
   selectedQuestionsCategory: {
     questions: [],
     category: 'All',
   },
   selectedTab: '',
-  notificationsAllow: false,
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+export function notificationsAllow(state = { isAllow: false }, action) {
+  switch (action.type) {
+    case 'UPDATE_NOTIFICATIONS_ALLOW':
       return { ...state, ...action.payload };
     default:
       return state;
@@ -97,6 +109,7 @@ export function userQuestions(state = {
   }
 }
 
+
 export function mainViewModal(state = { modalName: null }, action) {
   switch (action.type) {
     case 'OPEN_MODAL':
@@ -109,13 +122,12 @@ export function mainViewModal(state = { modalName: null }, action) {
   }
 }
 
-export function workViewModal(state = { modalIsActive: false, questionsLength: 0 }, action) {
+export function workViewModal(state = { modalIsActive: false, questionsLength: 0, start: false }, action) {
   switch (action.type) {
     case 'UPDATE_WORK-VIEW-MODAL':
       return {
         ...state,
-        modalIsActive: action.payload.modalIsActive,
-        questionsLength: action.payload.questionsLength,
+        ...action.payload,
       };
     default:
       return state;

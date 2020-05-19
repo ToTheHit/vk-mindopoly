@@ -4,22 +4,16 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24DismissDark from '@vkontakte/icons/dist/24/dismiss_dark';
 import {
   ANDROID,
-  Cell,
-  Div,
-  Header,
   IOS,
-  ModalPage,
   ModalPageHeader,
   PanelHeaderButton,
   Separator,
-  SimpleCell,
   usePlatform,
-  withModalRootContext,
 } from '@vkontakte/vkui';
 
-const EffectGPDetailsHeader = (props) => {
+const EffectDetailsHeader = (props) => {
   const platform = usePlatform();
-  const {status} = props;
+  const { status, text } = props;
 
   return (
     <ModalPageHeader
@@ -44,16 +38,17 @@ const EffectGPDetailsHeader = (props) => {
         </>
       )}
     >
-      Прибыль GP
+      {text}
     </ModalPageHeader>
-  )
+  );
 };
 
-EffectGPDetailsHeader.propTypes = {
+EffectDetailsHeader.propTypes = {
   status: PropTypes.shape({
     isActive: PropTypes.bool,
     setIsActive: PropTypes.func,
   }).isRequired,
+  text: PropTypes.string.isRequired,
 };
-EffectGPDetailsHeader.defaultProps = {}
-export default EffectGPDetailsHeader;
+EffectDetailsHeader.defaultProps = {};
+export default EffectDetailsHeader;

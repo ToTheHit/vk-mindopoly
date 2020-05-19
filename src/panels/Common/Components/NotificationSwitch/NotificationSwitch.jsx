@@ -10,33 +10,29 @@ import './notificationSwitch.css';
 
 const NotificationSwitch = (props) => {
   const dispatch = useDispatch();
-  const notificationAllow = useSelector((state) => state.userInfo.notificationsAllow);
+  const notificationAllow = useSelector((state) => state.notificationsAllow.isAllow);
   const scheme = useSelector((state) => state.schemeChanger.scheme);
-
-  useEffect(() => {
-
-  }, [notificationAllow]);
 
   function updateNotificationsStatus(status) {
     if (status) {
       bridge.send('VKWebAppAllowNotifications', {})
         .then(() => {
           dispatch({
-            type: 'UPDATE_USER_INFO',
-            payload: { notificationsAllow: status },
+            type: 'UPDATE_NOTIFICATIONS_ALLOW',
+            payload: { isAllow: status },
           });
         })
         .catch(() => {
           dispatch({
-            type: 'UPDATE_USER_INFO',
-            payload: { notificationsAllow: false },
+            type: 'UPDATE_NOTIFICATIONS_ALLOW',
+            payload: { isAllow: false },
           });
         });
     } else {
       bridge.send('VKWebAppDenyNotifications', {});
       dispatch({
-        type: 'UPDATE_USER_INFO',
-        payload: { notificationsAllow: status },
+        type: 'UPDATE_NOTIFICATIONS_ALLOW',
+        payload: { isALlow: false },
       });
     }
   }

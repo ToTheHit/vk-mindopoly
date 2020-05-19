@@ -85,7 +85,7 @@ const Mindbreakers = (props) => {
           <Placeholder
             icon={<Icon28MarketOutline width={38} height={43} />}
             action={(
-              <Button mode="tertiary" onClick={() => setActiveStory('Shop')}>
+              <Button mode="tertiary" onClick={() => setActiveStory('ShopRoot')}>
                 Перейти в магазин
               </Button>
             )}

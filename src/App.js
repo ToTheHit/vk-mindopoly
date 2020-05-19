@@ -31,14 +31,14 @@ const App = () => {
         }
         case 'VKWebAppAllowNotificationsResult':
           dispatch({
-            type: 'UPDATE_USER_INFO',
-            payload: { notificationsAllow: true },
+            type: 'UPDATE_NOTIFICATIONS_ALLOW',
+            payload: { isAllow: true },
           });
           break;
         case 'VKWebAppDenyNotificationsResult':
           dispatch({
-            type: 'UPDATE_USER_INFO',
-            payload: { notificationsAllow: false },
+            type: 'UPDATE_NOTIFICATIONS_ALLOW',
+            payload: { isAllow: false },
           });
           break;
         case 'VKWebAppAllowNotificationsFailed':
@@ -52,8 +52,8 @@ const App = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     dispatch({
-      type: 'UPDATE_USER_INFO',
-      payload: { notificationsAllow: (urlParams.get('vk_are_notifications_enabled') === '1') },
+      type: 'UPDATE_NOTIFICATIONS_ALLOW',
+      payload: { isAllow: (urlParams.get('vk_are_notifications_enabled') === '1') },
     });
   }, []);
 

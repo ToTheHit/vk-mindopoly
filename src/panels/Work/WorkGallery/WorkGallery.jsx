@@ -9,10 +9,12 @@ import WorkGalleryPanel from './WorkGalleryPanel';
 import globalVariables from '../../../GlobalVariables';
 
 const WorkGallery = (props) => {
-  const { id, setActivePanel, setIsPreviousQuiz } = props;
+  const {
+    id, setActivePanel, nextView, setPopoutIsActive
+  } = props;
   const timeToAnswer = 20;
   const dispatch = useDispatch();
-  const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
+  const modalStatus = useSelector((state) => state.workViewModal);
   const userToken = useSelector((state) => state.userToken.token);
 
   const [questions, setQuestions] = useState([]);
@@ -28,10 +30,42 @@ const WorkGallery = (props) => {
   }, []);
 
   useEffect(() => {
-      if (!modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
-        setQuestionIndex(questionIndex + 1);
+    if (!modalStatus.modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
+      if (result.length >= questions.length - 1) {
+        setActivePanel('QuizResultPanel');
+      } else {
+        if (modalStatus.start) {
+
+          bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
+            .then(((data) => {
+              let storedQuestions;
+
+              try {
+                storedQuestions = JSON.parse(data.keys[0].value);
+              } catch (e) {
+                console.info('WorkGallery, get questions', e);
+                storedQuestions = [];
+              }
+              if (!storedQuestions || !Array.isArray(storedQuestions)) storedQuestions = [];
+              const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
+
+              storedQuestions.push({
+                correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
+                questionId: questions[questionIndex + 1]._id,
+                selectedAnswerNumber: rndInt,
+                selectedAnswer: questions[questionIndex + 1].answers[rndInt],
+              });
+              bridge.send('VKWebAppStorageSet', {
+                key: globalVariables.quizResult,
+                value: JSON.stringify(storedQuestions),
+              });
+
+              setQuestionIndex(questionIndex + 1);
+            }));
+        }
       }
-  }, [modalIsActive]);
+    }
+  }, [modalStatus]);
 
   function shuffle(array, prevIndex) {
     const copy = [];
@@ -61,6 +95,12 @@ const WorkGallery = (props) => {
     return copy;
   }
 
+  function getIncorrectAnswerNumber(correctAnswerNumber) {
+    const rndInt = Math.floor(Math.random() * 4);
+    if (rndInt === correctAnswerNumber) return getIncorrectAnswerNumber(correctAnswerNumber);
+    return rndInt;
+  }
+
   // Первое получение всех вопросов
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -69,70 +109,105 @@ const WorkGallery = (props) => {
         .then((storedQuiz) => {
           let storedQuestions = [];
           let storedAnswers = [];
-          if (JSON.parse(storedQuiz.keys[0].value.length) > 0) {
+
+          if (JSON.parse(storedQuiz.keys[0].value).length > 0) {
             storedQuestions = JSON.parse(storedQuiz.keys[0].value);
             storedAnswers = JSON.parse(storedQuiz.keys[1].value);
-            // console.info(storedAnswers.length);
-            // console.info('storedAnswers', storedAnswers);
-            // console.info(storedQuestions.length);
-            // console.info('storedQuestions', storedQuestions);
           }
-          if (storedQuestions.length > 0) {
-            console.info('storedQuestions', storedQuestions);
-            setQuestions(storedQuestions);
-            console.info('storedAnswers', storedAnswers);
-            if (storedAnswers.length > 0) {
-              setIsPreviousQuiz(true);
-              setResult(storedAnswers);
-              setQuestionIndex(storedAnswers.length);
-              setLastQuestionInStorage({
-                id: storedAnswers[storedAnswers.length - 1].questionId,
-                selectedAnswerNumber: storedAnswers[storedAnswers.length - 1].selectedAnswerNumber,
-              });
-            }
-          } else {
-            /*            setQuestions(storedQuestions);
-              setResult(storedAnswers);
-              setQuestionIndex(storedAnswers.length);
-            } else { */
-            axios.get(`${globalVariables.serverURL}/api/exam`, {
-              params: {
-                token: userToken,
-                id: urlParams.get('vk_user_id'),
-              },
-            })
-              .then((data) => {
-                // Сервер нашёл токен в БД. Рендерим информацию
-                const resultFromServer = data.data.attachment.map((item) => ({
-                  question: item.text,
-                  answers: item.answers,
-                  correctAnswerNumber: 0,
-                  explanation: item.explanation,
-                  theme: globalVariables.translateEnToRu(item.category),
-                  requestedBy: item.requestedBy,
-                  _id: item._id,
-                }));
+          // console.info('storedQuestions', storedQuestions)
+          // console.info('storedAnswers', storedAnswers)
 
+          axios.get(`${globalVariables.serverURL}/api/exam`, {
+            params: {
+              id: urlParams.get('vk_user_id'),
+            },
+            headers: {
+              'X-Access-Token': userToken,
+            },
+          })
+            .then((data) => {
+              // Сервер нашёл токен в БД. Рендерим информацию
+              let resultFromServer = data.data.attachment.map((item) => ({
+                question: item.text,
+                answers: item.answers,
+                correctAnswerNumber: 0,
+                explanation: item.explanation,
+                theme: globalVariables.translateEnToRu(item.category),
+                requestedBy: item.requestedBy,
+                _id: item._id,
+              }));
+
+              if (storedQuestions.length > 0) {
+                const resultFromServerIDs = resultFromServer.map((item) => item._id);
+                if (resultFromServerIDs.filter(item => !storedQuestions.includes(item)).length > 0) {
+                  bridge.send('VKWebAppStorageSet', { key: globalVariables.quizResult, value: '[]' });
+                  bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' });
+                  storedQuestions = [];
+                  storedAnswers = [];
+                  dispatch({
+                    type: 'CLEAR_QUIZ_RESULT',
+                  });
+                } else {
+                  resultFromServer = resultFromServer.sort((a, b) => storedQuestions.indexOf(a._id) - storedQuestions.indexOf(b._id));
+                  for (let i = 0; i < resultFromServer.length; i += 1) {
+                    const correctAnswer = resultFromServer[i].answers[0];
+                    resultFromServer[i].answers = shuffle(
+                      resultFromServer[i].answers, (i > 0
+                        ? resultFromServer[i - 1].correctAnswerNumber
+                        : -1),
+                    );
+                    resultFromServer[i].correctAnswerNumber = resultFromServer[i].answers.indexOf(correctAnswer);
+                  }
+                  if (storedAnswers.length > 0) {
+                    setResult(storedAnswers);
+                    setQuestionIndex(storedAnswers.length);
+                    const selectedAnswerNumber = (storedAnswers.slice(-1)[0].correctAnswerNumber === storedAnswers.slice(-1)[0].selectedAnswerNumber ? resultFromServer[storedAnswers.length].correctAnswerNumber : getIncorrectAnswerNumber(resultFromServer[storedAnswers.length].correctAnswerNumber));
+                    const lastQuestionInfo = {
+                      id: storedAnswers[storedAnswers.length - 1].questionId,
+                      selectedAnswerNumber,
+                    };
+                    setLastQuestionInStorage(lastQuestionInfo);
+                  }
+                }
+              }
+              if (storedQuestions.length === 0) {
+                resultFromServer.sort(() => Math.random() - 0.5);
                 for (let i = 0; i < resultFromServer.length; i += 1) {
                   const correctAnswer = resultFromServer[i].answers[0];
-                  resultFromServer[i].answers = shuffle(resultFromServer[i].answers, (i > 0 ? resultFromServer[i - 1].correctAnswerNumber : -1));
+                  resultFromServer[i].answers = shuffle(
+                    resultFromServer[i].answers, (i > 0
+                      ? resultFromServer[i - 1].correctAnswerNumber
+                      : -1),
+                  );
                   resultFromServer[i].correctAnswerNumber = resultFromServer[i].answers.indexOf(correctAnswer);
                 }
+                const storedQuestionsID = resultFromServer.map((item) => item._id);
                 bridge.send('VKWebAppStorageSet', {
                   key: globalVariables.quizQuestions,
-                  value: JSON.stringify(resultFromServer),
+                  value: JSON.stringify(storedQuestionsID),
                 });
-                setQuestions(resultFromServer);
-              })
-              .catch((err) => {
-                console.error('Work, Get /api/exam', err);
-                // Сервер не нашёл токен в БД.
-                // Перемещение на стартовый экран
+              }
+
+              setPopoutIsActive(false);
+              setQuestions(resultFromServer);
+              // console.info('resultFromServer', resultFromServer);
+              dispatch({
+                type: 'UPDATE_QUIZ_RESULT',
+                payload: {
+                  questions: resultFromServer,
+                },
               });
-          }
+            })
+            .catch((err) => {
+              console.error('Work, Get /api/exam', err);
+              // Сервер не нашёл токен в БД.
+              // Перемещение на стартовый экран
+              nextView(globalVariables.view.start);
+            });
         });
     } else {
       // Перемещение на стартовый экран
+      nextView(globalVariables.view.start);
     }
 
     // Выключаем возможность свайпать галерею
@@ -147,34 +222,37 @@ const WorkGallery = (props) => {
     if (result.length > 0) {
       dispatch({
         type: 'UPDATE_QUIZ_RESULT',
-        payload: result,
+        payload: {
+          quizResult: result,
+        },
       });
-
+      const answersToStore = result.map((item) => ({
+        questionId: item.questionId,
+        selectedAnswerNumber: item.selectedAnswerNumber,
+        correctAnswerNumber: item.correctAnswerNumber,
+        selectedAnswer: (item.selectedAnswer ? item.selectedAnswer : item.selectedText),
+      }));
       bridge.send('VKWebAppStorageSet', {
         key: globalVariables.quizResult,
-        value: JSON.stringify(result),
+        value: JSON.stringify(answersToStore),
       });
     }
   }, [result]);
 
   useEffect(() => {
-    dispatch({
-      type: 'UPDATE_WORK-VIEW-MODAL',
-      payload: {
-        questionsLength: questions.length,
-        modalIsActive: true,
-      },
-    });
+    if (questions.length > 0) {
+      dispatch({
+        type: 'UPDATE_WORK-VIEW-MODAL',
+        payload: {
+          questionsLength: questions.length,
+          modalIsActive: true,
+          start: false,
+        },
+      });
+    }
   }, [questions]);
 
-  function getIncorrectAnswerNumber(correctAnswerNumber) {
-    const rndInt = Math.floor(Math.random() * 4);
-    if (rndInt === correctAnswerNumber) return getIncorrectAnswerNumber(correctAnswerNumber);
-    return rndInt;
-  }
-
-
-  // Нажатие на стрелку
+  // Нажатие на стрелку, переход к следующему вопросу
   function goToNextQuestion() {
     if (result.length === questions.length - 1) {
       setActivePanel('QuizResultPanel');
@@ -183,18 +261,13 @@ const WorkGallery = (props) => {
         .then(((data) => {
           let storedQuestions = JSON.parse(data.keys[0].value);
           if (!storedQuestions) storedQuestions = [];
-          const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
-
+          let rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
           storedQuestions.push({
-            correctAnswer: questions[questionIndex + 1].answers[questions[questionIndex + 1].correctAnswerNumber],
-            correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
-            question: questions[questionIndex + 1].question,
             questionId: questions[questionIndex + 1]._id,
-            questionIndex: questionIndex + 1,
-            selectedAnswer: questions[questionIndex + 1].answers[rndInt],
+            correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
             selectedAnswerNumber: rndInt,
+            selectedAnswer: questions[questionIndex + 1].answers[rndInt],
           });
-
           bridge.send('VKWebAppStorageSet', {
             key: globalVariables.quizResult,
             value: JSON.stringify(storedQuestions),
@@ -238,7 +311,7 @@ const WorkGallery = (props) => {
                 _id: item._id,
               }}
               setResult={setResult}
-              start={(questionIndex === index) && !modalIsActive}
+              start={(questionIndex === index) && modalStatus.start && !modalStatus.modalIsActive}
               goToNextQuestion={goToNextQuestion}
               timeToAnswer={timeToAnswer}
               lastQuestionInStorage={lastQuestionInStorage}
@@ -254,7 +327,8 @@ const WorkGallery = (props) => {
 WorkGallery.propTypes = {
   id: PropTypes.string.isRequired,
   setActivePanel: PropTypes.func.isRequired,
-  setIsPreviousQuiz: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
+  setPopoutIsActive: PropTypes.func.isRequired,
 };
 WorkGallery.defaultProps = {};
 export default WorkGallery;

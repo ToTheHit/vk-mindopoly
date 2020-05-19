@@ -7,37 +7,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../GlobalVariables';
 
 const WorkViewModal = (props) => {
-  const { nextView, setPopoutIsActive, isPreviousQuiz } = props;
+  const { nextView } = props;
   const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
   const questionsLength = useSelector((state) => state.workViewModal.questionsLength);
   const answersLength = useSelector((state) => state.quiz.quizResult.length);
   const dispatch = useDispatch();
+  const [buttonTitle, setButtonTitle] = useState('Продолжить');
 
   const [modalText, setModalText] = useState('');
+  useEffect(() => {
+    if (answersLength > 0) {
+      setButtonTitle('Продолжить');
+    } else setButtonTitle('Начать');
+  }, [answersLength]);
 
   useEffect(() => {
-    setTimeout(() => {
-      console.info('answersLength', answersLength);
-    }, 1000);
-
     if (answersLength === 0) {
-      setModalText(`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\nВы готовы?`);
+      setModalText(`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\n Вы готовы?`);
     } else {
-      setModalText(`Вы ответили на ${answersLength} из ${questionsLength - 1} вопросов.\n Чтобы начать новый отчёт, необходимо закончить текущий.\nПродолжить?`);
+      setModalText(`Вы ответили на ${answersLength} из ${questionsLength - 1} вопросов.\n Продолжить?`);
     }
   }, [answersLength, questionsLength]);
 
-  function closeModal() {
+  function closeModal(isStart) {
     dispatch({
       type: 'UPDATE_WORK-VIEW-MODAL',
       payload: {
         modalIsActive: false,
+        start: isStart,
       },
     });
   }
 
   useEffect(() => {
-    if (questionsLength > 0) setPopoutIsActive(false);
+    // if (questionsLength > 0) setPopoutIsActive(false);
   }, [questionsLength]);
 
   return (
@@ -55,18 +58,17 @@ const WorkViewModal = (props) => {
             title: 'Отложить',
             mode: 'secondary',
             action: () => {
-              closeModal();
+              closeModal(false);
               nextView(globalVariables.view.main);
             },
           },
           {
-            // title: 'Начать',
-            title: (answersLength === 0 ? 'Начать' : 'Продолжить'),
+            title: (answersLength > 0 ? 'Продолжить' : 'Начать'),
             mode: 'primary',
-            action: () => closeModal(),
+            action: () => closeModal(true),
           },
         ]}
-        onClose={() => closeModal()}
+        onClose={() => closeModal(true)}
       />
     </ModalRoot>
   );
@@ -74,8 +76,6 @@ const WorkViewModal = (props) => {
 
 WorkViewModal.propTypes = {
   nextView: PropTypes.func.isRequired,
-  setPopoutIsActive: PropTypes.func.isRequired,
-  isPreviousQuiz: PropTypes.bool.isRequired,
 };
 WorkViewModal.defaultProps = {};
 export default WorkViewModal;
