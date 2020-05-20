@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Card, classNames, Div, SimpleCell, Switch, Text,
-} from '@vkontakte/vkui';
+import React from 'react';
+import { Card, classNames, Div, SimpleCell, Switch, Text, Tooltip, } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
 import Icon28Notifications from '@vkontakte/icons/dist/28/notifications';
 import { useDispatch, useSelector } from 'react-redux';
-import globalVariables from '../../../../GlobalVariables';
 import './notificationSwitch.css';
 
-const NotificationSwitch = (props) => {
+const NotificationSwitch = () => {
   const dispatch = useDispatch();
   const notificationAllow = useSelector((state) => state.notificationsAllow.isAllow);
   const scheme = useSelector((state) => state.schemeChanger.scheme);
+  const tooltipsStory2 = useSelector((state) => state.tooltip.story2);
 
   function updateNotificationsStatus(status) {
     if (status) {
@@ -37,25 +35,60 @@ const NotificationSwitch = (props) => {
     }
   }
 
+  function onCloseTooltipNotification() {
+    dispatch({
+      type: 'TOOLTIP_UPDATE_STORY2',
+      payload: {
+        notifications: false,
+      },
+    });
+    dispatch({
+      type: 'TOOLTIP_UPDATE',
+      payload: {
+        mainScreenComplete: true,
+      },
+    });
+  }
+
   return (
     <Div className="NotificationSwitch" style={{ paddingTop: 0 }}>
-      <Card className={classNames('NotificationSwitch__card', { 'NotificationSwitch__card-dark': scheme === 'space_gray' })}>
-        <SimpleCell
-          disabled
-          before={<Icon28Notifications height={24} width={24} style={{ padding: '10px 10px 10px 12px', color: 'var(--button_secondary_foreground)' }} />}
-          after={(
-            <Switch
-              checked={notificationAllow}
-              onChange={(e) => {
-                updateNotificationsStatus(e.target.checked);
-              }}
-            />
-          )}
+      <Card
+        className={classNames('NotificationSwitch__card', { 'NotificationSwitch__card-dark': scheme === 'space_gray' })}
+      >
+        <Tooltip
+          text="Мозгополия может напоминать о ежедневных Мозговых отчётах через уведомления."
+          offsetX={50}
+          cornerOffset={90}
+          isShown={tooltipsStory2.notifications}
+          onClose={onCloseTooltipNotification}
         >
-          <Text weight="regular">
-            Напоминать об отчётах
-          </Text>
-        </SimpleCell>
+          <SimpleCell
+            disabled
+            before={(
+              <Icon28Notifications
+                height={24}
+                width={24}
+                style={{
+                  padding: '10px 10px 10px 12px',
+                  color: 'var(--button_secondary_foreground)',
+                }}
+              />
+            )}
+            after={(
+              <Switch
+                checked={notificationAllow}
+                onChange={(e) => {
+                  updateNotificationsStatus(e.target.checked);
+                }}
+              />
+            )}
+          >
+            <Text weight="regular">
+              Напоминать об отчётах
+            </Text>
+          </SimpleCell>
+        </Tooltip>
+
       </Card>
     </Div>
   );

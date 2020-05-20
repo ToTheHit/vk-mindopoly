@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './leaderboardGenius.css';
-import {
-  Button, Div, Group, PanelSpinner, Placeholder, Tabs, TabsItem,
-} from '@vkontakte/vkui';
+import { Button, Div, Group, PanelSpinner, Placeholder, Tabs, TabsItem, } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
 import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 import { useSelector } from 'react-redux';
@@ -11,7 +9,6 @@ import LeaderboardGallery from '../../../Components/LeaderboardGallery/Leaderboa
 import globalVariables from '../../../../../GlobalVariables';
 
 const qs = require('querystring');
-
 
 const LeaderboardGenius = () => {
   const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
@@ -94,6 +91,7 @@ const LeaderboardGenius = () => {
 
   useEffect(() => {
     if (activeTab === 'FriendsLeaderboardTab' && !localStorage.getItem(globalVariables.friendsAccessToken)) {
+      setSpinnerIsActive(true);
       bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
         .then((data) => {
           localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
@@ -117,6 +115,7 @@ const LeaderboardGenius = () => {
         })
         .catch((err) => {
           console.info(err);
+          setSpinnerIsActive(false);
         });
     }
   }, [activeTab]);
@@ -145,13 +144,13 @@ const LeaderboardGenius = () => {
             Мои друзья
           </TabsItem>
         </Tabs>
-        {spinnerIsActive && <PanelSpinner size="small" />}
         <LeaderboardGallery
           friendsLeaderboard={friendsLeaderboard}
           worldLeaderboard={worldLeaderboard}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
+        {spinnerIsActive && <PanelSpinner size="small" />}
       </Group>
       {(activeTab === 'FriendsLeaderboardTab' && (
         <Placeholder
@@ -162,7 +161,7 @@ const LeaderboardGenius = () => {
               height={36}
               style={{ color: 'var(--button_primary_background)' }}
             />
-)}
+          )}
           header="Пригласить друзей"
           action={(
             <Button
@@ -180,8 +179,6 @@ const LeaderboardGenius = () => {
   );
 };
 
-LeaderboardGenius.propTypes = {
-
-};
+LeaderboardGenius.propTypes = {};
 LeaderboardGenius.defaultProps = {};
 export default LeaderboardGenius;

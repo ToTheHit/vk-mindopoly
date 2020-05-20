@@ -26,6 +26,7 @@ const globalVariables = {
   serverURL: 'https://320748-cp98857.tmweb.ru',
   quizResult: 'quizResult',
   quizQuestions: 'quizQuestions',
+  tooltips: 'tooltips',
   translateEnToRu(category) {
     switch (category) {
       case 'All':

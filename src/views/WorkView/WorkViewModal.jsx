@@ -25,7 +25,7 @@ const WorkViewModal = (props) => {
     if (answersLength === 0) {
       setModalText(`${questionsLength} вопросов из разных тем. 20 секунд на один вопрос.\n Вы готовы?`);
     } else {
-      setModalText(`Вы ответили на ${answersLength} из ${questionsLength - 1} вопросов.\n Продолжить?`);
+      setModalText(`Вы ответили на ${answersLength} из ${questionsLength - 1} вопросов.\n Вы готовы продолжить?`);
     }
   }, [answersLength, questionsLength]);
 
@@ -63,7 +63,7 @@ const WorkViewModal = (props) => {
             },
           },
           {
-            title: (answersLength > 0 ? 'Продолжить' : 'Начать'),
+            title: 'Начать',
             mode: 'primary',
             action: () => closeModal(true),
           },

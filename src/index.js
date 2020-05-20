@@ -6,7 +6,18 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
-import {schemeChanger, quiz, userInfo, mainViewModal, workViewModal, userToken, pageCache, userQuestions, notificationsAllow} from './ReduxReducers';
+import {
+  schemeChanger,
+  quiz,
+  userInfo,
+  mainViewModal,
+  workViewModal,
+  userToken,
+  pageCache,
+  userQuestions,
+  notificationsAllow,
+  tooltip,
+} from './ReduxReducers';
 
 const rootReducer = combineReducers({
   schemeChanger,
@@ -17,7 +28,8 @@ const rootReducer = combineReducers({
   userToken,
   pageCache,
   userQuestions,
-  notificationsAllow
+  notificationsAllow,
+  tooltip
 });
 
 const store = createStore(rootReducer, {});

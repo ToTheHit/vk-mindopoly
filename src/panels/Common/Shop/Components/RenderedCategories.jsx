@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, SimpleCell } from '@vkontakte/vkui';
+import { Button, SimpleCell, Tooltip } from '@vkontakte/vkui';
+import { useDispatch, useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
 import Icon64Math from '../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../assets/Icons/icn64_rus.png';
@@ -17,6 +18,9 @@ import Icon64Geography from '../../../../assets/Icons/icn64_geography.png';
 
 const RenderedCategories = (props) => {
   const { categories, checkBalance } = props;
+  const dispatch = useDispatch();
+  const tooltipState = useSelector((state) => state.tooltip.shop);
+
   function getIcon(category) {
     switch (category) {
       case 'Math':
@@ -48,25 +52,42 @@ const RenderedCategories = (props) => {
     }
   }
 
+
+  function onCloseTooltipBalance() {
+    dispatch({
+      type: 'TOOLTIP_UPDATE',
+      payload: {
+        shop: false,
+      },
+    });
+  }
+
   return (
-    categories.map((item) => (
+    categories.map((item, index) => (
       <SimpleCell
         key={`ShopItem_${item._id}`}
         className="Shop--item"
         disabled
         after={(
-          <Button
-            mode="secondary"
-            onClick={() => {
-              checkBalance(item.name, item.price);
-            }}
+          <Tooltip
+            text="Покупая вопрос, Вы увеличиваете ежедневный прирост очков GP и доход монет."
+            alignX="right"
+            isShown={tooltipState && (index === 0)}
+            onClose={onCloseTooltipBalance}
           >
-            {`${item.price} монет`}
-          </Button>
+            <Button
+              mode="secondary"
+              onClick={() => {
+                checkBalance(item.name, item.price);
+              }}
+            >
+              {`${item.price} монет`}
+            </Button>
+          </Tooltip>
         )}
         before={(
           <div className="Shop--iconOuter">
-             <div className="Shop--icon" style={{ backgroundImage: `url(${getIcon(item.name)})` }} />
+            <div className="Shop--icon" style={{ backgroundImage: `url(${getIcon(item.name)})` }} />
           </div>
         )}
       >

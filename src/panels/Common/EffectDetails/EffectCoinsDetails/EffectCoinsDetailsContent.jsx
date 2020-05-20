@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './effectCoinsDetailsContent.css';
 import { useSelector } from 'react-redux';
-import {
-  Cell, Div, Header, Separator, SimpleCell, withModalRootContext,
-} from '@vkontakte/vkui';
+import { Cell, Div, Header, Separator, SimpleCell, withModalRootContext, } from '@vkontakte/vkui';
 import PropTypes from 'prop-types';
 import Icon64Math from '../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../assets/Icons/icn64_rus.png';
@@ -26,12 +24,17 @@ const EffectCoinsDetailsContent = (props) => {
   const { updateModalHeight } = props;
 
   const questions = useSelector((state) => state.userQuestions.questions.All);
-  const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);
+  // const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);
+  const isExamAvailable = false;
 
   const coinsToday = useSelector((state) => state.userInfo.coins.today);
+  // const coinsToday = 999;
   const confirmReward = useSelector((state) => state.userInfo.confirmReward.coins);
+  // const confirmReward = 999;
   const quizIncome = useSelector((state) => state.userInfo.lastExamReward.coins);
+  // const quizIncome = 999;
   const storyReward = useSelector((state) => state.userInfo.isStoryConfirmed);
+  // const storyReward = 999;
 
   const [questionsIncome, setQuestionIncome] = useState(0);
   const [categoryIncome, setCategoryIncome] = useState([]);
@@ -66,6 +69,7 @@ const EffectCoinsDetailsContent = (props) => {
         return '';
     }
   }
+
   const [description, setDescription] = useState(
     (coinsToday === 0
       ? 'Ваш доход на сегодня равен нулю. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.'
@@ -99,7 +103,17 @@ const EffectCoinsDetailsContent = (props) => {
       sortedQuestions[questions[i].category] += questions[i].coinsEarned.today;
     }
     // sortedQuestions.Math = 999;
+    // sortedQuestions.Russian = 999;
+    // sortedQuestions.Literature = 999;
+    // sortedQuestions.Physics = 999;
+    // sortedQuestions.Chemistry = 999;
+    // sortedQuestions.Astronomy = 999;
+    // sortedQuestions.Biology = 999;
+    // sortedQuestions.History = 999;
     // sortedQuestions.Art = 999;
+    // sortedQuestions.Sport = 999;
+    // sortedQuestions.Geography = 999;
+    // sortedQuestions.Other = 999;
 
     Object.keys(sortedQuestions).map((item) => {
       if (sortedQuestions[item] === 0) delete sortedQuestions[item];
@@ -211,6 +225,7 @@ EffectCoinsDetailsContent.propTypes = {
 
 };
 EffectCoinsDetailsContent.defaultProps = {
-  updateModalHeight: () => {},
+  updateModalHeight: () => {
+  },
 };
 export default withModalRootContext(EffectCoinsDetailsContent);

@@ -466,7 +466,7 @@ const ShopQuestion = (props) => {
               />
 
               <Textarea
-                top="Пояснение"
+                top="Пояснение (+5 GP)"
                 placeholder="Введите текст пояснения для Вашего вопроса"
                 value={savedUserQuestion.explanation}
                 status={(symbolCounter.explanation < 0) && 'error'}

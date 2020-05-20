@@ -37,7 +37,7 @@ const BrainLeaderboard = (props) => {
 
   return (
     <Panel id={id}>
-      <PanelHeader separator={false}>
+      <PanelHeader separator={ratingType === 'categories'}>
         <PanelHeaderContent
           onClick={() => {
             setContextIsOpened(!contextIsOpened);

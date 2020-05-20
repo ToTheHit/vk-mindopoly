@@ -55,15 +55,15 @@
 
   &--title {
     position: relative;
-    margin-top: 15px;
+    margin-top: -10px;
   }
   &--text {
-    margin: 15px 0;
+    margin: 10px 0;
     text-align: center;
     white-space: pre-line;
     line-height: 1.33;
     letter-spacing: -0.24px;
-    max-width: 280px;
+    max-width: 265px;
   }
 
   &--time {
@@ -111,19 +111,41 @@
   }
 
   &--image {
-    height: 214px;
-    margin-bottom: 5px;
+    &_logo {
+      height: 228px;
+      width: 318px;
+      //background-size: 255px 318px;
+    }
+    &_poll {
+      max-width: 355px;
+      max-height: 324px;
+      width: 100%;
+    }
+    &_market {
+      max-width: 300px;
+      max-height: 335px;
+      width: 100%;
+    }
   }
 
   &--button {
     position: absolute;
-    width: 180px;
-    height: 44px;
-    bottom: 72px;
+    width: 100%;
+    bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
+    &_inner {
+      margin: 0 24px;
+    }
     &-hidden {
       opacity: 0;
+    }
+
+    @media(min-device-height: 580px) {
+      bottom: 72px;
+    }
+    @media(min-device-height: 740px) {
+      bottom: 100px;
     }
   }
 

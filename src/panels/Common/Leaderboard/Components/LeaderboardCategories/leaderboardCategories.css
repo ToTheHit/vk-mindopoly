@@ -29,4 +29,7 @@
   background-repeat: no-repeat;
   margin-right: 11px;
 }
+.LeaderboardCategories .Header__subtitle {
+  white-space: pre-line;
+}
 /*# sourceMappingURL=leaderboardCategories.css.map */

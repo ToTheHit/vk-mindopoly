@@ -1,3 +1,6 @@
+import bridge from '@vkontakte/vk-bridge';
+import globalVariables from './GlobalVariables';
+
 export function schemeChanger(state = { scheme: 'light', quizResult: [] }, action) {
   switch (action.type) {
     case 'UPDATE_SCHEME':
@@ -65,6 +68,7 @@ export function userInfo(state = {
       return state;
   }
 }
+
 export function notificationsAllow(state = { isAllow: false }, action) {
   switch (action.type) {
     case 'UPDATE_NOTIFICATIONS_ALLOW':
@@ -122,7 +126,11 @@ export function mainViewModal(state = { modalName: null }, action) {
   }
 }
 
-export function workViewModal(state = { modalIsActive: false, questionsLength: 0, start: false }, action) {
+export function workViewModal(state = {
+  modalIsActive: false,
+  questionsLength: 0,
+  start: false,
+}, action) {
   switch (action.type) {
     case 'UPDATE_WORK-VIEW-MODAL':
       return {
@@ -147,6 +155,55 @@ export function pageCache(state = { shop: [] }, action) {
   switch (action.type) {
     case 'PAGE_CACHE':
       return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+
+export function tooltip(state = {
+  mainScreenComplete: false,
+  story1: {
+    balance: true,
+    quizBlock: false,
+    taxEffect: false,
+  },
+  story2: {
+    GPeffect: false,
+    notifications: false,
+  },
+  shop: true,
+}, action) {
+  function updateVKStorage(data) {
+    bridge.send('VKWebAppStorageSet', {
+      key: globalVariables.tooltips,
+      value: JSON.stringify(data),
+    });
+  }
+  switch (action.type) {
+    case 'TOOLTIP_UPDATE': {
+      updateVKStorage({ ...state, ...action.payload });
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
+
+    case 'TOOLTIP_UPDATE_STORY1': {
+      const story1 = { ...state.story1, ...action.payload };
+      updateVKStorage({ ...state, story1 });
+      return {
+        ...state,
+        story1,
+      };
+    }
+    case 'TOOLTIP_UPDATE_STORY2': {
+      const story2 = { ...state.story2, ...action.payload };
+      updateVKStorage({ ...state, story2 });
+      return {
+        ...state,
+        story2,
+      };
+    }
     default:
       return state;
   }

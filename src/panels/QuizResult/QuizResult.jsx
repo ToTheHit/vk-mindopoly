@@ -154,10 +154,16 @@ const QuizResult = (props) => {
       },
     })
       .then((data) => {
+        console.info(data);
         bridge.send('VKWebAppShowStoryBox', {
           background_type: 'image',
           locked: true,
           url: 'https://320748-cp98857.tmweb.ru/static/images/mp-story-bg.png',
+          attachment: {
+            text: "vote",
+            type: "url",
+            url: 'https://vk.com/app7441788',
+          },
           stickers: [
             {
               sticker_type: 'renderable',
@@ -168,9 +174,9 @@ const QuizResult = (props) => {
                 transform: {
                   gravity: 'center_top',
                   relation_width: 0.7,
-                  translation_y: 0.1,
+                  // translation_y: 0.0,
                 },
-                clickable_zones: [
+                /*clickable_zones: [
                   {
                     action_type: 'link',
                     action: {
@@ -196,7 +202,7 @@ const QuizResult = (props) => {
                       },
                     ],
                   },
-                ],
+                ],*/
               },
             },
             {
@@ -205,11 +211,12 @@ const QuizResult = (props) => {
                 content_type: 'image',
                 url: data.data.attachment.stickerURL,
                 transform: {
-                  gravity: 'center',
-                  relation_width: 0.9,
+                  gravity: 'center_bottom',
+                  relation_width: 0.99,
+                  translation_y: -0.01,
                 },
                 can_delete: false,
-                clickable_zones: [
+/*                clickable_zones: [
                   {
                     action_type: 'link',
                     action: {
@@ -235,7 +242,7 @@ const QuizResult = (props) => {
                       },
                     ],
                   },
-                ],
+                ],*/
               },
             },
           ],
@@ -268,6 +275,7 @@ const QuizResult = (props) => {
           });
       })
       .catch((error) => {
+        console.info('StoryServerError', error);
         setPopoutShadowIsActive(false);
       });
   }

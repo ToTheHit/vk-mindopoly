@@ -5,7 +5,7 @@ import Shop from '../../panels/Common/Shop/Shop';
 import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';
 
 const ShopView = (props) => {
-  const { id } = props;
+  const { id, setActiveStory } = props;
   const [activePanel, setActivePanel] = useState('Shop');
   const [questionData, setQuestionData] = useState({});
   const [popoutShopView, setPopoutShopView] = useState(true);
@@ -22,6 +22,7 @@ const ShopView = (props) => {
         setQuestionData={setQuestionData}
         setPopoutShopView={setPopoutShopView}
         popoutShopView={popoutShopView}
+        setActiveStory={setActiveStory}
       />
       <ShopQuestion id="ShopQuestion" questionData={questionData} setActivePanel={setActivePanel} />
     </View>
@@ -30,6 +31,7 @@ const ShopView = (props) => {
 
 ShopView.propTypes = {
   id: PropTypes.string.isRequired,
+  setActiveStory: PropTypes.func.isRequired,
 };
 ShopView.defaultProps = {};
 export default ShopView;

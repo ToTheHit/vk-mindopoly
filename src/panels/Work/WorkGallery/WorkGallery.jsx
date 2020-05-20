@@ -10,7 +10,7 @@ import globalVariables from '../../../GlobalVariables';
 
 const WorkGallery = (props) => {
   const {
-    id, setActivePanel, nextView, setPopoutIsActive
+    id, setActivePanel, nextView, setPopoutIsActive,
   } = props;
   const timeToAnswer = 20;
   const dispatch = useDispatch();
@@ -33,36 +33,33 @@ const WorkGallery = (props) => {
     if (!modalStatus.modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
       if (result.length >= questions.length - 1) {
         setActivePanel('QuizResultPanel');
-      } else {
-        if (modalStatus.start) {
+      } else if (modalStatus.start) {
+        bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
+          .then(((data) => {
+            let storedQuestions;
 
-          bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
-            .then(((data) => {
-              let storedQuestions;
+            try {
+              storedQuestions = JSON.parse(data.keys[0].value);
+            } catch (e) {
+              console.info('WorkGallery, get questions', e);
+              storedQuestions = [];
+            }
+            if (!storedQuestions || !Array.isArray(storedQuestions)) storedQuestions = [];
+            const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
 
-              try {
-                storedQuestions = JSON.parse(data.keys[0].value);
-              } catch (e) {
-                console.info('WorkGallery, get questions', e);
-                storedQuestions = [];
-              }
-              if (!storedQuestions || !Array.isArray(storedQuestions)) storedQuestions = [];
-              const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
+            storedQuestions.push({
+              correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
+              questionId: questions[questionIndex + 1]._id,
+              selectedAnswerNumber: rndInt,
+              selectedAnswer: questions[questionIndex + 1].answers[rndInt],
+            });
+            bridge.send('VKWebAppStorageSet', {
+              key: globalVariables.quizResult,
+              value: JSON.stringify(storedQuestions),
+            });
 
-              storedQuestions.push({
-                correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
-                questionId: questions[questionIndex + 1]._id,
-                selectedAnswerNumber: rndInt,
-                selectedAnswer: questions[questionIndex + 1].answers[rndInt],
-              });
-              bridge.send('VKWebAppStorageSet', {
-                key: globalVariables.quizResult,
-                value: JSON.stringify(storedQuestions),
-              });
-
-              setQuestionIndex(questionIndex + 1);
-            }));
-        }
+            setQuestionIndex(questionIndex + 1);
+          }));
       }
     }
   }, [modalStatus]);
@@ -95,6 +92,14 @@ const WorkGallery = (props) => {
     return copy;
   }
 
+  function shuffleQuestions(questionsArray) {
+    return new Promise((resolve) => {
+      const shuffledArray = questionsArray.sort(() => Math.random() - 0.5);
+      if (questionsArray[0].requestedBy !== 0) resolve(shuffleQuestions(questionsArray));
+      else resolve(shuffledArray);
+    });
+  }
+
   function getIncorrectAnswerNumber(correctAnswerNumber) {
     const rndInt = Math.floor(Math.random() * 4);
     if (rndInt === correctAnswerNumber) return getIncorrectAnswerNumber(correctAnswerNumber);
@@ -109,11 +114,14 @@ const WorkGallery = (props) => {
         .then((storedQuiz) => {
           let storedQuestions = [];
           let storedAnswers = [];
-
-          if (JSON.parse(storedQuiz.keys[0].value).length > 0) {
-            storedQuestions = JSON.parse(storedQuiz.keys[0].value);
-            storedAnswers = JSON.parse(storedQuiz.keys[1].value);
+          console.info(storedQuiz);
+          if (storedQuiz.keys[0].value) {
+            if (JSON.parse(storedQuiz.keys[0].value).length > 0) {
+              storedQuestions = JSON.parse(storedQuiz.keys[0].value);
+              if (storedQuiz.keys[1].value) storedAnswers = JSON.parse(storedQuiz.keys[1].value);
+            }
           }
+
           // console.info('storedQuestions', storedQuestions)
           // console.info('storedAnswers', storedAnswers)
 
@@ -139,9 +147,15 @@ const WorkGallery = (props) => {
 
               if (storedQuestions.length > 0) {
                 const resultFromServerIDs = resultFromServer.map((item) => item._id);
-                if (resultFromServerIDs.filter(item => !storedQuestions.includes(item)).length > 0) {
-                  bridge.send('VKWebAppStorageSet', { key: globalVariables.quizResult, value: '[]' });
-                  bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' });
+                if (resultFromServerIDs.filter((item) => !storedQuestions.includes(item)).length > 0) {
+                  bridge.send('VKWebAppStorageSet', {
+                    key: globalVariables.quizResult,
+                    value: '[]',
+                  });
+                  bridge.send('VKWebAppStorageSet', {
+                    key: globalVariables.quizQuestions,
+                    value: '[]',
+                  });
                   storedQuestions = [];
                   storedAnswers = [];
                   dispatch({
@@ -169,34 +183,45 @@ const WorkGallery = (props) => {
                     setLastQuestionInStorage(lastQuestionInfo);
                   }
                 }
-              }
-              if (storedQuestions.length === 0) {
-                resultFromServer.sort(() => Math.random() - 0.5);
-                for (let i = 0; i < resultFromServer.length; i += 1) {
-                  const correctAnswer = resultFromServer[i].answers[0];
-                  resultFromServer[i].answers = shuffle(
-                    resultFromServer[i].answers, (i > 0
-                      ? resultFromServer[i - 1].correctAnswerNumber
-                      : -1),
-                  );
-                  resultFromServer[i].correctAnswerNumber = resultFromServer[i].answers.indexOf(correctAnswer);
-                }
-                const storedQuestionsID = resultFromServer.map((item) => item._id);
-                bridge.send('VKWebAppStorageSet', {
-                  key: globalVariables.quizQuestions,
-                  value: JSON.stringify(storedQuestionsID),
+                setPopoutIsActive(false);
+                setQuestions(resultFromServer);
+                // console.info('resultFromServer', resultFromServer);
+                dispatch({
+                  type: 'UPDATE_QUIZ_RESULT',
+                  payload: {
+                    questions: resultFromServer,
+                  },
                 });
               }
-
-              setPopoutIsActive(false);
-              setQuestions(resultFromServer);
-              // console.info('resultFromServer', resultFromServer);
-              dispatch({
-                type: 'UPDATE_QUIZ_RESULT',
-                payload: {
-                  questions: resultFromServer,
-                },
-              });
+              if (storedQuestions.length === 0) {
+                shuffleQuestions(resultFromServer)
+                  .then((res) => {
+                    resultFromServer = res;
+                    for (let i = 0; i < resultFromServer.length; i += 1) {
+                      const correctAnswer = resultFromServer[i].answers[0];
+                      resultFromServer[i].answers = shuffle(
+                        resultFromServer[i].answers, (i > 0
+                          ? resultFromServer[i - 1].correctAnswerNumber
+                          : -1),
+                      );
+                      resultFromServer[i].correctAnswerNumber = resultFromServer[i].answers.indexOf(correctAnswer);
+                    }
+                    const storedQuestionsID = resultFromServer.map((item) => item._id);
+                    bridge.send('VKWebAppStorageSet', {
+                      key: globalVariables.quizQuestions,
+                      value: JSON.stringify(storedQuestionsID),
+                    });
+                    setPopoutIsActive(false);
+                    setQuestions(resultFromServer);
+                    // console.info('resultFromServer', resultFromServer);
+                    dispatch({
+                      type: 'UPDATE_QUIZ_RESULT',
+                      payload: {
+                        questions: resultFromServer,
+                      },
+                    });
+                  });
+              }
             })
             .catch((err) => {
               console.error('Work, Get /api/exam', err);
@@ -259,9 +284,10 @@ const WorkGallery = (props) => {
     } else {
       bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
         .then(((data) => {
-          let storedQuestions = JSON.parse(data.keys[0].value);
-          if (!storedQuestions) storedQuestions = [];
-          let rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
+          let storedQuestions;
+          if (data.keys[0].value) storedQuestions = JSON.parse(data.keys[0].value);
+          else storedQuestions = [];
+          const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
           storedQuestions.push({
             questionId: questions[questionIndex + 1]._id,
             correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,

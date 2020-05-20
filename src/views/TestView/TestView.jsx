@@ -117,14 +117,18 @@ const TestView = (props) => {
 
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
-      value: '[]',
+      value: '',
     });
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizQuestions,
-      value: '[]',
+      value: '',
     });
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
+    });
+    bridge.send('VKWebAppStorageSet', {
+      key: globalVariables.tooltips,
+      value: '',
     });
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })

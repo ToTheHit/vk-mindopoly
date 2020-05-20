@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Panel, Gallery, ScreenSpinner, Button, classNames,
+  Button, classNames, Gallery, Panel,
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,8 +9,6 @@ import './startPanel.css';
 
 import bridge from '@vkontakte/vk-bridge';
 import axios from 'axios';
-import StartPanel1 from './Components/StartPanel1';
-import StartPanel2 from './Components/StartPanel2';
 import globalVariables from '../../GlobalVariables';
 import StartPanelPage1 from './Components/StartPanelPage1';
 import StartPanelPage2 from './Components/StartPanelPage2';
@@ -26,10 +24,15 @@ const StartPanel = (props) => {
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
-    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken] })
+    bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken, globalVariables.tooltips] })
       .then(((bridgeData) => {
         const urlParams = new URLSearchParams(window.location.search);
-
+        if (bridgeData.keys[1].value) {
+          dispatch({
+            type: 'TOOLTIP_UPDATE',
+            payload: JSON.parse(bridgeData.keys[1].value),
+          });
+        }
         if (bridgeData.keys[0].value) {
           dispatch({
             type: 'UPDATE_TOKEN',
@@ -49,8 +52,6 @@ const StartPanel = (props) => {
             },
           })
             .then(() => {
-
-
               // Сервер нашёл токен в БД. Переключаемся на главный экран
               // Обновляем токен друзей для лидерборда
               if (localStorage.getItem(globalVariables.friendsAccessToken)) {
@@ -76,6 +77,8 @@ const StartPanel = (props) => {
         }
         // popoutState.setPopoutIsActive(false);
       }));
+    // setReadyToShow(true);
+    // popoutState.setPopoutIsActive(false);
   }, []);
 
   function Registration() {
@@ -117,33 +120,47 @@ const StartPanel = (props) => {
         slideIndex={slideIndex}
         onChange={(index) => setSlideIndex(index)}
       >
-        <StartPanelPage1 id="StartPanel-page-1" goToNextSlide={setSlideIndex} readyToShow={readyToShow} />
+        <StartPanelPage1
+          id="StartPanel-page-1"
+          goToNextSlide={setSlideIndex}
+          readyToShow={readyToShow}
+          setReadyToShow={setReadyToShow}
+          popoutIsActive={popoutState.popoutIsActive}
+        />
         <StartPanelPage2 id="StartPanel-page-2" goToNextSlide={setSlideIndex} />
         <StartPanelPage3 id="StartPanel-page-2" nextView={nextView} />
       </Gallery>
-      {(slideIndex === 2 ? (
-        <Button
-          className="StartPanel--button"
-          size="l"
-          mode="commerce"
-          onClick={() => {
-            Registration();
-          }}
-        >
-          Начать
-        </Button>
-      )
-        : (
-          <Button
-            className={classNames('StartPanel--button', { 'StartPanel--content-hidden': !readyToShow })}
-            size="l"
-            onClick={() => {
-              setSlideIndex(slideIndex + 1);
-            }}
-          >
-            Дальше
-          </Button>
-        ))}
+
+      <div className="StartPanel--button">
+        <div className="StartPanel--button_inner">
+          {(slideIndex === 2 ? (
+            <Button
+              size="xl"
+              stretched
+              mode="commerce"
+              onClick={() => {
+                Registration();
+              }}
+            >
+              Начать
+            </Button>
+          )
+            : (
+              <Button
+                className={classNames({ 'StartPanel--content-hidden': (!readyToShow || popoutState.popoutIsActive) })}
+                size="xl"
+                stretched
+                onClick={() => {
+                  setSlideIndex(slideIndex + 1);
+                }}
+                style={{ backgroundColor: (scheme === 'space_gray' ? '#FFFFFF' : '#000000') }}
+              >
+                Дальше
+              </Button>
+            ))}
+        </div>
+      </div>
+
 
     </Panel>
   );

@@ -15,7 +15,7 @@ import ShopQuestion from '../../panels/Common/Shop/ShopQuestion';
 import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetailsSelector';
 import Main from '../../panels/Common/Main/Main';
 import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
-import globalVariables from "../../GlobalVariables";
+import globalVariables from '../../GlobalVariables';
 
 const CommonView = (props) => {
   const { id, nextView } = props;

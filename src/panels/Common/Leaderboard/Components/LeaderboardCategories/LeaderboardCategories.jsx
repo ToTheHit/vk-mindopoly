@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './leaderboardCategories.css';
-import { Avatar, Caption, Div, Group, PanelSpinner, SimpleCell, Title, } from '@vkontakte/vkui';
+import {
+  Avatar,
+  Caption,
+  Div,
+  Group,
+  Header,
+  PanelSpinner,
+  SimpleCell,
+  Title,
+} from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import globalVariables from '../../../../../GlobalVariables';
@@ -146,6 +155,9 @@ const LeaderboardCategories = (props) => {
   }, []);
   return (
     <div style={{ paddingTop: 0 }} className="LeaderboardCategories">
+      <Header
+        subtitle="Станьте мозгополистом, покупая вопросы в магазине. Мозгополию можно составить из трёх вопросов одинаковой категории."
+      />
       {spinnerIsActive && <PanelSpinner size="small" />}
       {leaderboard}
     </div>

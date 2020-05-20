@@ -14,13 +14,13 @@ import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
-import bridge from "@vkontakte/vk-bridge";
 
 const Main = (props) => {
   const dispatch = useDispatch();
   const userToken = useSelector((state) => state.userToken.token);
   const userInfo = useSelector((state) => state.userInfo);
   const userQuestions = useSelector((state) => state.userQuestions);
+  const tooltipsState = useSelector((state) => state.tooltip.mainScreenComplete);
 
   const {
     id, setActivePanel,
@@ -65,7 +65,7 @@ const Main = (props) => {
       ])
         .then((data) => {
           const srvData = data[0].data.attachment;
-          // console.info('user', srvData);
+          console.info('user', srvData);
           // console.info('questions', data[1].data.attachment);
           const user = {
             first_name: srvData.first_name,
@@ -84,7 +84,15 @@ const Main = (props) => {
           };
           // console.info(user)
 
-          // TODO: К этому обязательно нужно будет вернутся, когда доделаются эффекты на Бэке
+          if (!tooltipsState && !user.isExamAvailable) {
+            dispatch({
+              type: 'TOOLTIP_UPDATE_STORY2',
+              payload: {
+                GPeffect: true,
+              },
+            });
+          }
+
           const effectsArray = [];
           if (!srvData.isExamSuccess) {
             effectsArray.push(
@@ -270,6 +278,7 @@ const Main = (props) => {
             tax={VKuser.tax}
             GPgrowth={VKuser.GPgrowth}
             effects={effects}
+            popoutMainView={popoutMainView}
           />
 
           <div>
