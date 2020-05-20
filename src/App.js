@@ -67,7 +67,7 @@ const App = () => {
         <CommonView id={globalVariables.view.main} nextView={setActiveView} />
         <WorkView id={globalVariables.view.work} nextView={setActiveView} />
           <>
-            </>
+            </> 
         <TestView id={globalVariables.view.test} />
       </Root>
     </ConfigProvider>
