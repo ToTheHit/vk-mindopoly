@@ -66,7 +66,7 @@ const Main = (props) => {
       ])
         .then((data) => {
           const srvData = data[0].data.attachment;
-          console.info('user', srvData);
+          // console.info('user', srvData);
           // console.info('questions', data[1].data.attachment);
           const user = {
             first_name: srvData.first_name,

@@ -24,8 +24,8 @@ const EffectCoinsDetailsContent = (props) => {
   const { updateModalHeight } = props;
 
   const questions = useSelector((state) => state.userQuestions.questions.All);
-  // const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);
-  const isExamAvailable = false;
+  const isExamAvailable = useSelector((state) => state.userInfo.isExamAvailable);
+  // const isExamAvailable = false;
 
   const coinsToday = useSelector((state) => state.userInfo.coins.today);
   // const coinsToday = 999;
