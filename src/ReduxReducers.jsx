@@ -60,6 +60,7 @@ export function userInfo(state = {
     category: 'All',
   },
   selectedTab: '',
+  leads: [],
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':

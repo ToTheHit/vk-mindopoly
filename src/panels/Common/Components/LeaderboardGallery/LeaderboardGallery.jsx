@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Card, Gallery, Separator, SimpleCell,
+  Avatar, Button, Card, Gallery, Placeholder, Separator, SimpleCell,
 } from '@vkontakte/vkui';
+import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 
 import './leaderboardGallery.css';
+import bridge from "@vkontakte/vk-bridge";
 
 const LeaderboardGallery = (props) => {
   const {
@@ -35,7 +37,8 @@ const LeaderboardGallery = (props) => {
           {`${item.first_name} `}
           <b>{item.last_name}</b>
         </SimpleCell>
-        {index !== (friendsLeaderboard.length - 1) && <Separator wide />}
+        {/*{index !== (friendsLeaderboard.length - 1) && <Separator wide />}*/}
+        <Separator wide />
       </div>
     ));
     setRenderedFriendsLeaderBoard(rendered);
@@ -66,7 +69,7 @@ const LeaderboardGallery = (props) => {
 
     if (activeTab === 'WorldLeaderboardTab') {
       height *= renderedWorldLeaderboard.length;
-    } else height *= renderedFriendsLeaderboard.length;
+    } else height = height * renderedFriendsLeaderboard.length + 275;
 
     setCardHeight(height);
   }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard]);
@@ -101,6 +104,27 @@ const LeaderboardGallery = (props) => {
         className="LeaderboardGallery--card"
       >
         {renderedFriendsLeaderboard}
+        <Placeholder
+          className="LeaderboardGenius__placeholder"
+          icon={(
+            <Icon24UserAddOutline
+              width={56}
+              height={36}
+              style={{ color: 'var(--button_primary_background)' }}
+            />
+          )}
+          header="Пригласить друзей"
+          action={(
+            <Button
+              size="l"
+              onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
+            >
+              Пригласить
+            </Button>
+          )}
+        >
+          Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
+        </Placeholder>
       </Card>
     </Gallery>
   );

@@ -152,7 +152,7 @@ const LeaderboardGenius = () => {
         />
         {spinnerIsActive && <PanelSpinner size="small" />}
       </Group>
-      {(activeTab === 'FriendsLeaderboardTab' && (
+{/*      {(activeTab === 'FriendsLeaderboardTab' && (
         <Placeholder
           className="LeaderboardGenius__placeholder"
           icon={(
@@ -174,7 +174,7 @@ const LeaderboardGenius = () => {
         >
           Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
         </Placeholder>
-      ))}
+      ))}*/}
     </Div>
   );
 };

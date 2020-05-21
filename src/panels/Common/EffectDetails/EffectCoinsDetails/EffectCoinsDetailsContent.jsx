@@ -225,7 +225,6 @@ EffectCoinsDetailsContent.propTypes = {
 
 };
 EffectCoinsDetailsContent.defaultProps = {
-  updateModalHeight: () => {
-  },
+  updateModalHeight: () => {},
 };
 export default withModalRootContext(EffectCoinsDetailsContent);

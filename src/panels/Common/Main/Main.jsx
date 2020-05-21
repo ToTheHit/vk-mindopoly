@@ -14,6 +14,7 @@ import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
+import bridge from "@vkontakte/vk-bridge";
 
 const Main = (props) => {
   const dispatch = useDispatch();
@@ -80,6 +81,57 @@ const Main = (props) => {
             isStoryConfirmed: srvData.isStoryConfirmed,
             lastExamReward: srvData.lastExamReward,
             confirmReward: srvData.confirmReward,
+            leads: srvData.leads,
+            /* leads: [
+              {
+                category: 'Math',
+                questionsCount: 1,
+              },
+              {
+                category: 'Russian',
+                questionsCount: 2,
+              },
+              {
+                category: 'Literature',
+                questionsCount: 5,
+              },
+              {
+                category: 'Physics',
+                questionsCount: 999,
+              },
+              {
+                category: 'Chemistry',
+                questionsCount: 999,
+              },
+              {
+                category: 'Astronomy',
+                questionsCount: 999,
+              },
+              {
+                category: 'Biology',
+                questionsCount: 999,
+              },
+              {
+                category: 'History',
+                questionsCount: 999,
+              },
+              {
+                category: 'Art',
+                questionsCount: 999,
+              },
+              {
+                category: 'Sport',
+                questionsCount: 999,
+              },
+              {
+                category: 'Geography',
+                questionsCount: 999,
+              },
+              {
+                category: 'Other',
+                questionsCount: 999,
+              },
+            ], */
             effects: [],
           };
           // console.info(user)
@@ -179,7 +231,39 @@ const Main = (props) => {
                 </svg>),
             },
           );
-
+          if (user.leads.length > 0) {
+            effectsArray.push(
+              {
+                name: 'Mindopolist',
+                count: 'Мозгополист',
+                currency: '',
+                description: '+20% к доходу',
+                icon: (
+                  <svg
+                    width="32px"
+                    height="32px"
+                    viewBox="0 0 32 32"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g
+                      id="icn32_mindopoly"
+                      stroke="none"
+                      strokeWidth="1"
+                      fill="none"
+                      fillRule="evenodd"
+                    >
+                      <path
+                        d="M15.7303914,4.42399454 C16.4183865,4.57877305 16.8506439,5.26197607 16.6957976,5.9502722 C16.62435,6.26736717 16.5266806,6.53124781 16.3840382,6.75150517 C14.3778188,9.8493541 14.7004944,11.8928348 16.0389464,12.0908125 C17.3474793,12.2843647 18.0789168,11.4477304 17.8681063,9.49997127 C17.8186179,9.04272832 17.7772323,8.6572662 17.7439423,8.34351467 C17.7134017,8.0556752 17.7837928,7.76616481 17.9430811,7.52448004 C18.3226468,6.94857306 19.0972103,6.78940696 19.6730664,7.16893902 C20.365162,7.62501644 21.1404247,8.40141172 22.0261604,9.50612281 C24.5420512,12.6440032 25.3196592,15.3874149 25.2844441,18.1966647 C25.218837,23.430386 21.3167444,27.1428329 15.9994014,27.1428329 C10.6596158,27.1428329 6.71430172,23.4081931 6.71430172,18.1795735 C6.74145217,13.5554994 9.25910571,8.53162499 13.9676113,5.17176973 C14.1499658,5.04164675 14.3909185,4.86555157 14.6896014,4.6440721 C14.9879991,4.42280415 15.3679652,4.3424594 15.7303914,4.42399454 Z M13.8000783,7.66320619 C10.3915583,10.6113522 8.59266254,14.571048 8.57142857,18.1850256 C8.57142857,22.3590378 11.6631884,25.2856901 15.9994014,25.2856901 C20.3152499,25.2856901 23.3747798,22.3748565 23.4274471,18.1733864 C23.4576405,15.7647445 22.798049,13.4376968 20.5772346,10.667843 C20.2819533,10.299561 20.0046737,9.9769516 19.7468965,9.70045098 C19.8981786,12.5493818 18.2487163,14.2950207 15.767203,13.9279666 C13.253919,13.556213 12.4407952,10.9083174 13.8000783,7.66320619 Z"
+                        id="↳-Icon-Color"
+                        fill="#FF6C43"
+                      />
+                    </g>
+                  </svg>
+                ),
+              },
+            );
+          }
           user.effects = effectsArray;
           setVKuser({ ...VKuser, ...user });
           setEffects(effectsArray);
@@ -202,6 +286,7 @@ const Main = (props) => {
 
   useEffect(() => {
     if (updatingView) {
+      bridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
       updateView();
     }
   }, [updatingView]);

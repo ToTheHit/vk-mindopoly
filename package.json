@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://github.com/ToTheHit/vk-extension-miniApp.git",
+  "homepage": "https://tothehit.github.io/vk-extension-miniApp/",
   "scripts": {
     "start": "cross-env PORT=10888 HTTPS=true react-scripts start",
     "build": "react-scripts build",

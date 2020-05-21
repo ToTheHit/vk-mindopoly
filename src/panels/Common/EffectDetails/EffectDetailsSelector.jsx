@@ -5,8 +5,9 @@ import EffectGPDetailsContent from './EffectGPDetails/EffectGPDetailsContent';
 import EffectDetailsHeader from './EffectDetailsHeader';
 import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent';
 import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
+import EffectMindopolistDetails from "./EffectMindopolistDetails/EffectMindopolistDetails";
 
-const EffectDetailsSelector = (props) => {
+const EffectDetailsSelector = () => {
   const [isActive, setIsActive] = useState(false);
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
   const dispatch = useDispatch();
@@ -57,6 +58,15 @@ const EffectDetailsSelector = (props) => {
       >
         <Separator wide />
         <EffectCoinsDetailsContent />
+      </ModalPage>
+
+      <ModalPage
+        id="MindopolistDetailsModalPage"
+        header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Мозгополист" />}
+        dynamicContentHeight
+      >
+        <Separator wide />
+        <EffectMindopolistDetails />
       </ModalPage>
     </ModalRoot>
 
