@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Button, Card, Gallery, Placeholder, Separator, SimpleCell,
+  Avatar,
+  Button,
+  Card,
+  Gallery,
+  PanelSpinner,
+  Placeholder,
+  Separator,
+  SimpleCell,
 } from '@vkontakte/vkui';
 import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 
 import './leaderboardGallery.css';
-import bridge from "@vkontakte/vk-bridge";
+import bridge from '@vkontakte/vk-bridge';
 
 const LeaderboardGallery = (props) => {
   const {
-    friendsLeaderboard, worldLeaderboard, activeTab, setActiveTab,
+    friendsLeaderboard, worldLeaderboard, activeTab, setActiveTab, spinnerIsActive,
   } = props;
 
   const [slideIndex, setSlideIndex] = useState(0);
@@ -25,7 +32,7 @@ const LeaderboardGallery = (props) => {
   }, [activeTab]);
 
   useEffect(() => {
-    const rendered = friendsLeaderboard.map((item, index) => (
+    const rendered = friendsLeaderboard.map((item) => (
       <div
         key={Math.random()}
       >
@@ -37,13 +44,12 @@ const LeaderboardGallery = (props) => {
           {`${item.first_name} `}
           <b>{item.last_name}</b>
         </SimpleCell>
-        {/*{index !== (friendsLeaderboard.length - 1) && <Separator wide />}*/}
+        {/* {index !== (friendsLeaderboard.length - 1) && <Separator wide />} */}
         <Separator wide />
       </div>
     ));
     setRenderedFriendsLeaderBoard(rendered);
   }, [friendsLeaderboard]);
-
 
   useEffect(() => {
     const rendered = worldLeaderboard.map((item, index) => (
@@ -104,6 +110,7 @@ const LeaderboardGallery = (props) => {
         className="LeaderboardGallery--card"
       >
         {renderedFriendsLeaderboard}
+        {spinnerIsActive && <PanelSpinner size="small" />}
         <Placeholder
           className="LeaderboardGenius__placeholder"
           icon={(
@@ -145,6 +152,7 @@ LeaderboardGallery.propTypes = {
   })).isRequired,
   activeTab: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
+  spinnerIsActive: PropTypes.bool.isRequired,
 };
 LeaderboardGallery.defaultProps = {};
 export default LeaderboardGallery;

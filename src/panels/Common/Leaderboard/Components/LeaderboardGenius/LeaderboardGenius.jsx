@@ -149,32 +149,9 @@ const LeaderboardGenius = () => {
           worldLeaderboard={worldLeaderboard}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          spinnerIsActive={spinnerIsActive}
         />
-        {spinnerIsActive && <PanelSpinner size="small" />}
       </Group>
-{/*      {(activeTab === 'FriendsLeaderboardTab' && (
-        <Placeholder
-          className="LeaderboardGenius__placeholder"
-          icon={(
-            <Icon24UserAddOutline
-              width={56}
-              height={36}
-              style={{ color: 'var(--button_primary_background)' }}
-            />
-          )}
-          header="Пригласить друзей"
-          action={(
-            <Button
-              size="l"
-              onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
-            >
-              Пригласить
-            </Button>
-          )}
-        >
-          Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
-        </Placeholder>
-      ))}*/}
     </Div>
   );
 };
