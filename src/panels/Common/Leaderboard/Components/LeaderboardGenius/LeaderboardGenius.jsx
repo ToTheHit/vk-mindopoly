@@ -151,6 +151,7 @@ const LeaderboardGenius = () => {
           setActiveTab={setActiveTab}
           spinnerIsActive={spinnerIsActive}
         />
+        {spinnerIsActive && <PanelSpinner size="small" />}
       </Group>
     </Div>
   );

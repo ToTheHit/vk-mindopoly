@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, } from 'react';
 import PropTypes from 'prop-types';
 import './mindbreakers.css';
 import {
@@ -43,6 +43,32 @@ const Mindbreakers = (props) => {
     scrollRef.current.parentNode.scrollLeft = categoriesHorizontalScroll;
   }, []);
 
+  const questionsCategoryMemo = useMemo(() => {
+    if (questionsCategory.length > 0) {
+      return (
+        <Div>
+          <RenderedQuestionCard
+            setActivePanel={setActivePanel}
+            setSelectedQuestion={setSelectedQuestion}
+            questions={questionsCategory}
+          />
+        </Div>
+      );
+    }
+    return (
+      <Placeholder
+        icon={<Icon28MarketOutline width={38} height={43} />}
+        action={(
+          <Button mode="tertiary" onClick={() => setActiveStory('ShopRoot')}>
+            Перейти в магазин
+          </Button>
+        )}
+      >
+        Приобретайте вопросы в магазине и зарабатывайте очки BP на чужих ошибках.
+      </Placeholder>
+    );
+  }, [JSON.stringify(questionsCategory), questionsCategory.length]);
+
   return (
     <Group
       className="Mindbreakers"
@@ -71,29 +97,7 @@ const Mindbreakers = (props) => {
           )))}
         </Tabs>
       </HorizontalScroll>
-
-      {(questionsCategory.length > 0 ? (
-        <Div>
-          <RenderedQuestionCard
-            setActivePanel={setActivePanel}
-            setSelectedQuestion={setSelectedQuestion}
-            questions={questionsCategory}
-          />
-        </Div>
-      )
-        : (
-          <Placeholder
-            icon={<Icon28MarketOutline width={38} height={43} />}
-            action={(
-              <Button mode="tertiary" onClick={() => setActiveStory('ShopRoot')}>
-                Перейти в магазин
-              </Button>
-            )}
-          >
-            Приобретайте вопросы в магазине и зарабатывайте очки BP на чужих ошибках.
-          </Placeholder>
-        )
-      )}
+      {questionsCategoryMemo}
     </Group>
   );
 };

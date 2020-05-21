@@ -96,7 +96,6 @@ const LeaderboardGallery = (props) => {
       align="center"
       style={{ height: cardHeight }}
     >
-
       <Card
         mode="shadow"
         className="LeaderboardGallery--card"

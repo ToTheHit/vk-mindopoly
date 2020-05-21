@@ -12,12 +12,12 @@ const RenderedQuestionCard = (props) => {
 
   return (
     questions.map((item) => (
-      <ScalableButton
-        key={`RenderedQuestionCard--card_${item._id}`}
+/*      <ScalableButton
         className="RenderedQuestionCard--card"
         borderRadius="Card"
-      >
+      >*/
         <Card
+          key={`RenderedQuestionCard--card_${item._id}`}
           mode={scheme === 'space_gray' ? 'tint' : 'outline'}
           className={classNames('RenderedQuestionCard--card', { 'RenderedQuestionCard--card-dark': scheme === 'space_gray' })}
           onClick={() => {
@@ -52,7 +52,7 @@ const RenderedQuestionCard = (props) => {
 
           </Div>
         </Card>
-      </ScalableButton>
+      // </ScalableButton>
 
     ))
   );

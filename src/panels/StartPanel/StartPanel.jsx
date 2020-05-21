@@ -128,7 +128,7 @@ const StartPanel = (props) => {
           popoutIsActive={popoutState.popoutIsActive}
         />
         <StartPanelPage2 id="StartPanel-page-2" goToNextSlide={setSlideIndex} />
-        <StartPanelPage3 id="StartPanel-page-2" nextView={nextView} />
+        <StartPanelPage3 id="StartPanel-page-3" nextView={nextView} />
       </Gallery>
 
       <div className="StartPanel--button">
