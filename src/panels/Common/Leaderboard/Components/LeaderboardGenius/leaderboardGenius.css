@@ -16,4 +16,7 @@
 .LeaderboardGenius .Header__content {
   padding-bottom: 0 !important;
 }
+.LeaderboardGenius__placeholder {
+  background: var(--modal_card_background);
+}
 /*# sourceMappingURL=leaderboardGenius.css.map */

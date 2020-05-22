@@ -380,7 +380,6 @@ const Main = (props) => {
     bridge.subscribe(bridgeOnRestore);
     window.addEventListener('focus', onRestore);
     return () => {
-      console.info('remove listeners');
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);
     };

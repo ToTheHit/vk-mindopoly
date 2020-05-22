@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './leaderboardGenius.css';
-import { Button, Div, Group, PanelSpinner, Placeholder, Tabs, TabsItem, } from '@vkontakte/vkui';
+import {
+  Button, Div, Group, PanelSpinner, Placeholder, Tabs, TabsItem,
+} from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
 import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 import { useSelector } from 'react-redux';
@@ -90,9 +92,26 @@ const LeaderboardGenius = () => {
   }, []);
 
   useEffect(() => {
-    if (activeTab === 'FriendsLeaderboardTab' && !localStorage.getItem(globalVariables.friendsAccessToken)) {
-      setSpinnerIsActive(true);
-      bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
+    if (activeTab === 'FriendsLeaderboardTab' && localStorage.getItem(globalVariables.friendsAccessToken)) {
+/*      setSpinnerIsActive(true);
+      bridge.send('VKWebAppCallAPIMethod', {
+        method: 'friends.getAppUsers',
+        params: {
+          v: '5.103',
+          access_token: `${localStorage.getItem(globalVariables.friendsAccessToken)}`,
+        },
+      })
+        .then((friendsData) => {
+          getLeaderboardFromServer(friendsData.response)
+            .then((leaderboard) => {
+              setSpinnerIsActive(false);
+              setWorldLeaderboard(leaderboard.global);
+              setFriendsLeaderboard(leaderboard.friends);
+            });
+        })
+        .catch((errorFriend) => console.error('errorFriends', errorFriend));*/
+
+      /*      bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
         .then((data) => {
           localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
 
@@ -116,10 +135,37 @@ const LeaderboardGenius = () => {
         .catch((err) => {
           console.info(err);
           setSpinnerIsActive(false);
-        });
+        }); */
     }
   }, [activeTab]);
 
+  function getFriendsAccess() {
+    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
+      .then((data) => {
+        localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
+
+        bridge.send('VKWebAppCallAPIMethod', {
+          method: 'friends.getAppUsers',
+          params: {
+            v: '5.103',
+            access_token: `${data.access_token}`,
+          },
+        })
+          .then((friendsData) => {
+            getLeaderboardFromServer(friendsData.response)
+              .then((leaderboard) => {
+                setSpinnerIsActive(false);
+                setWorldLeaderboard(leaderboard.global);
+                setFriendsLeaderboard(leaderboard.friends);
+              });
+          })
+          .catch((errorFriend) => console.error('errorFriends', errorFriend));
+      })
+      .catch((err) => {
+        console.info(err);
+        setSpinnerIsActive(false);
+      });
+  }
   return (
     <Div style={{ paddingTop: 0 }} className="LeaderboardGenius">
 
@@ -150,6 +196,7 @@ const LeaderboardGenius = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           spinnerIsActive={spinnerIsActive}
+          getFriendsAccess={getFriendsAccess}
         />
         {spinnerIsActive && <PanelSpinner size="small" />}
       </Group>

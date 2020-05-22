@@ -19,7 +19,7 @@ import LeaderboardCategories from './Components/LeaderboardCategories/Leaderboar
 import globalVariables from '../../../GlobalVariables';
 
 const BrainLeaderboard = (props) => {
-  const { id, setActiveStory } = props;
+  const { id, setActiveStory, getFriendsAccess } = props;
   const [contextIsOpened, setContextIsOpened] = useState(false);
   const [ratingType, setRatingType] = useState('score');
 
@@ -88,7 +88,7 @@ const BrainLeaderboard = (props) => {
         className="BrainLeaderboard"
       >
         {(ratingType === 'score' && (
-          <LeaderboardGenius />
+          <LeaderboardGenius getFriendsAccess={getFriendsAccess} />
         ))}
         {(ratingType === 'categories' && (
           <LeaderboardCategories />
@@ -102,6 +102,7 @@ const BrainLeaderboard = (props) => {
 BrainLeaderboard.propTypes = {
   id: PropTypes.string.isRequired,
   setActiveStory: PropTypes.func.isRequired,
+  getFriendsAccess: PropTypes.func.isRequired,
 };
 BrainLeaderboard.defaultProps = {};
 export default BrainLeaderboard;
