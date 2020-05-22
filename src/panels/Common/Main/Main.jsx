@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import {
@@ -8,13 +8,13 @@ import axios from 'axios';
 
 import './main.css';
 import { useDispatch, useSelector } from 'react-redux';
+import bridge from '@vkontakte/vk-bridge';
 import Balance from '../Components/Balance/Balance';
 import QuizCard from '../Components/QuizCard/QuizCard';
 import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
-import bridge from "@vkontakte/vk-bridge";
 
 const Main = (props) => {
   const dispatch = useDispatch();
@@ -34,7 +34,6 @@ const Main = (props) => {
   const [questions, setQuestions] = useState(userQuestions.questions);
   const [VKuser, setVKuser] = useState(userInfo);
   const [updatingView, setUpdatingView] = useState(false);
-
 
   function updateView() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -133,6 +132,7 @@ const Main = (props) => {
               },
             ], */
             effects: [],
+            msToNextExam: srvData.msToNextExam,
           };
           // console.info(user)
 
@@ -331,6 +331,36 @@ const Main = (props) => {
     }
   }, [questions]);
 
+  let appIsClosed = false;
+  const bridgeOnRestore = useCallback((e) => {
+    switch (e.detail.type) {
+      case 'VKWebAppViewRestore': {
+        updateView();
+        const dateNow = new Date();
+        // console.info('Restore from VK', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
+        break;
+      }
+      case 'VKWebAppViewHide': {
+        const dateNow = new Date();
+        // console.info('Hide', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
+        appIsClosed = true;
+        break;
+      }
+      default:
+        break;
+    }
+  }, []);
+
+
+  const onRestore = useCallback(() => {
+    if (appIsClosed) {
+      const dateNow = new Date();
+      // console.info('Full restore (JS)', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
+      appIsClosed = false;
+      updateView();
+    }
+  }, []);
+
   useEffect(() => {
     if (userInfo.date === 0) {
       setPopoutMainView(true);
@@ -347,6 +377,13 @@ const Main = (props) => {
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
     });
+    bridge.subscribe(bridgeOnRestore);
+    window.addEventListener('focus', onRestore);
+    return () => {
+      console.info('remove listeners');
+      bridge.unsubscribe(bridgeOnRestore);
+      window.removeEventListener('focus', onRestore);
+    };
   }, []);
 
   return (

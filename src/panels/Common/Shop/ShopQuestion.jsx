@@ -126,9 +126,9 @@ const ShopQuestion = (props) => {
     },
   };
   const maxSymbolsInInput = {
-    question: 300,
-    answers: [128, 128, 128, 128],
-    explanation: 300,
+    question: 150,
+    answers: [52, 52, 52, 52],
+    explanation: 150,
   };
   const [symbolCounter, setSymbolCounter] = useState({
     question: maxSymbolsInInput.question,
@@ -357,7 +357,7 @@ const ShopQuestion = (props) => {
               >
                 <Input
                   type="text"
-                  placeholder={inputPlaceholders[questionData.category].answers[0]}
+                  placeholder={(symbolCounter.question === maxSymbolsInInput.question ? inputPlaceholders[questionData.category].answers[0] : '')}
                   getRef={refQuestionCorrectAnswer}
                   value={savedUserQuestion.answers[0]}
                   status={((symbolCounter.answers[0] < 0) || emptyInput.input1) && 'error'}
@@ -389,7 +389,7 @@ const ShopQuestion = (props) => {
                   </div>
 )}
                 type="text"
-                placeholder={inputPlaceholders[questionData.category].answers[1]}
+                placeholder={(symbolCounter.question === maxSymbolsInInput.question ? inputPlaceholders[questionData.category].answers[1] : '')}
                 className="ShopQuestion--incorrectAnswers_input"
                 status={((symbolCounter.answers[1] < 0) || emptyInput.input2) && 'error'}
                 bottom={(symbolCounter.answers[1] < 0 && `Ответ не может содержать более ${maxSymbolsInInput.answers[1]} символов`)}
@@ -415,7 +415,7 @@ const ShopQuestion = (props) => {
               />
               <Input
                 type="text"
-                placeholder={inputPlaceholders[questionData.category].answers[2]}
+                placeholder={(symbolCounter.question === maxSymbolsInInput.question ? inputPlaceholders[questionData.category].answers[2] : '')}
                 className="ShopQuestion--incorrectAnswers_input"
                 getRef={refQuestionIncorrectAnswer2}
                 value={savedUserQuestion.answers[2]}
@@ -440,7 +440,7 @@ const ShopQuestion = (props) => {
               />
               <Input
                 type="text"
-                placeholder={inputPlaceholders[questionData.category].answers[3]}
+                placeholder={(symbolCounter.question === maxSymbolsInInput.question ? inputPlaceholders[questionData.category].answers[3] : '')}
                 className="ShopQuestion--incorrectAnswers_input"
                 getRef={refQuestionIncorrectAnswer3}
                 value={savedUserQuestion.answers[3]}
@@ -471,7 +471,6 @@ const ShopQuestion = (props) => {
                 value={savedUserQuestion.explanation}
                 status={(symbolCounter.explanation < 0) && 'error'}
                 bottom={(symbolCounter.explanation >= 0 ? `Осталось символов: ${symbolCounter.explanation}` : `Пояснение не может содержать более ${maxSymbolsInInput.explanation} символов`)}
-
                 onChange={(e) => {
                   setSavedUserQuestion({
                     ...savedUserQuestion,

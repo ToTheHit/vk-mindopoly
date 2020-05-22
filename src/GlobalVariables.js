@@ -23,7 +23,7 @@ const globalVariables = {
   authToken: 'authToken',
   friendsAccessToken: 'friendsAccessToken',
   notificationAllow: 'notificationAllow',
-  serverURL: 'https://320748-cp98857.tmweb.ru',
+  serverURL: 'https://mindopoly.tech',
   quizResult: 'quizResult',
   quizQuestions: 'quizQuestions',
   tooltips: 'tooltips',

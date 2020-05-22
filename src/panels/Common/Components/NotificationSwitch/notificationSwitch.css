@@ -10,4 +10,17 @@
 .NotificationSwitch .Switch__pseudo {
   background-color: var(--switch_ios_off_border);
 }
+.NotificationSwitch__date {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 17px 0;
+}
+.NotificationSwitch__date--title {
+  color: var(--tabbar_tablet_text_secondary);
+}
+.NotificationSwitch__date--time {
+  margin-top: 5px;
+}
 /*# sourceMappingURL=notificationSwitch.css.map */

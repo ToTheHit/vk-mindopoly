@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, classNames, Gallery, Panel,
+  Button, classNames, Gallery, Panel, Snackbar,
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
+import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 
 import './startPanel.css';
 
@@ -21,6 +22,8 @@ const StartPanel = (props) => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [readyToShow, setReadyToShow] = useState(false);
 
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarError, setSnackbarError] = useState('');
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
@@ -86,6 +89,7 @@ const StartPanel = (props) => {
 
     axios.get(`${globalVariables.serverURL}/api/registerUser${window.location.search}`)
       .then((data) => {
+        console.info('Server: registration success', data);
         dispatch({
           type: 'UPDATE_TOKEN',
           payload: {
@@ -102,16 +106,39 @@ const StartPanel = (props) => {
           });
       })
       .catch((err) => {
-        console.error((err));
-        if (!err.status) {
-          // Сервер не отвечает
-          popoutState.setPopoutIsActive(false);
+        // Сервер не отвечает
+        console.info((err));
+        if (err.status) {
+          setSnackbarError(err.status);
         }
+        setShowSnackbar(true);
+        popoutState.setPopoutIsActive(false);
       });
   }
 
   return (
     <Panel id={id} className="StartPanel">
+      {showSnackbar && (
+        <Snackbar
+          duration={2000}
+          onClose={() => { setShowSnackbar(false); setSnackbarError(''); }}
+          before={(
+            <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
+          )}
+        >
+          {(snackbarError && (
+          <>
+            {`Ошибка при запросе к серверу. Номер ошибки: ${snackbarError}`}
+          </>
+          ))}
+          {(!snackbarError && (
+            <>
+              Не удалось связаться с сервером
+            </>
+          ))}
+        </Snackbar>
+      )}
+
       <Gallery
         slideWidth="100%"
         style={{ height: '100vh' }}
