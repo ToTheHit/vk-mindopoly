@@ -1,20 +1,55 @@
 .LeaderboardGenius {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+
+  .Group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    &>:not(.Header):first-child {
+      margin: 0;
+    }
+  }
   .Tabs {
     margin-top: 0 !important;
     margin-left: -15px;
     margin-right: -12px;
-
-
   }
 
+
   .Gallery {
-    box-shadow: 0 2px 24px 0 rgba(0,0,0,.08), 0 0 2px 0 rgba(0,0,0,.08);
-    height: auto;
-    border-radius: 10px;
-    transition: height ease 500ms;
-    background: var(--modal_card_background);
+    //box-shadow: 0 2px 24px 0 rgba(0,0,0,.08), 0 0 2px 0 rgba(0,0,0,.08);
+    //height: auto;
+    //border-radius: 10px;
+    //transition: height ease 500ms;
+    //background: var(--modal_card_background);
+    //overflow: visible;
+    //padding-bottom: 10px;
+    //max-height: 100%;
+    //height: 450px;
+    //height: initial;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow: visible;
+
+    &__viewport {
+      //height: auto;
+      flex-grow: 1;
+      overflow: visible;
+
+    }
     &__slide {
       height: auto;
+      //padding: 24px;
+      //margin: -12px;
+      //width: calc(100% - 24px);
+      overflow: visible;
+      padding-bottom: 30px;
+      min-height: 1px;
     }
   }
 
@@ -25,5 +60,8 @@
   }
   &__placeholder {
     background: var(--modal_card_background);
+    border-radius: 10px;
   }
 }
+
+

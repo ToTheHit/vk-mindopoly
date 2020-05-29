@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './workViewModal.css';
 import { ModalCard, ModalRoot } from '@vkontakte/vkui';
@@ -13,8 +13,23 @@ const WorkViewModal = (props) => {
   const answersLength = useSelector((state) => state.quiz.quizResult.length);
   const dispatch = useDispatch();
   const [buttonTitle, setButtonTitle] = useState('Продолжить');
-
   const [modalText, setModalText] = useState('');
+
+  const controlHardwareBackButton = useCallback(() => {
+    nextView(globalVariables.view.main);
+    // window.history.back();
+  }, []);
+
+  useEffect(() => {
+    if (modalIsActive) {
+      window.history.pushState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+      window.addEventListener('popstate', controlHardwareBackButton);
+    } else {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
+    }
+  }, [modalIsActive]);
+
   useEffect(() => {
     if (answersLength > 0) {
       setButtonTitle('Продолжить');

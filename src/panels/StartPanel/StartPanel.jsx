@@ -57,7 +57,7 @@ const StartPanel = (props) => {
             .then(() => {
               // Сервер нашёл токен в БД. Переключаемся на главный экран
               // Обновляем токен друзей для лидерборда
-              if (localStorage.getItem(globalVariables.friendsAccessToken)) {
+              if (localStorage.getItem(globalVariables.friendsAccessToken) && urlParams.get('vk_access_token_settings').includes('friends')) {
                 bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
                   .then((data) => {
                     localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);

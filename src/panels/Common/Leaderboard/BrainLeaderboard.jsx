@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './brainLeaderboard.css';
 import PropTypes from 'prop-types';
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 import {
   Cell,
@@ -24,7 +25,8 @@ const BrainLeaderboard = (props) => {
   const [ratingType, setRatingType] = useState('score');
 
   const controlHardwareBackButton = useCallback(() => {
-      setActiveStory(globalVariables.commonView.roots.main);
+    setActiveStory(globalVariables.commonView.roots.main);
+    // window.history.back();
   }, []);
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
@@ -32,6 +34,22 @@ const BrainLeaderboard = (props) => {
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    // document.body.style.position = 'fixed';
+    // document.body.style.width = '100%';
+    const scrollPosition = window.pageYOffset;
+    document.body.style.overflow = 'hidden';
+    // document.body.style.position = 'fixed';
+    return () => {
+      document.body.style.overflow = 'visible';
+      // document.body.style.position = 'inherit';
+      // document.body.style.removeProperty('position');
+      window.scrollTo(0, scrollPosition);
     };
   }, []);
 
@@ -102,7 +120,6 @@ const BrainLeaderboard = (props) => {
 BrainLeaderboard.propTypes = {
   id: PropTypes.string.isRequired,
   setActiveStory: PropTypes.func.isRequired,
-  getFriendsAccess: PropTypes.func.isRequired,
 };
 BrainLeaderboard.defaultProps = {};
 export default BrainLeaderboard;

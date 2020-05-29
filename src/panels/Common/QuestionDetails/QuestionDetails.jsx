@@ -7,6 +7,7 @@ import {
   Div,
   Group,
   Header,
+  HorizontalScroll,
   InfoRow,
   IOS,
   Panel,
@@ -32,14 +33,17 @@ const QuestionDetails = (props) => {
   const [activeTab, setActiveTab] = useState('Today');
 
   const controlHardwareBackButton = useCallback(() => {
-      setActivePanel(globalVariables.commonView.panels.main);
+    setActivePanel(globalVariables.commonView.panels.main);
+    // window.history.back();
   }, []);
+
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     window.history.pushState({ page: 'QuestionDetails' }, 'QuestionDetails', `${window.location.search}`);
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
     };
   }, []);
 
@@ -121,26 +125,28 @@ const QuestionDetails = (props) => {
 
             {(selectedQuestion.approved && (
               <>
-                <Tabs>
-                  <TabsItem
-                    selected={activeTab === 'Today'}
-                    onClick={() => setActiveTab('Today')}
-                  >
-                    Сегодня
-                  </TabsItem>
-                  <TabsItem
-                    selected={activeTab === 'Yesterday'}
-                    onClick={() => setActiveTab('Yesterday')}
-                  >
-                    Вчера
-                  </TabsItem>
-                  <TabsItem
-                    selected={activeTab === 'Overall'}
-                    onClick={() => setActiveTab('Overall')}
-                  >
-                    Все время
-                  </TabsItem>
-                </Tabs>
+                <HorizontalScroll>
+                  <Tabs>
+                    <TabsItem
+                      selected={activeTab === 'Today'}
+                      onClick={() => setActiveTab('Today')}
+                    >
+                      За сегодня
+                    </TabsItem>
+                    <TabsItem
+                      selected={activeTab === 'Yesterday'}
+                      onClick={() => setActiveTab('Yesterday')}
+                    >
+                      За вчера
+                    </TabsItem>
+                    <TabsItem
+                      selected={activeTab === 'Overall'}
+                      onClick={() => setActiveTab('Overall')}
+                    >
+                      Все время
+                    </TabsItem>
+                  </Tabs>
+                </HorizontalScroll>
                 <Card
                   mode={scheme === 'space_gray' ? 'tint' : 'outline'}
                   className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}

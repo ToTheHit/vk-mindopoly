@@ -20,7 +20,6 @@
   &--button {
     background: var(--button_secondary_background);
     min-height: 44px;
-    //height: auto;
     white-space: pre-line;
     display: flex;
     flex-direction: row;
@@ -30,16 +29,17 @@
     border-radius: 10px;
 
     &--correct {
-      background: rgb(75, 179, 75) !important;
+      background: rgb(75, 179, 75, 1) !important;
       p {
         color: #FFFFFF !important;
       }
     }
 
     &--wrong {
-      box-shadow: inset 0 0 0 1px rgba(255, 51, 71);
+      //box-shadow: inset 0 0 0 1px rgba(255, 51, 71, 1);
+      border: solid 1px red;
       p {
-        color: rgba(230, 70, 70) !important;
+        color: red !important;
       }
     }
 

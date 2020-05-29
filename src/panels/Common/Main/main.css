@@ -17,8 +17,12 @@
   padding-top: 0;
 }
 .Main--ShopButton {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   height: 30px;
 }
 .Main--ShopButton_icon {
@@ -38,9 +42,15 @@
   padding-right: 0;
 }
 .Main--shop {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 112px;
   height: 30px;
   background-color: #4BB34B;

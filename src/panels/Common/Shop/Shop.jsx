@@ -22,14 +22,18 @@ const Shop = (props) => {
   const dispatch = useDispatch();
 
   const controlHardwareBackButton = useCallback(() => {
+    // window.history.back();
     setActiveStory(globalVariables.commonView.roots.main);
   }, []);
+
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
     window.addEventListener('popstate', controlHardwareBackButton);
+    window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
     };
   }, []);
 

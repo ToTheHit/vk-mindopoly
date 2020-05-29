@@ -16,6 +16,24 @@ const App = () => {
   const dispatch = useDispatch();
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
+  function UpdateTheme() {
+    // console.info(scheme);
+    if (scheme === 'bright_light' || scheme === 'client_light') {
+      bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'dark', action_bar_color: '#fff' })
+        .catch((err) => console.info(err));
+    } else if (scheme === 'space_gray' || scheme === 'client_dark') {
+      bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
+        .catch((err) => console.info(err));
+    }
+  }
+
+  /*  useEffect(() => {
+    UpdateTheme();
+  }, [scheme]); */
+
+  const [test, setTest] = useState('light');
+
+  // useEffect(() => console.info(test), [test])
   useEffect(() => {
     bridge.subscribe(({ detail: { type, data } }) => {
       switch (type) {
@@ -23,6 +41,19 @@ const App = () => {
           const schemeAttribute = document.createAttribute('scheme');
           schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
           document.body.attributes.setNamedItem(schemeAttribute);
+          setTest((data.appearance === 'light' ? 'dark' : 'light'));
+
+          // console.info('New scheme:', data.scheme);
+
+/*          if (data.scheme === 'bright_light' || data.scheme === 'client_light') {
+            bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'dark', action_bar_color: '#fff' })
+              .catch((err) => console.info(err));
+          } else if (data.scheme === 'space_gray' || data.scheme === 'client_dark') {
+            bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
+              .catch((err) => console.info(err));
+          }*/
+
+
           dispatch({
             type: 'UPDATE_SCHEME',
             payload: schemeAttribute.value,
@@ -61,6 +92,7 @@ const App = () => {
     <ConfigProvider
       webviewType="vkapps"
       scheme={(((scheme === 'light' || scheme === 'bright_light') || scheme === 'client_light') ? 'bright_light' : 'space_gray')}
+      appearance={test}
     >
       <Root activeView={activeView}>
         <StartView id={globalVariables.view.start} nextView={setActiveView} />

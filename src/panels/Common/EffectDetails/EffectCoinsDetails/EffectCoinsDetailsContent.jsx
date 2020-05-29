@@ -33,8 +33,8 @@ const EffectCoinsDetailsContent = (props) => {
   // const confirmReward = 999;
   const quizIncome = useSelector((state) => state.userInfo.lastExamReward.coins);
   // const quizIncome = 999;
-  const storyReward = useSelector((state) => state.userInfo.isStoryConfirmed);
-  // const storyReward = 999;
+  const storiesCount = useSelector((state) => state.userInfo.storiesCount);
+  // const storiesCount = {today: 999};
 
   const [questionsIncome, setQuestionIncome] = useState(0);
   const [categoryIncome, setCategoryIncome] = useState([]);
@@ -152,7 +152,7 @@ const EffectCoinsDetailsContent = (props) => {
         description={description}
       />
       <Div style={{ paddingTop: '0px' }}>
-        {(((quizIncome > 0) && !isExamAvailable) && (
+        {((quizIncome > 0) && (
           <SimpleCell
             className="EffectCoinsDetails--itemIncome"
             disabled
@@ -184,7 +184,7 @@ const EffectCoinsDetailsContent = (props) => {
           </SimpleCell>
         ))}
 
-        {(storyReward && (
+        {(storiesCount.today > 0 && (
           <SimpleCell
             disabled
             className={'EffectGPDetails--itemIncome'}
@@ -194,13 +194,13 @@ const EffectCoinsDetailsContent = (props) => {
                 style={{ backgroundImage: `url(${Icon48Story})` }}
               />
             )}
-            indicator={`+100 монет`}
+            indicator={`+${storiesCount.today} монет`}
           >
             Публикация истории
           </SimpleCell>
         ))}
 
-        {(((confirmReward > 0 || quizIncome > 0 || storyReward) && (categoryIncome.length > 0)) && (
+        {(((confirmReward > 0 || quizIncome > 0 || storiesCount.today > 0) && (categoryIncome.length > 0)) && (
           <Separator style={{ marginTop: '16px' }} wide />
         ))}
 

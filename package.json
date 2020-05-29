@@ -32,6 +32,7 @@
     "@vkontakte/vkui": "^3.8.2",
     "axios": "^0.19.2",
     "babel-eslint": "^10.1.0",
+    "body-scroll-lock": "^3.0.2",
     "chalk": "^2.4.2",
     "core-js": "^3.6.4",
     "eruda": "^2.2.0",

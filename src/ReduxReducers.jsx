@@ -44,6 +44,10 @@ export function userInfo(state = {
     bp: 0,
     coins: 0,
   },
+  storiesCount: {
+    today: 0,
+    overall: 0,
+  },
   first_name: '',
   last_name: '',
   photo_200: '',

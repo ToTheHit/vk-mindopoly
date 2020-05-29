@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './effectGPDetails.css';
-import { Cell, Div, Header, Separator, SimpleCell, withModalRootContext, } from '@vkontakte/vkui';
+import {
+  Cell, Div, Header, Separator, SimpleCell, withModalRootContext,
+} from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon48Bubble from '../../../../assets/Icons/icn48_bubble_plus.png';
@@ -122,18 +124,27 @@ const EffectGPDetailsContent = (props) => {
     }
   }, [categoryIncome, quizIncome, confirmReward]);
 
+  function getDescription(GPToday, questionsIncome) {
+    if (GPToday === 0) {
+      return 'Пока что у Вас нет прироста очков гения. Приобретайте больше вопросов в магазине, чтобы получать больше GP.';
+    }
+    if (questionsIncome === 0) {
+      return `Сегодня Вы заработали ${GPToday} GP. Приобретайте больше вопросов в магазине, чтобы получать больше GP.`;
+    }
+
+    return `Сегодня Вы заработали ${GPToday} GP. Из них ${questionsIncome} GP принесли Ваши вопросы. Приобретайте больше вопросов в магазине, чтобы получать больше GP.`;
+  }
+
   return (
     <div className="EffectGPDetails__questionsIncome">
       <Cell
         multiline
-        description={(GPToday !== 0
-          ? `Сегодня Вы заработали ${GPToday} GP. Из них ${questionsIncome} GP принесли Ваши вопросы. Приобретайте больше вопросов в магазине, чтобы получать больше GP.`
-          : 'Пока что у Вас нет прироста очков гения. Приобретайте больше вопросов в магазине, чтобы получать больше GP.')}
+        description={getDescription(GPToday, questionsIncome)}
       />
       <Div style={{ paddingTop: '0px' }}>
-        {(((quizIncome > 0) && !isExamAvailable) && (
+        {((quizIncome > 0) && (
           <SimpleCell
-            className={'EffectGPDetails--itemIncome'}
+            className="EffectGPDetails--itemIncome"
             disabled
             before={(
               <div
@@ -150,7 +161,7 @@ const EffectGPDetailsContent = (props) => {
         {(confirmReward > 0 && (
           <SimpleCell
             disabled
-            className={'EffectGPDetails--itemIncome'}
+            className="EffectGPDetails--itemIncome"
             before={(
               <div
                 className="EffectGPDetails--icon"

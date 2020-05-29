@@ -18,7 +18,7 @@ const globalVariables = {
       shop: 'Shop',
       shopQuestion: 'ShopQuestion',
       leaderboard: 'Leaderboard',
-    }
+    },
   },
   authToken: 'authToken',
   friendsAccessToken: 'friendsAccessToken',

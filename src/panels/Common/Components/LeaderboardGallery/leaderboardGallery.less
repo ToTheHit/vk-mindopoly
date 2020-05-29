@@ -1,14 +1,26 @@
 .LeaderboardGallery {
-  .Card {
-    box-shadow: inherit;
+  &--content {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: visible;
+    padding: 12px 12px 24px 12px;
+    border-radius: 10px;
+    width: calc(100% - 24px);
+
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    .Card {
+      height: 100%;
+      &__in {
+
+        height: 100%;
+      }
+    }
   }
 
   &--card {
-    box-shadow: inherit;
-
-  }
-  .Card--md-shadow {
-    box-shadow: inherit;
+    height: auto;
   }
 
   .Gallery__slide {

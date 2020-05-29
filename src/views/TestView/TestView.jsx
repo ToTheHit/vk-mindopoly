@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './testView.css';
-import { View, } from '@vkontakte/vkui';
+import { View } from '@vkontakte/vkui';
 
 import bridge from '@vkontakte/vk-bridge';
+import { useDispatch } from 'react-redux';
 import TestPanel from './TestPanel';
 import TestPanel2 from './TestPanel2';
 import globalVariables from '../../GlobalVariables';
-import WorkViewModal from "../WorkView/WorkViewModal";
-import { useDispatch } from "react-redux";
+import WorkViewModal from '../WorkView/WorkViewModal';
 
 const TestView = (props) => {
   const { id } = props;
@@ -18,6 +18,11 @@ const TestView = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    setTimeout(() => {
+      console.info(urlParams.get('vk_access_token_settings').includes('friends'));
+
+    }, 2000)
     /*    bridge.send('VKWebAppAllowNotifications', {})
       .then(data => setResult(data))
       .catch(err => setError(err)); */
@@ -93,10 +98,10 @@ const TestView = (props) => {
           .catch((err) => console.info(err));
       }); */
     // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: null });
-    /*            bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
+    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'video, friends' })
       .then((data) => {
-        bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: data.access_token });
-      }); */
+        // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: data.access_token });
+      });
     /*    bridge.send("VKWebAppShowStoryBox", { "background_type" : "image", "url" : "https://sun9-65.userapi.com/c850136/v850136098/1b77eb/0YK6suXkY24.jpg" })
       .then((data) => {
         setTimeout(() => {
@@ -115,6 +120,7 @@ const TestView = (props) => {
         }, 5000);
       })); */
 
+    /*
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
       value: '',
@@ -130,6 +136,7 @@ const TestView = (props) => {
       key: globalVariables.tooltips,
       value: '',
     });
+*/
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
           .then((data) => {
@@ -154,7 +161,7 @@ const TestView = (props) => {
               link_url: 'https://vk.com/app7441788',
             })*!/
 
-          })*/
+          }) */
 
   }, []);
 

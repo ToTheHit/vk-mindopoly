@@ -40,14 +40,17 @@ const ShopQuestion = (props) => {
   const userToken = useSelector((state) => state.userToken.token);
 
   const controlHardwareBackButton = useCallback(() => {
-      setActivePanel(globalVariables.commonView.panels.shop);
+    setActivePanel(globalVariables.commonView.panels.shop);
+    // window.history.back();
   }, []);
+
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     window.history.pushState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
     };
   }, []);
 
@@ -128,7 +131,7 @@ const ShopQuestion = (props) => {
   const maxSymbolsInInput = {
     question: 150,
     answers: [52, 52, 52, 52],
-    explanation: 150,
+    explanation: 300,
   };
   const [symbolCounter, setSymbolCounter] = useState({
     question: maxSymbolsInInput.question,
@@ -146,6 +149,7 @@ const ShopQuestion = (props) => {
   const refQuestionIncorrectAnswer1 = useRef(null);
   const refQuestionIncorrectAnswer2 = useRef(null);
   const refQuestionIncorrectAnswer3 = useRef(null);
+  const refQuestionExplanation = useRef(null);
 
   const [emptyInput, setEmptyInput] = useState({
     input0: false,
@@ -192,6 +196,33 @@ const ShopQuestion = (props) => {
 
   function sendQuestion() {
     let canSend = true;
+    refQuestionText.current.value = refQuestionText.current.value.trim();
+    refQuestionCorrectAnswer.current.value = refQuestionCorrectAnswer.current.value.trim();
+    refQuestionIncorrectAnswer1.current.value = refQuestionIncorrectAnswer1.current.value.trim();
+    refQuestionIncorrectAnswer2.current.value = refQuestionIncorrectAnswer2.current.value.trim();
+    refQuestionIncorrectAnswer3.current.value = refQuestionIncorrectAnswer3.current.value.trim();
+    refQuestionExplanation.current.value = refQuestionExplanation.current.value.trim();
+    setEmptyInput({
+      input0: false,
+      input1: false,
+      input2: false,
+      input3: false,
+      input4: false,
+    });
+    setSavedUserQuestion((prevState) => ({
+      ...prevState,
+      ...{
+        text: refQuestionText.current.value,
+        answers: [
+          refQuestionCorrectAnswer.current.value,
+          refQuestionIncorrectAnswer1.current.value,
+          refQuestionIncorrectAnswer2.current.value,
+          refQuestionIncorrectAnswer3.current.value,
+        ],
+        explanation: refQuestionExplanation.current.value,
+      },
+    }));
+
     if (!refQuestionText.current.value) {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input0: true } }));
@@ -202,26 +233,63 @@ const ShopQuestion = (props) => {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true } }));
     }
-    if (refQuestionCorrectAnswer.current.value.length > maxSymbolsInInput.answers[0]) canSend = false;
+    if (refQuestionCorrectAnswer.current.value.length > maxSymbolsInInput.answers[0]) {
+      canSend = false;
+    }
 
     if (!refQuestionIncorrectAnswer1.current.value) {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input2: true } }));
     }
-    if (refQuestionIncorrectAnswer1.current.value.length > maxSymbolsInInput.answers[1]) canSend = false;
+    if (refQuestionIncorrectAnswer1.current.value.length > maxSymbolsInInput.answers[1]) {
+      canSend = false;
+    }
 
     if (!refQuestionIncorrectAnswer2.current.value) {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true } }));
     }
-    if (refQuestionIncorrectAnswer2.current.value.length > maxSymbolsInInput.answers[2]) { canSend = false; }
+    if (refQuestionIncorrectAnswer2.current.value.length > maxSymbolsInInput.answers[2]) {
+      canSend = false;
+    }
 
     if (!refQuestionIncorrectAnswer3.current.value) {
       canSend = false;
       setEmptyInput((prevState) => ({ ...prevState, ...{ input4: true } }));
     }
-    if (refQuestionIncorrectAnswer3.current.value.length > maxSymbolsInInput.answers[3]) canSend = false;
+    if (refQuestionIncorrectAnswer3.current.value.length > maxSymbolsInInput.answers[3]) {
+      canSend = false;
+    }
+    if (new Set([
+      refQuestionIncorrectAnswer1.current.value,
+      refQuestionIncorrectAnswer2.current.value,
+      refQuestionIncorrectAnswer3.current.value,
+      refQuestionCorrectAnswer.current.value,
+    ]).size !== 4) {
+      canSend = false;
+      if (refQuestionCorrectAnswer.current.value === refQuestionIncorrectAnswer1.current.value) {
+        console.info('1', refQuestionCorrectAnswer.current.value, refQuestionIncorrectAnswer1.current.value);
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true, input2: true } }));
+      }
+      if (refQuestionCorrectAnswer.current.value === refQuestionIncorrectAnswer2.current.value) {
+        console.info('2');
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true, input3: true } }));
+      }
+      if (refQuestionCorrectAnswer.current.value === refQuestionIncorrectAnswer3.current.value) {
+        console.info('3');
 
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input1: true, input4: true } }));
+      }
+      if (refQuestionIncorrectAnswer1.current.value === refQuestionIncorrectAnswer2.current.value) {
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input2: true, input3: true } }));
+      }
+      if (refQuestionIncorrectAnswer1.current.value === refQuestionIncorrectAnswer3.current.value) {
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input2: true, input4: true } }));
+      }
+      if (refQuestionIncorrectAnswer2.current.value === refQuestionIncorrectAnswer3.current.value) {
+        setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true, input4: true } }));
+      }
+    }
     if (!canSend) return;
     setCheckingProgress(true);
     // Отсылаем вопрос на сервер
@@ -237,7 +305,6 @@ const ShopQuestion = (props) => {
       if (savedUserQuestion.explanation) data.explanation = savedUserQuestion.explanation;
       axios.post(`${globalVariables.serverURL}/api/buy/question`, data, {
         params: {
-          token: userToken,
           id: urlParams.get('vk_user_id'),
         },
         headers: {
@@ -254,6 +321,7 @@ const ShopQuestion = (props) => {
               },
             },
           });
+          console.info('>>>>');
           setSavedUserQuestion({
             text: '',
             answers: [
@@ -278,8 +346,9 @@ const ShopQuestion = (props) => {
           });
         })
         .catch((err) => {
-          console.error('Main, get/getCategoriesState', err);
-          console.error(err.response.status);
+          console.info('Main, get/getCategoriesState', err);
+          console.error('Error:', err.response.status);
+          console.info(savedUserQuestion);
           setCheckingProgress(false);
 
           if (err.response.status === 403) {
@@ -334,11 +403,14 @@ const ShopQuestion = (props) => {
                   : (symbolCounter.question >= 0 ? `Осталось символов: ${symbolCounter.question}` : `Вопрос не может содержать более ${maxSymbolsInInput.question} символов`)}
                 value={savedUserQuestion.text}
                 onChange={(e) => {
+                  const questionLength = {
+                    question: maxSymbolsInInput.question - e.target.value.length,
+                  };
                   setSymbolCounter(
                     (prevState) => (
                       {
                         ...prevState,
-                        ...{ question: maxSymbolsInInput.question - e.target.value.length },
+                        ...questionLength,
                       }),
                   );
                   setSavedUserQuestion({ ...savedUserQuestion, ...{ text: e.target.value } });
@@ -387,7 +459,7 @@ const ShopQuestion = (props) => {
                     Неправильные
                     ответы
                   </div>
-)}
+                )}
                 type="text"
                 placeholder={(symbolCounter.question === maxSymbolsInInput.question ? inputPlaceholders[questionData.category].answers[1] : '')}
                 className="ShopQuestion--incorrectAnswers_input"
@@ -470,6 +542,7 @@ const ShopQuestion = (props) => {
                 placeholder="Введите текст пояснения для Вашего вопроса"
                 value={savedUserQuestion.explanation}
                 status={(symbolCounter.explanation < 0) && 'error'}
+                getRef={refQuestionExplanation}
                 bottom={(symbolCounter.explanation >= 0 ? `Осталось символов: ${symbolCounter.explanation}` : `Пояснение не может содержать более ${maxSymbolsInInput.explanation} символов`)}
                 onChange={(e) => {
                   setSavedUserQuestion({
@@ -573,7 +646,8 @@ const ShopQuestion = (props) => {
                       mode="secondary"
                       onClick={() => {
                         setResultType('');
-                        sendQuestion(savedUserQuestion);
+                        // sendQuestion(savedUserQuestion);
+                        setActiveSubviewPanel('ShopQuestionSubview-makeQuestion');
                       }}
                     >
                       Повторить

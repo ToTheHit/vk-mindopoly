@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import '../work.css';
 import { Gallery, Panel, PanelHeader } from '@vkontakte/vkui';
@@ -24,45 +24,16 @@ const WorkGallery = (props) => {
     selectedAnswerNumber: -1,
   });
   const [result, setResult] = useState([]);
+  const cancelSource = React.useRef(null);
 
   const disableSwipe = useCallback((event) => {
     event.stopPropagation();
   }, []);
-
-  useEffect(() => {
-    if (!modalStatus.modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
-      if (result.length >= questions.length - 1) {
-        setActivePanel('QuizResultPanel');
-      } else if (modalStatus.start) {
-        bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
-          .then(((data) => {
-            let storedQuestions;
-
-            try {
-              storedQuestions = JSON.parse(data.keys[0].value);
-            } catch (e) {
-              console.info('WorkGallery, get questions', e);
-              storedQuestions = [];
-            }
-            if (!storedQuestions || !Array.isArray(storedQuestions)) storedQuestions = [];
-            const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
-
-            storedQuestions.push({
-              correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
-              questionId: questions[questionIndex + 1]._id,
-              selectedAnswerNumber: rndInt,
-              selectedAnswer: questions[questionIndex + 1].answers[rndInt],
-            });
-            bridge.send('VKWebAppStorageSet', {
-              key: globalVariables.quizResult,
-              value: JSON.stringify(storedQuestions),
-            });
-
-            setQuestionIndex(questionIndex + 1);
-          }));
-      }
-    }
-  }, [modalStatus]);
+  function getIncorrectAnswerNumber(correctAnswerNumber) {
+    const rndInt = Math.floor(Math.random() * 4);
+    if (rndInt === correctAnswerNumber) return getIncorrectAnswerNumber(correctAnswerNumber);
+    return rndInt;
+  }
 
   function shuffle(array, prevIndex) {
     const copy = [];
@@ -100,32 +71,99 @@ const WorkGallery = (props) => {
     });
   }
 
-  function getIncorrectAnswerNumber(correctAnswerNumber) {
-    const rndInt = Math.floor(Math.random() * 4);
-    if (rndInt === correctAnswerNumber) return getIncorrectAnswerNumber(correctAnswerNumber);
-    return rndInt;
-  }
+  useEffect(() => {
+    if (!modalStatus.modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
+      if (result.length >= questions.length - 1) {
+        setActivePanel('QuizResultPanel');
+      } else if (modalStatus.start) {
+        bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
+          .then(((data) => {
+            let storedQuestions;
+
+            try {
+              storedQuestions = JSON.parse(data.keys[0].value);
+            } catch (e) {
+              console.info('WorkGallery, get questions', e);
+              storedQuestions = [];
+            }
+            if (!storedQuestions || !Array.isArray(storedQuestions)) storedQuestions = [];
+            const rndInt = getIncorrectAnswerNumber(questions[questionIndex + 1].correctAnswerNumber);
+
+            storedQuestions.push({
+              correctAnswerNumber: questions[questionIndex + 1].correctAnswerNumber,
+              questionId: questions[questionIndex + 1]._id,
+              selectedAnswerNumber: rndInt,
+              selectedAnswer: questions[questionIndex + 1].answers[rndInt],
+            });
+            bridge.send('VKWebAppStorageSet', {
+              key: globalVariables.quizResult,
+              value: JSON.stringify(storedQuestions),
+            });
+
+            setQuestionIndex(questionIndex + 1);
+          }));
+      }
+    }
+  }, [modalStatus]);
+
+
+
+
+  const source = axios.CancelToken.source();
+  const bridgeOnRestore = useCallback((e) => {
+    setTimeout(() => {
+      console.info(e.detail);
+
+    }, 1000);
+    switch (e.detail.type) {
+      case 'VKWebAppViewHide': {
+        cancelSource.current.cancel('Hide view');
+        break;
+      }
+      case 'VKWebAppViewRestore': {
+        if (questions.length === 0) {
+          cancelSource.current.cancel('Hide view');
+          window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
+          setPopoutIsActive(false);
+          nextView(globalVariables.view.main);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }, []);
+
+  const onRestore = useCallback(() => {
+    console.info('restore #2');
+  }, []);
 
   // Первое получение всех вопросов
   useEffect(() => {
+    cancelSource.current = axios.CancelToken.source();
     const urlParams = new URLSearchParams(window.location.search);
+    bridge.subscribe(bridgeOnRestore);
+    window.addEventListener('focus', onRestore);
+
     if (userToken) {
-      bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizQuestions, globalVariables.quizResult] })
+      bridge.send('VKWebAppStorageGet', {
+        keys: [globalVariables.quizQuestions, globalVariables.quizResult],
+      })
         .then((storedQuiz) => {
           let storedQuestions = [];
           let storedAnswers = [];
-          console.info(storedQuiz);
           if (storedQuiz.keys[0].value) {
             if (JSON.parse(storedQuiz.keys[0].value).length > 0) {
               storedQuestions = JSON.parse(storedQuiz.keys[0].value);
               if (storedQuiz.keys[1].value) storedAnswers = JSON.parse(storedQuiz.keys[1].value);
             }
           }
-
           // console.info('storedQuestions', storedQuestions)
           // console.info('storedAnswers', storedAnswers)
-
           axios.get(`${globalVariables.serverURL}/api/exam`, {
+            cancelToken: cancelSource.current.token,
+            timeout: 5000,
+            timeoutErrorMessage: 'Timeout',
             params: {
               id: urlParams.get('vk_user_id'),
             },
@@ -224,12 +262,14 @@ const WorkGallery = (props) => {
               }
             })
             .catch((err) => {
-              console.error('Work, Get /api/exam', err);
+              console.info('Work, Get /api/exam', err);
+              console.info(err);
               // Сервер не нашёл токен в БД.
               // Перемещение на стартовый экран
               nextView(globalVariables.view.start);
             });
-        });
+        })
+        .catch((bridgeError) => console.info('bridgeError', bridgeError));
     } else {
       // Перемещение на стартовый экран
       nextView(globalVariables.view.start);
@@ -238,7 +278,13 @@ const WorkGallery = (props) => {
     // Выключаем возможность свайпать галерею
     window.addEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     return () => {
+      console.info('unmout gallery');
+      cancelSource.current.cancel();
       window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
+      window.removeEventListener('focus', onRestore);
+      bridge.unsubscribe(bridgeOnRestore);
+      setPopoutIsActive(false);
+
     };
   }, []);
 
@@ -265,6 +311,7 @@ const WorkGallery = (props) => {
   }, [result]);
 
   useEffect(() => {
+    console.info('questions.length', questions.length);
     if (questions.length > 0) {
       dispatch({
         type: 'UPDATE_WORK-VIEW-MODAL',

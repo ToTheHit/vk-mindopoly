@@ -11,6 +11,7 @@ import {
   PanelHeaderBack,
   Separator,
   SimpleCell,
+  Snackbar,
   Text,
   Title,
   usePlatform,
@@ -19,15 +20,15 @@ import bridge from '@vkontakte/vk-bridge';
 import PropTypes from 'prop-types';
 import './quizResult.css';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 
+import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 import globalVariables from '../../GlobalVariables';
 
 const QuizResult = (props) => {
   const { id, nextView, setPopoutShadowIsActive } = props;
   const platform = usePlatform();
-  const dispatch = useDispatch();
   const userToken = useSelector((state) => state.userToken.token);
   const quizResult = useSelector((state) => state.quiz.quizResult);
   const questions = useSelector((state) => state.quiz.questions);
@@ -45,9 +46,12 @@ const QuizResult = (props) => {
     isCorrectAnswer: false,
   });
   const [storySent, setStorySent] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const sourceAxios = axios.CancelToken.source();
 
   const controlHardwareBackButton = useCallback(() => {
-      nextView(globalVariables.view.main);
+    nextView(globalVariables.view.main);
   }, []);
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
@@ -139,12 +143,16 @@ const QuizResult = (props) => {
       else if (percentageCompleted <= 0.75) setPhrase('Неплохой результат!');
       else setPhrase('Хороший результат!');
     }
+    sourceAxios.cancel();
   }, []);
 
   function sendStory() {
     setPopoutShadowIsActive(true);
     const urlParams = new URLSearchParams(window.location.search);
     axios.get(`${globalVariables.serverURL}/api/sticker`, {
+      timeout: 15000,
+      timeoutErrorMessage: 'timeout',
+      cancelToken: sourceAxios.token,
       params: {
         questionID: storyQuestion._id,
         id: urlParams.get('vk_user_id'),
@@ -160,8 +168,8 @@ const QuizResult = (props) => {
           locked: true,
           url: 'https://320748-cp98857.tmweb.ru/static/images/mp-story-bg.png',
           attachment: {
-            text: "vote",
-            type: "url",
+            text: 'vote',
+            type: 'url',
             url: 'https://vk.com/app7441788',
           },
           stickers: [
@@ -176,33 +184,6 @@ const QuizResult = (props) => {
                   relation_width: 0.7,
                   // translation_y: 0.0,
                 },
-                /*clickable_zones: [
-                  {
-                    action_type: 'link',
-                    action: {
-                      link: 'https://vk.com/app7441788',
-                      tooltip_text_key: 'Перейти в Мозгополию',
-                    },
-                    clickable_area: [
-                      {
-                        x: 0,
-                        y: 0,
-                      },
-                      {
-                        x: 536,
-                        y: 0,
-                      },
-                      {
-                        x: 536,
-                        y: 96,
-                      },
-                      {
-                        x: 0,
-                        y: 96,
-                      },
-                    ],
-                  },
-                ],*/
               },
             },
             {
@@ -216,40 +197,13 @@ const QuizResult = (props) => {
                   translation_y: -0.01,
                 },
                 can_delete: false,
-/*                clickable_zones: [
-                  {
-                    action_type: 'link',
-                    action: {
-                      link: 'https://vk.com/app7441788',
-                      tooltip_text_key: 'fill',
-                    },
-                    clickable_area: [
-                      {
-                        x: 0,
-                        y: 0,
-                      },
-                      {
-                        x: 1170,
-                        y: 0,
-                      },
-                      {
-                        x: 1170,
-                        y: 1500,
-                      },
-                      {
-                        x: 0,
-                        y: 1500,
-                      },
-                    ],
-                  },
-                ],*/
               },
             },
           ],
         })
           .then((storyData) => {
             if (storyData.result) {
-              setStoryReward(100);
+              setStoryReward(50);
               setPopoutShadowIsActive(false);
               setStorySent(true);
               axios.post(`${globalVariables.serverURL}/api/confirmStory`, {}, {
@@ -260,22 +214,17 @@ const QuizResult = (props) => {
                   'X-Access-Token': userToken,
                 },
               });
-              /*                .then(() => {
-                  setPopoutShadowIsActive(false);
-                  setStorySent(true);
-                })
-                .catch(() => {
-                  setPopoutShadowIsActive(false);
-                  setStorySent(true);
-                }); */
             }
           })
-          .catch((err) => {
+          .catch(() => {
             setPopoutShadowIsActive(false);
           });
       })
       .catch((error) => {
         console.info('StoryServerError', error);
+        if (error.code === 'ECONNABORTED') {
+          setShowSnackbar(true);
+        }
         setPopoutShadowIsActive(false);
       });
   }
@@ -292,6 +241,20 @@ const QuizResult = (props) => {
       >
         Результат
       </PanelHeader>
+      {showSnackbar && (
+        <Snackbar
+          duration={2000}
+          onClose={() => {
+            setShowSnackbar(false);
+          }}
+          before={(
+            <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
+          )}
+        >
+          Ошибка при запросе к серверу: Timeout
+        </Snackbar>
+      )}
+
       {correctAnswers === quizResult.length ? (
         <Group className="QuizResult--header">
           <Text>
@@ -318,6 +281,7 @@ const QuizResult = (props) => {
         >
           <Div className="QuizResult--rowContainer">
             <SimpleCell
+              disabled
               before={(
                 <svg
                   width="32px"
@@ -341,6 +305,7 @@ const QuizResult = (props) => {
             </SimpleCell>
             <Separator wide />
             <SimpleCell
+              disabled
               before={(
                 <svg
                   width="32px"
@@ -381,6 +346,7 @@ const QuizResult = (props) => {
               <>
                 <Separator wide />
                 <SimpleCell
+                  disabled
                   before={(
                     <svg
                       className="QuizResult--icon"
@@ -446,7 +412,7 @@ const QuizResult = (props) => {
                       weight="regular"
                       className="QuizResult--buttonColumn__card--awards"
                     >
-                      +100 монет
+                      +50 монет
                     </Caption>
                   </Div>
                 </Card>

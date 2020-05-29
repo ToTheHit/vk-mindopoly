@@ -28,7 +28,6 @@ const LeaderboardGallery = (props) => {
   const [renderedWorldLeaderboard, setRenderedWorldLeaderboard] = useState([]);
   const [cardHeight, setCardHeight] = useState(0);
 
-
   useEffect(() => {
     if (activeTab === 'WorldLeaderboardTab') setSlideIndex(0);
     else if (activeTab === 'FriendsLeaderboardTab') setSlideIndex(1);
@@ -48,7 +47,7 @@ const LeaderboardGallery = (props) => {
           <b>{item.last_name}</b>
         </SimpleCell>
         {/* {index !== (friendsLeaderboard.length - 1) && <Separator wide />} */}
-        <Separator wide />
+        <Separator />
       </div>
     ));
     setRenderedFriendsLeaderBoard(rendered);
@@ -67,7 +66,7 @@ const LeaderboardGallery = (props) => {
           {`${item.first_name} `}
           <b>{item.last_name}</b>
         </SimpleCell>
-        {index !== (worldLeaderboard.length - 1) && <Separator wide />}
+        {index !== (worldLeaderboard.length - 1) && <Separator />}
       </div>
     ));
     setRenderedWorldLeaderboard(rendered);
@@ -79,11 +78,13 @@ const LeaderboardGallery = (props) => {
     if (activeTab === 'WorldLeaderboardTab') {
       height *= renderedWorldLeaderboard.length;
     } else if (!localStorage.getItem(globalVariables.friendsAccessToken)) {
-      height = 315;
+      if (spinnerIsActive) {
+        height = 315 + 96;
+      } else height = 315;
     } else height = height * renderedFriendsLeaderboard.length + 315;
 
-    setCardHeight(height);
-  }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard]);
+    // setCardHeight(height);
+  }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard, spinnerIsActive]);
 
   return (
     <Gallery
@@ -99,72 +100,78 @@ const LeaderboardGallery = (props) => {
         }
       }}
       align="center"
-      style={{ height: cardHeight }}
+      // style={{ height: cardHeight }}
     >
-      <Card
-        mode="shadow"
-        className="LeaderboardGallery--card"
-        style={{ height: 'auto' }}
-      >
-        {renderedWorldLeaderboard}
-      </Card>
-      <Card
-        mode="shadow"
-        style={{ height: 'auto' }}
-        className="LeaderboardGallery--card"
-      >
+      <div className="LeaderboardGallery--content">
+        <Card
+          mode="shadow"
+          className="LeaderboardGallery--card"
+          style={{ height: 'auto' }}
+        >
+          {renderedWorldLeaderboard}
+        </Card>
+      </div>
 
-        {(localStorage.getItem(globalVariables.friendsAccessToken) && renderedFriendsLeaderboard)}
-        {spinnerIsActive && <PanelSpinner size="small" />}
-        {(!localStorage.getItem(globalVariables.friendsAccessToken) && (
-          <Placeholder
-            className="LeaderboardGenius__placeholder"
-            icon={(
-              <Icon56Users3Outline
-                width={56}
-                height={56}
-                style={{ color: 'var(--button_primary_background)' }}
-              />
-            )}
-            header="Доступ к друзьям"
-            action={(
-              <Button
-                size="l"
-                onClick={getFriendsAccess}
-              >
-                Разрешить
-              </Button>
-            )}
-          >
-            Мозгополии необходим список Ваших друзей, чтобы составить таблицу лидеров.
-          </Placeholder>
-        ))}
+      <div className="LeaderboardGallery--content">
+        <Card
+          mode="shadow"
+          style={{ height: 'auto' }}
+          className="LeaderboardGallery--card"
+        >
 
-        {(localStorage.getItem(globalVariables.friendsAccessToken) && (
-          <Placeholder
-            className="LeaderboardGenius__placeholder"
-            icon={(
-              <Icon24UserAddOutline
-                width={56}
-                height={36}
-                style={{ color: 'var(--button_primary_background)' }}
-              />
-            )}
-            header="Пригласить друзей"
-            action={(
-              <Button
-                size="l"
-                onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
-              >
-                Пригласить
-              </Button>
-            )}
-          >
-            Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
-          </Placeholder>
-        ))}
+          {(localStorage.getItem(globalVariables.friendsAccessToken) && renderedFriendsLeaderboard)}
+          {spinnerIsActive && <PanelSpinner size="small" />}
+          {(!localStorage.getItem(globalVariables.friendsAccessToken) && (
+            <Placeholder
+              className="LeaderboardGenius__placeholder"
+              icon={(
+                <Icon56Users3Outline
+                  width={56}
+                  height={56}
+                  style={{ color: 'var(--button_primary_background)' }}
+                />
+              )}
+              header="Доступ к друзьям"
+              action={(
+                <Button
+                  size="l"
+                  onClick={getFriendsAccess}
+                >
+                  Разрешить
+                </Button>
+              )}
+            >
+              Мозгополии необходим список Ваших друзей, чтобы составить таблицу лидеров.
+            </Placeholder>
+          ))}
 
-      </Card>
+          {(localStorage.getItem(globalVariables.friendsAccessToken) && (
+            <Placeholder
+              className="LeaderboardGenius__placeholder"
+              icon={(
+                <Icon24UserAddOutline
+                  width={56}
+                  height={36}
+                  style={{ color: 'var(--button_primary_background)' }}
+                />
+              )}
+              header="Пригласить друзей"
+              action={(
+                <Button
+                  size="l"
+                  onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
+                >
+                  Пригласить
+                </Button>
+              )}
+            >
+              Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
+            </Placeholder>
+          ))}
+
+        </Card>
+      </div>
+
     </Gallery>
   );
 };

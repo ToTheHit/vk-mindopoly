@@ -4,4 +4,23 @@
   background-color: var(--content_tint_background);
   margin-top: 15px;
 }
+html,
+body {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+* {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+input,
+textarea {
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto;
+}
 /*# sourceMappingURL=app.css.map */

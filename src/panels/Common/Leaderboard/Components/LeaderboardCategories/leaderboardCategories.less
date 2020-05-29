@@ -1,6 +1,12 @@
-.LeaderboardCategories{
+.LeaderboardCategories {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: scroll;
+  padding-bottom: 20px;
 
   &__Category {
+
     &--header {
       display: flex;
       align-items: center;
@@ -17,6 +23,7 @@
       }
     }
   }
+
   .Group{
     &__description {
       padding: 0 12px
@@ -36,6 +43,7 @@
     background-repeat: no-repeat;
     margin-right: 11px;
   }
+
   .Header{
     &__subtitle {
       white-space: pre-line;

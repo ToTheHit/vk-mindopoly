@@ -64,7 +64,7 @@ const Mindbreakers = (props) => {
           </Button>
         )}
       >
-        Приобретайте вопросы в магазине и зарабатывайте очки BP на чужих ошибках.
+        Приобретайте вопросы в магазине и зарабатывайте очки GP на чужих ошибках.
       </Placeholder>
     );
   }, [JSON.stringify(questionsCategory), questionsCategory.length]);

@@ -22,6 +22,7 @@ const Main = (props) => {
   const userInfo = useSelector((state) => state.userInfo);
   const userQuestions = useSelector((state) => state.userQuestions);
   const tooltipsState = useSelector((state) => state.tooltip.mainScreenComplete);
+  const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
 
   const {
     id, setActivePanel,
@@ -44,22 +45,18 @@ const Main = (props) => {
       axios.all([
         axios.get(`${globalVariables.serverURL}/api/userInfo`, {
           params: {
-            // id: '31818927',
             id: urlParams.get('vk_user_id'),
           },
           headers: {
             'X-Access-Token': userToken,
-            // 'X-Access-Token': '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
           },
         }),
         axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
           params: {
-            // id: '31818927',
             id: urlParams.get('vk_user_id'),
           },
           headers: {
             'X-Access-Token': userToken,
-            // 'X-Access-Token': '9932fd5fc8d9ebf4a6959ae5d444cc6516f6a802fa3e58aec46614cbd0d1c9c6',
           },
         }),
       ])
@@ -81,60 +78,10 @@ const Main = (props) => {
             lastExamReward: srvData.lastExamReward,
             confirmReward: srvData.confirmReward,
             leads: srvData.leads,
-            /* leads: [
-              {
-                category: 'Math',
-                questionsCount: 1,
-              },
-              {
-                category: 'Russian',
-                questionsCount: 2,
-              },
-              {
-                category: 'Literature',
-                questionsCount: 5,
-              },
-              {
-                category: 'Physics',
-                questionsCount: 999,
-              },
-              {
-                category: 'Chemistry',
-                questionsCount: 999,
-              },
-              {
-                category: 'Astronomy',
-                questionsCount: 999,
-              },
-              {
-                category: 'Biology',
-                questionsCount: 999,
-              },
-              {
-                category: 'History',
-                questionsCount: 999,
-              },
-              {
-                category: 'Art',
-                questionsCount: 999,
-              },
-              {
-                category: 'Sport',
-                questionsCount: 999,
-              },
-              {
-                category: 'Geography',
-                questionsCount: 999,
-              },
-              {
-                category: 'Other',
-                questionsCount: 999,
-              },
-            ], */
+            storiesCount: srvData.storiesCount,
             effects: [],
             msToNextExam: srvData.msToNextExam,
           };
-          // console.info(user)
 
           if (!tooltipsState && !user.isExamAvailable) {
             dispatch({
@@ -336,13 +283,9 @@ const Main = (props) => {
     switch (e.detail.type) {
       case 'VKWebAppViewRestore': {
         updateView();
-        const dateNow = new Date();
-        // console.info('Restore from VK', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
         break;
       }
       case 'VKWebAppViewHide': {
-        const dateNow = new Date();
-        // console.info('Hide', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
         appIsClosed = true;
         break;
       }
@@ -351,17 +294,37 @@ const Main = (props) => {
     }
   }, []);
 
-
   const onRestore = useCallback(() => {
     if (appIsClosed) {
-      const dateNow = new Date();
-      // console.info('Full restore (JS)', `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`);
       appIsClosed = false;
       updateView();
     }
   }, []);
 
+  const [closeApp, setCloseApp] = useState(false);
   useEffect(() => {
+    console.info('closeApp', closeApp);
+    if (!mainViewModalName && closeApp) {
+      bridge.send('VKWebAppClose', { status: 'success' });
+    }
+    else {
+      setCloseApp(false);
+    }
+  }, [closeApp]);
+
+  const controlHardwareBackButton = useCallback(() => {
+    // window.history.back();
+    console.info('back');
+    setCloseApp(true);
+    // console.info('inside callback:', canExit, mainViewModalName);
+
+      // bridge.send('VKWebAppClose', { status: 'success' });
+
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
     if (userInfo.date === 0) {
       setPopoutMainView(true);
     } else {
@@ -379,9 +342,12 @@ const Main = (props) => {
     });
     bridge.subscribe(bridgeOnRestore);
     window.addEventListener('focus', onRestore);
+    window.addEventListener('popstate', controlHardwareBackButton);
+    window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
     return () => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);
+      window.removeEventListener('popstate', controlHardwareBackButton);
     };
   }, []);
 

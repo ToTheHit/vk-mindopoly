@@ -1,10 +1,7 @@
 .RenderedQuestionCard--card {
+  -webkit-transition: all 0.1s linear;
+  -o-transition: all 0.1s linear;
   transition: all 0.1s linear;
-  user-select: none !important;
-  /*    &:hover {
-          transform: scale(0.97);
-          box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .04), 0 0 2px 0 rgba(0, 0, 0, .04);
-        }*/
   height: auto;
   margin-top: 10px;
 }
@@ -14,50 +11,82 @@
 .RenderedQuestionCard--card:first-child {
   margin-top: 0;
 }
+.RenderedQuestionCard--card__background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  opacity: 0.12;
+  z-index: -1;
+}
 .RenderedQuestionCard--card__header {
   position: relative;
-  padding-left: 12px;
   font-size: 12px;
   color: var(--text_secondary);
-  user-select: none !important;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 .RenderedQuestionCard--card__header-dot {
   content: '';
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
   height: 6px;
   width: 6px;
   border-radius: 50%;
   background-color: var(--toolbar_attach_background_from);
 }
 .RenderedQuestionCard--card__text {
-  margin-top: 10px;
-  user-select: none !important;
+  -webkit-user-select: none !important;
+     -moz-user-select: none !important;
+      -ms-user-select: none !important;
+          user-select: none !important;
 }
 .RenderedQuestionCard--card__footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
-  user-select: none !important;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 6px;
+  -webkit-user-select: none !important;
+     -moz-user-select: none !important;
+      -ms-user-select: none !important;
+          user-select: none !important;
 }
 .RenderedQuestionCard--card__footer-item {
   color: var(--text_secondary);
   font-size: 12px;
-  user-select: none !important;
+  -webkit-user-select: none !important;
+     -moz-user-select: none !important;
+      -ms-user-select: none !important;
+          user-select: none !important;
 }
 .RenderedQuestionCard--description {
-  user-select: none !important;
+  -webkit-user-select: none !important;
+     -moz-user-select: none !important;
+      -ms-user-select: none !important;
+          user-select: none !important;
   font-size: 12px;
   white-space: pre-line;
   line-height: normal;
 }
 .RenderedQuestionCard--ShopButton {
   margin-top: 6px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   height: 30px;
 }
 .RenderedQuestionCard--ShopButton_icon {
@@ -80,6 +109,8 @@
   height: 43px !important;
 }
 .RenderedQuestionCard__themes {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 .RenderedQuestionCard__themes-divider {

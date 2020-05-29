@@ -88,12 +88,18 @@ const LeaderboardGenius = () => {
       }
     } else {
       // nextView
+      getLeaderboardFromServer([])
+        .then((leaderboard) => {
+          setSpinnerIsActive(false);
+          setWorldLeaderboard(leaderboard.global);
+          setFriendsLeaderboard(leaderboard.friends);
+        });
     }
   }, []);
 
   useEffect(() => {
     if (activeTab === 'FriendsLeaderboardTab' && localStorage.getItem(globalVariables.friendsAccessToken)) {
-/*      setSpinnerIsActive(true);
+      /*      setSpinnerIsActive(true);
       bridge.send('VKWebAppCallAPIMethod', {
         method: 'friends.getAppUsers',
         params: {
@@ -109,7 +115,7 @@ const LeaderboardGenius = () => {
               setFriendsLeaderboard(leaderboard.friends);
             });
         })
-        .catch((errorFriend) => console.error('errorFriends', errorFriend));*/
+        .catch((errorFriend) => console.error('errorFriends', errorFriend)); */
 
       /*      bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
         .then((data) => {
@@ -139,10 +145,10 @@ const LeaderboardGenius = () => {
     }
   }, [activeTab]);
 
+
   function getFriendsAccess() {
     bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
       .then((data) => {
-        localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
 
         bridge.send('VKWebAppCallAPIMethod', {
           method: 'friends.getAppUsers',
@@ -152,6 +158,8 @@ const LeaderboardGenius = () => {
           },
         })
           .then((friendsData) => {
+            setSpinnerIsActive(true);
+            localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
             getLeaderboardFromServer(friendsData.response)
               .then((leaderboard) => {
                 setSpinnerIsActive(false);
@@ -159,7 +167,10 @@ const LeaderboardGenius = () => {
                 setFriendsLeaderboard(leaderboard.friends);
               });
           })
-          .catch((errorFriend) => console.error('errorFriends', errorFriend));
+          .catch((errorFriend) => {
+            localStorage.removeItem(globalVariables.friendsAccessToken);
+            console.error('errorFriends', errorFriend);
+          });
       })
       .catch((err) => {
         console.info(err);
@@ -167,29 +178,34 @@ const LeaderboardGenius = () => {
       });
   }
   return (
-    <Div style={{ paddingTop: 0 }} className="LeaderboardGenius">
+    <div className="LeaderboardGenius">
 
       <Group
         separator="hide"
       >
-        <Tabs>
-          <TabsItem
-            selected={activeTab === 'WorldLeaderboardTab'}
-            onClick={() => {
-              setActiveTab('WorldLeaderboardTab');
-            }}
-          >
-            Все игроки
-          </TabsItem>
-          <TabsItem
-            selected={activeTab === 'FriendsLeaderboardTab'}
-            onClick={() => {
-              setActiveTab('FriendsLeaderboardTab');
-            }}
-          >
-            Мои друзья
-          </TabsItem>
-        </Tabs>
+        <Div style={{ paddingTop: 0, paddingBottom: 0 }}>
+          <Tabs>
+            <TabsItem
+              selected={activeTab === 'WorldLeaderboardTab'}
+              onClick={() => {
+                setActiveTab('WorldLeaderboardTab');
+              }}
+            >
+              Все игроки
+            </TabsItem>
+            <TabsItem
+              selected={activeTab === 'FriendsLeaderboardTab'}
+              onClick={() => {
+                setActiveTab('FriendsLeaderboardTab');
+              }}
+            >
+              Мои друзья
+            </TabsItem>
+          </Tabs>
+
+        </Div>
+        {(spinnerIsActive && activeTab !== 'FriendsLeaderboardTab') && <PanelSpinner size="small" />}
+
         <LeaderboardGallery
           friendsLeaderboard={friendsLeaderboard}
           worldLeaderboard={worldLeaderboard}
@@ -198,9 +214,9 @@ const LeaderboardGenius = () => {
           spinnerIsActive={spinnerIsActive}
           getFriendsAccess={getFriendsAccess}
         />
-        {spinnerIsActive && <PanelSpinner size="small" />}
+
       </Group>
-    </Div>
+    </div>
   );
 };
 

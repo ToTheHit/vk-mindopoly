@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ModalPage, ModalRoot, Separator } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import EffectGPDetailsContent from './EffectGPDetails/EffectGPDetailsContent';
 import EffectDetailsHeader from './EffectDetailsHeader';
 import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent';
 import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
-import EffectMindopolistDetails from "./EffectMindopolistDetails/EffectMindopolistDetails";
+import EffectMindopolistDetails from './EffectMindopolistDetails/EffectMindopolistDetails';
+import globalVariables from '../../../GlobalVariables';
 
 const EffectDetailsSelector = () => {
   const [isActive, setIsActive] = useState(false);
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
   const dispatch = useDispatch();
+
+  const controlHardwareBackButton = useCallback(() => {
+
+    setIsActive(false);
+  }, []);
 
   useEffect(() => {
     if (!isActive) {
@@ -24,6 +30,20 @@ const EffectDetailsSelector = () => {
   useEffect(() => {
     if (mainViewModalName) setIsActive(true);
   }, [mainViewModalName]);
+
+  useEffect(() => {
+    if (isActive) {
+      if (!window.history.state) {
+        window.history.pushState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
+      } else {
+        window.history.replaceState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
+      }
+      window.addEventListener('popstate', controlHardwareBackButton);
+    } else {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+      // window.history.back();
+    }
+  }, [isActive]);
 
   return (
     <ModalRoot

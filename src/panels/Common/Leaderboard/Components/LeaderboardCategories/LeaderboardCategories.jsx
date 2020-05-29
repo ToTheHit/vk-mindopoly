@@ -155,6 +155,7 @@ const LeaderboardCategories = (props) => {
   }, []);
   return (
     <div style={{ paddingTop: 0 }} className="LeaderboardCategories">
+
       <Header
         subtitle="Станьте мозгополистом, покупая вопросы в магазине. Мозгополию можно составить из трёх вопросов одинаковой категории."
       />

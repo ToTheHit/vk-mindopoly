@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, classNames, Div, Subhead, Text, } from '@vkontakte/vkui';
+import {
+  Card, classNames, SimpleCell, Subhead, Text, Div
+} from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
 import './renderedQuestionCard.css';
-import ScalableButton from '../../../CustomComponents/ScalableButton/ScalableButton';
 
 const RenderedQuestionCard = (props) => {
   const { questions, setSelectedQuestion, setActivePanel } = props;
@@ -12,46 +13,54 @@ const RenderedQuestionCard = (props) => {
 
   return (
     questions.map((item) => (
-/*      <ScalableButton
+      /*      <ScalableButton
         className="RenderedQuestionCard--card"
         borderRadius="Card"
-      >*/
-        <Card
-          key={`RenderedQuestionCard--card_${item._id}`}
-          mode={scheme === 'space_gray' ? 'tint' : 'outline'}
-          className={classNames('RenderedQuestionCard--card', { 'RenderedQuestionCard--card-dark': scheme === 'space_gray' })}
-          onClick={() => {
-            setSelectedQuestion(item);
-            setActivePanel('QuestionDetails');
-          }}
+      > */
+      <Card
+        key={`RenderedQuestionCard--card_${item._id}`}
+        mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+        className={classNames('RenderedQuestionCard--card', { 'RenderedQuestionCard--card-dark': scheme === 'space_gray' })}
+        onClick={() => {
+          setSelectedQuestion(item);
+          setActivePanel('QuestionDetails');
+        }}
+      >
+{/*        <div
+          className="RenderedQuestionCard--card__background"
+          style={{ background: globalVariables.categoryColor(item.category) }}
+        />*/}
+        <Div
+          // multiline
+          // expandable
+          // disabled
         >
-          <Div>
-            <div
-              className={
-                classNames('RenderedQuestionCard--card__header')
-              }
-              style={{ color: globalVariables.categoryColor(item.category) }}
-            >
-              <div
-                className="RenderedQuestionCard--card__header-dot"
-                style={{ backgroundColor: globalVariables.categoryColor(item.category) }}
-              />
-              {globalVariables.translateEnToRu(item.category)}
+          <div
+            className={
+              classNames('RenderedQuestionCard--card__header')
+            }
+            style={{ color: globalVariables.categoryColor(item.category) }}
+          >
+{/*            <div
+              className="RenderedQuestionCard--card__header-dot"
+              style={{ backgroundColor: globalVariables.categoryColor(item.category) }}
+            />*/}
+            {globalVariables.translateEnToRu(item.category)}
+          </div>
+          <Text className="RenderedQuestionCard--card__text">
+            {item.text}
+          </Text>
+
+          {(!item.approved && (
+            <div className="RenderedQuestionCard--card__footer">
+              <Subhead weight="medium" className="RenderedQuestionCard--card__footer-item">
+                Вопрос на проверке
+              </Subhead>
             </div>
-            <Text className="RenderedQuestionCard--card__text">
-              {item.text}
-            </Text>
+          ))}
 
-            {(!item.approved && (
-              <div className="RenderedQuestionCard--card__footer">
-                <Subhead weight="medium" className="RenderedQuestionCard--card__footer-item">
-                  Вопрос на проверке
-                </Subhead>
-              </div>
-            ))}
-
-          </Div>
-        </Card>
+        </Div>
+      </Card>
       // </ScalableButton>
 
     ))
