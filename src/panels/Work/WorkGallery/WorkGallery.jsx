@@ -1,10 +1,13 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, {
+  useCallback, useEffect, useState, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import '../work.css';
 import { Gallery, Panel, PanelHeader } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import bridge from '@vkontakte/vk-bridge';
+import SimpleCrypto from 'simple-crypto-js';
 import WorkGalleryPanel from './WorkGalleryPanel';
 import globalVariables from '../../../GlobalVariables';
 
@@ -39,7 +42,7 @@ const WorkGallery = (props) => {
     const copy = [];
     let n = array.length;
     let i;
-    const correctAnswer = array[0];
+    const correctAnswer = array[prevIndex];
 
     // While there remain elements to shuffle…
     while (n) {
@@ -106,15 +109,7 @@ const WorkGallery = (props) => {
     }
   }, [modalStatus]);
 
-
-
-
-  const source = axios.CancelToken.source();
   const bridgeOnRestore = useCallback((e) => {
-    setTimeout(() => {
-      console.info(e.detail);
-
-    }, 1000);
     switch (e.detail.type) {
       case 'VKWebAppViewHide': {
         cancelSource.current.cancel('Hide view');
@@ -134,22 +129,17 @@ const WorkGallery = (props) => {
     }
   }, []);
 
-  const onRestore = useCallback(() => {
-    console.info('restore #2');
-  }, []);
-
   // Первое получение всех вопросов
   useEffect(() => {
     cancelSource.current = axios.CancelToken.source();
     const urlParams = new URLSearchParams(window.location.search);
     bridge.subscribe(bridgeOnRestore);
-    window.addEventListener('focus', onRestore);
-
     if (userToken) {
       bridge.send('VKWebAppStorageGet', {
-        keys: [globalVariables.quizQuestions, globalVariables.quizResult],
+        keys: [globalVariables.quizQuestions, globalVariables.quizResult, 'secret'],
       })
         .then((storedQuiz) => {
+          const simpleCrypto = new SimpleCrypto(storedQuiz.keys[2].value);
           let storedQuestions = [];
           let storedAnswers = [];
           if (storedQuiz.keys[0].value) {
@@ -173,15 +163,20 @@ const WorkGallery = (props) => {
           })
             .then((data) => {
               // Сервер нашёл токен в БД. Рендерим информацию
-              let resultFromServer = data.data.attachment.map((item) => ({
-                question: item.text,
-                answers: item.answers,
-                correctAnswerNumber: 0,
-                explanation: item.explanation,
-                theme: globalVariables.translateEnToRu(item.category),
-                requestedBy: item.requestedBy,
-                _id: item._id,
-              }));
+              // nextView(globalVariables.view.main)
+              let resultFromServer = data.data.attachment.map((item) => {
+                const decryptData = simpleCrypto.decrypt(item.data);
+                const correctAnswerNumber = item.answers.indexOf(decryptData.answer);
+                return ({
+                  question: decryptData.question,
+                  answers: item.answers,
+                  correctAnswerNumber,
+                  explanation: decryptData.explanation || '',
+                  theme: globalVariables.translateEnToRu(item.category),
+                  requestedBy: item.requestedBy,
+                  _id: item._id,
+                });
+              });
 
               if (storedQuestions.length > 0) {
                 const resultFromServerIDs = resultFromServer.map((item) => item._id);
@@ -202,7 +197,7 @@ const WorkGallery = (props) => {
                 } else {
                   resultFromServer = resultFromServer.sort((a, b) => storedQuestions.indexOf(a._id) - storedQuestions.indexOf(b._id));
                   for (let i = 0; i < resultFromServer.length; i += 1) {
-                    const correctAnswer = resultFromServer[i].answers[0];
+                    const correctAnswer = resultFromServer[i].answers[resultFromServer[i].correctAnswerNumber];
                     resultFromServer[i].answers = shuffle(
                       resultFromServer[i].answers, (i > 0
                         ? resultFromServer[i - 1].correctAnswerNumber
@@ -236,7 +231,7 @@ const WorkGallery = (props) => {
                   .then((res) => {
                     resultFromServer = res;
                     for (let i = 0; i < resultFromServer.length; i += 1) {
-                      const correctAnswer = resultFromServer[i].answers[0];
+                      const correctAnswer = resultFromServer[i].answers[resultFromServer[i].correctAnswerNumber];
                       resultFromServer[i].answers = shuffle(
                         resultFromServer[i].answers, (i > 0
                           ? resultFromServer[i - 1].correctAnswerNumber
@@ -278,13 +273,10 @@ const WorkGallery = (props) => {
     // Выключаем возможность свайпать галерею
     window.addEventListener('touchmove', disableSwipe, { passive: false, capture: true });
     return () => {
-      console.info('unmout gallery');
       cancelSource.current.cancel();
       window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
-      window.removeEventListener('focus', onRestore);
       bridge.unsubscribe(bridgeOnRestore);
       setPopoutIsActive(false);
-
     };
   }, []);
 
@@ -311,7 +303,6 @@ const WorkGallery = (props) => {
   }, [result]);
 
   useEffect(() => {
-    console.info('questions.length', questions.length);
     if (questions.length > 0) {
       dispatch({
         type: 'UPDATE_WORK-VIEW-MODAL',

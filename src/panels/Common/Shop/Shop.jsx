@@ -16,6 +16,7 @@ const Shop = (props) => {
   } = props;
   const pageCache = useSelector((state) => state.pageCache.shop);
   const [categories, setCategories] = useState(pageCache);
+  const [test, setTest] = useState(false);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
@@ -33,7 +34,7 @@ const Shop = (props) => {
     window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-      // window.history.back();
+
     };
   }, []);
 

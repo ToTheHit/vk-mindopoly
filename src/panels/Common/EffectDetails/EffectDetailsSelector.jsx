@@ -14,9 +14,19 @@ const EffectDetailsSelector = () => {
   const dispatch = useDispatch();
 
   const controlHardwareBackButton = useCallback(() => {
+    // console.info(document.getElementsByClassName('ModalRoot'))
+    /*    const element = document.getElementsByClassName('ModalRoot')[0];
+    const elClone = element.cloneNode(true);
+    element.parentNode.replaceChild(elClone, element);
+    // element.parentNode.removeChild(element);
+    elClone.parentNode.removeChild(elClone);
+    // document.body.style.overflow = 'scroll';
+    setIsActive(false); */
 
     setIsActive(false);
-  }, []);
+    // window.history.go(2);
+
+  }, [setIsActive]);
 
   useEffect(() => {
     if (!isActive) {
@@ -31,13 +41,10 @@ const EffectDetailsSelector = () => {
     if (mainViewModalName) setIsActive(true);
   }, [mainViewModalName]);
 
+
   useEffect(() => {
     if (isActive) {
-      if (!window.history.state) {
-        window.history.pushState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
-      } else {
-        window.history.replaceState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
-      }
+      window.history.pushState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
       window.addEventListener('popstate', controlHardwareBackButton);
     } else {
       window.removeEventListener('popstate', controlHardwareBackButton);
@@ -48,7 +55,9 @@ const EffectDetailsSelector = () => {
   return (
     <ModalRoot
       activeModal={(isActive ? mainViewModalName : null)}
-      onClose={() => setIsActive(false)}
+      onClose={() => {
+        setIsActive(false);
+      }}
     >
       <ModalPage
         id="TaxDetailsModalPage"

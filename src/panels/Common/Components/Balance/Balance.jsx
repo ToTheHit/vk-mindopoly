@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './balance.css';
 import {
@@ -40,6 +40,7 @@ const Balance = (props) => {
       type: 'TOOLTIP_UPDATE_STORY2',
       payload: {
         GPeffect: false,
+        GPeffectCompleted: true,
         notifications: true,
       },
     });
@@ -142,7 +143,7 @@ const Balance = (props) => {
                   <Tooltip
                     key={`BalanceItem__${effect.name}`}
                     text="Это эффект профиля. Нажмите на него, чтобы открыть."
-                    isShown={tooltipsStory2.GPeffect && effect.name === 'GPtoday' && !popoutMainView}
+                    isShown={tooltipsStory2.GPeffect && !tooltipsStory2.GPeffectCompleted && effect.name === 'GPtoday' && !popoutMainView}
                     onClose={onCloseTooltipEffect}
                     offsetX={12}
                   >

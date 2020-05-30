@@ -40,12 +40,14 @@
     "eruda-dom": "^2.0.0",
     "https": "^1.0.0",
     "less": "^3.11.1",
+    "node-cron": "^2.0.3",
     "prop-types": "^15.7.2",
     "querystring": "^0.2.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
+    "simple-crypto-js": "^3.0.0",
     "use-dynamic-refs": "^1.0.0"
   },
   "browserslist": {

@@ -86,6 +86,9 @@ const App = () => {
       type: 'UPDATE_NOTIFICATIONS_ALLOW',
       payload: { isAllow: (urlParams.get('vk_are_notifications_enabled') === '1') },
     });
+    window.addEventListener('popstate', () => {
+      console.info(window.history.length);
+    });
   }, []);
 
   return (

@@ -9,12 +9,14 @@ import {
   Text, Title,
   Tooltip,
 } from '@vkontakte/vkui';
+import PropTypes from 'prop-types';
 import bridge from '@vkontakte/vk-bridge';
 import Icon28Notifications from '@vkontakte/icons/dist/28/notifications';
 import { useDispatch, useSelector } from 'react-redux';
 import './notificationSwitch.css';
 
-const NotificationSwitch = () => {
+const NotificationSwitch = (props) => {
+  const { popoutMainView } = props;
   const dispatch = useDispatch();
   const notificationAllow = useSelector((state) => state.notificationsAllow.isAllow);
   const msToNextExam = useSelector((state) => state.userInfo.msToNextExam);
@@ -110,7 +112,7 @@ const NotificationSwitch = () => {
           text="Мозгополия может напоминать о ежедневных Мозговых отчётах через уведомления."
           offsetX={50}
           cornerOffset={90}
-          isShown={tooltipsStory2.notifications}
+          isShown={tooltipsStory2.notifications && !popoutMainView}
           onClose={onCloseTooltipNotification}
         >
           <SimpleCell
@@ -145,6 +147,8 @@ const NotificationSwitch = () => {
   );
 };
 
-NotificationSwitch.propTypes = {};
+NotificationSwitch.propTypes = {
+  popoutMainView: PropTypes.bool.isRequired,
+};
 NotificationSwitch.defaultProps = {};
 export default NotificationSwitch;

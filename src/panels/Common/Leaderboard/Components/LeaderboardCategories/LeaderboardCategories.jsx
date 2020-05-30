@@ -93,7 +93,7 @@ const LeaderboardCategories = (props) => {
                 <div
                   className="LeaderboardCategories__Category--leader_description"
                 >
-                  {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionCount)}`}
+                  {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
                 </div>
               )}
             >

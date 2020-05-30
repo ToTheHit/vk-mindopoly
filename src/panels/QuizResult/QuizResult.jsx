@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
+import SimpleCrypto from 'simple-crypto-js';
 import globalVariables from '../../GlobalVariables';
 
 const QuizResult = (props) => {
@@ -68,61 +69,88 @@ const QuizResult = (props) => {
     setWordScore(word);
   }, [resultGP]);
 
+  const bridgeOnRestore = useCallback((e) => {
+    switch (e.detail.type) {
+      case 'VKWebAppViewRestore': {
+        // updateView();
+        break;
+      }
+      case 'VKWebAppViewHide': {
+        sourceAxios.cancel();
+        break;
+      }
+      default:
+        break;
+    }
+  }, []);
+
   useEffect(() => {
     bridge.send('VKWebAppStorageSet', { key: globalVariables.quizResult, value: '[]' });
     bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' });
+    bridge.subscribe(bridgeOnRestore);
 
-    const answers = quizResult.map((item) => ({ _id: item.questionId, text: item.selectedAnswer }));
-    // eslint-disable-next-line array-callback-return,consistent-return
-    const correctQuestions = [];
-    for (let i = 0; i < quizResult.length; i += 1) {
-      if (quizResult[i].selectedAnswerNumber === quizResult[i].correctAnswerNumber) {
-        correctQuestions.push(questions[i]);
-      }
-    }
+    bridge.send('VKWebAppStorageGet', {
+      keys: ['secret'],
+    })
+      .then((storedQuiz) => {
+        const simpleCrypto = new SimpleCrypto(storedQuiz.keys[0].value);
 
-    if (correctQuestions.length > 0) {
-      const tempQuestion = correctQuestions[
-        Math.round(Math.random() * (correctQuestions.length - 1))
-      ];
-      setStoryQuestion({
-        question: tempQuestion.question,
-        _id: tempQuestion._id,
-        isCorrectAnswer: true,
-      });
-    } else {
-      const tempQuestion = questions[
-        Math.round(Math.random() * (questions.length - 1))
-      ];
-      setStoryQuestion({
-        question: tempQuestion.question,
-        _id: tempQuestion._id,
-        isCorrectAnswer: false,
-      });
-    }
-    const urlParams = new URLSearchParams(window.location.search);
-    if (userToken) {
-      axios.post(`${globalVariables.serverURL}/api/examResults`, {
-        answers,
-      }, {
-        params: {
-          id: urlParams.get('vk_user_id'),
-        },
-        headers: {
-          'X-Access-Token': userToken,
-        },
-      })
-        .catch((err) => {
-          console.info('QuizResult, post/examResults', err);
-          if (err.response) {
-            console.info(err.response.status);
-          } else {
-            console.info('Error 404');
+        // eslint-disable-next-line
+        const answers = quizResult.map((item) => simpleCrypto.encrypt({ _id: item.questionId, text: item.selectedAnswer }));
+        const correctQuestions = [];
+        for (let i = 0; i < quizResult.length; i += 1) {
+          if (quizResult[i].selectedAnswerNumber === quizResult[i].correctAnswerNumber) {
+            correctQuestions.push(questions[i]);
           }
-        });
-    } else {
-      // Перемещение на стартовый экран
-    }
+        }
+
+        if (correctQuestions.length > 0) {
+          const tempQuestion = correctQuestions[
+            Math.round(Math.random() * (correctQuestions.length - 1))
+          ];
+          setStoryQuestion({
+            question: tempQuestion.question,
+            _id: tempQuestion._id,
+            isCorrectAnswer: true,
+          });
+        } else {
+          const tempQuestion = questions[
+            Math.round(Math.random() * (questions.length - 1))
+          ];
+          setStoryQuestion({
+            question: tempQuestion.question,
+            _id: tempQuestion._id,
+            isCorrectAnswer: false,
+          });
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        if (userToken) {
+          axios.post(`${globalVariables.serverURL}/api/examResults`, {
+            answers,
+          }, {
+            params: {
+              id: urlParams.get('vk_user_id'),
+            },
+            headers: {
+              'X-Access-Token': userToken,
+            },
+          })
+            .catch((err) => {
+              console.info('QuizResult, post/examResults', err);
+              if (err.response) {
+                console.info(err.response.status);
+              } else {
+                console.info('Error 404');
+              }
+            });
+        } else {
+          // Перемещение на стартовый экран
+        }
+      });
+
+    return () => {
+      bridge.unsubscribe(bridgeOnRestore);
+    };
   }, []);
 
   useEffect(() => {

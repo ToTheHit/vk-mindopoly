@@ -42,6 +42,7 @@ const Main = (props) => {
       // Перемещение на стартовый экран
       nextView(globalVariables.view.start);
     } else {
+      // console.info(urlParams.get('vk_user_id'), userToken)
       axios.all([
         axios.get(`${globalVariables.serverURL}/api/userInfo`, {
           params: {
@@ -82,7 +83,6 @@ const Main = (props) => {
             effects: [],
             msToNextExam: srvData.msToNextExam,
           };
-
           if (!tooltipsState && !user.isExamAvailable) {
             dispatch({
               type: 'TOOLTIP_UPDATE_STORY2',
@@ -287,6 +287,11 @@ const Main = (props) => {
       }
       case 'VKWebAppViewHide': {
         appIsClosed = true;
+        if (window.history.length === 2) {
+          window.history.go(-1);
+          console.info('restore', window.history.state, window.history.length);
+          console.info('restore #2', window.history);
+        }
         break;
       }
       default:
@@ -303,23 +308,20 @@ const Main = (props) => {
 
   const [closeApp, setCloseApp] = useState(false);
   useEffect(() => {
-    console.info('closeApp', closeApp);
     if (!mainViewModalName && closeApp) {
       bridge.send('VKWebAppClose', { status: 'success' });
-    }
-    else {
+    } else {
       setCloseApp(false);
     }
   }, [closeApp]);
 
   const controlHardwareBackButton = useCallback(() => {
     // window.history.back();
-    console.info('back');
-    setCloseApp(true);
+    console.info('main', window.history.state);
+    // setCloseApp(true);
     // console.info('inside callback:', canExit, mainViewModalName);
 
-      // bridge.send('VKWebAppClose', { status: 'success' });
-
+    // bridge.send('VKWebAppClose', { status: 'success' });
   }, []);
 
   useEffect(() => {
@@ -340,10 +342,15 @@ const Main = (props) => {
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
     });
+
     bridge.subscribe(bridgeOnRestore);
     window.addEventListener('focus', onRestore);
     window.addEventListener('popstate', controlHardwareBackButton);
-    window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
+    // window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
+    setTimeout(() => {
+      console.info(window.history.length);
+    }, 1000);
+    window.history.go(-1 * window.history.length - 1);
     return () => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);
@@ -357,7 +364,11 @@ const Main = (props) => {
         Мозгополия
       </PanelHeader>
 
-      <PullToRefresh onRefresh={() => setUpdatingView(true)} isFetching={updatingView}>
+      <PullToRefresh
+        onRefresh={() => setUpdatingView(true)}
+        isFetching={updatingView}
+
+      >
         <div style={{ opacity: (popoutMainView ? '0' : '1') }}>
           <Balance
             coins={VKuser.coins.overall}
@@ -372,7 +383,11 @@ const Main = (props) => {
             {VKuser.isExamAvailable ? (
               <QuizCard nextView={nextView} />
             )
-              : (<NotificationSwitch />)}
+              : (
+                <NotificationSwitch
+                  popoutMainView={popoutMainView}
+                />
+              )}
 
           </div>
 

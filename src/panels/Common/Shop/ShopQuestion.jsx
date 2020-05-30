@@ -50,7 +50,6 @@ const ShopQuestion = (props) => {
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-      // window.history.back();
     };
   }, []);
 
@@ -260,12 +259,16 @@ const ShopQuestion = (props) => {
     if (refQuestionIncorrectAnswer3.current.value.length > maxSymbolsInInput.answers[3]) {
       canSend = false;
     }
+    if (refQuestionExplanation.current.value.length > maxSymbolsInInput.explanation) {
+      canSend = false;
+    }
     if (new Set([
       refQuestionIncorrectAnswer1.current.value,
       refQuestionIncorrectAnswer2.current.value,
       refQuestionIncorrectAnswer3.current.value,
       refQuestionCorrectAnswer.current.value,
-    ]).size !== 4) {
+    ]).size !== 4)
+    {
       canSend = false;
       if (refQuestionCorrectAnswer.current.value === refQuestionIncorrectAnswer1.current.value) {
         console.info('1', refQuestionCorrectAnswer.current.value, refQuestionIncorrectAnswer1.current.value);
@@ -290,6 +293,7 @@ const ShopQuestion = (props) => {
         setEmptyInput((prevState) => ({ ...prevState, ...{ input3: true, input4: true } }));
       }
     }
+
     if (!canSend) return;
     setCheckingProgress(true);
     // Отсылаем вопрос на сервер

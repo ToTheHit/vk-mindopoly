@@ -175,6 +175,7 @@ export function tooltip(state = {
   },
   story2: {
     GPeffect: false,
+    GPeffectCompleted: false,
     notifications: false,
   },
   shop: true,

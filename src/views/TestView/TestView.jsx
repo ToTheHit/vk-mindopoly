@@ -19,10 +19,6 @@ const TestView = (props) => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    setTimeout(() => {
-      console.info(urlParams.get('vk_access_token_settings').includes('friends'));
-
-    }, 2000)
     /*    bridge.send('VKWebAppAllowNotifications', {})
       .then(data => setResult(data))
       .catch(err => setError(err)); */
@@ -98,10 +94,7 @@ const TestView = (props) => {
           .catch((err) => console.info(err));
       }); */
     // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: null });
-    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'video, friends' })
-      .then((data) => {
-        // bridge.send('VKWebAppStorageSet', { key: globalVariables.friendsAccessToken, value: data.access_token });
-      });
+
     /*    bridge.send("VKWebAppShowStoryBox", { "background_type" : "image", "url" : "https://sun9-65.userapi.com/c850136/v850136098/1b77eb/0YK6suXkY24.jpg" })
       .then((data) => {
         setTimeout(() => {
@@ -120,7 +113,6 @@ const TestView = (props) => {
         }, 5000);
       })); */
 
-    /*
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
       value: '',
@@ -129,14 +121,31 @@ const TestView = (props) => {
       key: globalVariables.quizQuestions,
       value: '',
     });
+    bridge.send('VKWebAppStorageSet', {
+      key: 'secret',
+      value: '',
+    });
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
     });
-    bridge.send('VKWebAppStorageSet', {
+
+/*    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.tooltips,
+/!*      value: JSON.stringify({
+        mainScreenComplete: false,
+        story1: {
+          balance: false,
+          quizBlock: false,
+          taxEffect: false,
+        },
+        story2: {
+          GPeffect: true,
+          notifications: false,
+        },
+        shop: true,
+      }),*!/
       value: '',
-    });
-*/
+    });*/
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
           .then((data) => {
