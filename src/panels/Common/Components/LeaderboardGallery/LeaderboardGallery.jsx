@@ -36,16 +36,17 @@ const LeaderboardGallery = (props) => {
   useEffect(() => {
     const rendered = friendsLeaderboard.map((item) => (
       <div
-        key={Math.random()}
+        key={`worldLeaderboard_id${item.id}`}
       >
-        <SimpleCell
-          disabled
-          before={<Avatar size={48} src={item.photo} />}
-          indicator={`${item.bp} GP`}
-        >
-          {`${item.first_name} `}
-          <b>{item.last_name}</b>
-        </SimpleCell>
+        <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
+          <SimpleCell
+            before={<Avatar size={48} src={item.photo} />}
+            indicator={`${item.bp} GP`}
+          >
+            {`${item.first_name} `}
+            <b>{item.last_name}</b>
+          </SimpleCell>
+        </a>
         {/* {index !== (friendsLeaderboard.length - 1) && <Separator wide />} */}
         <Separator />
       </div>
@@ -56,16 +57,17 @@ const LeaderboardGallery = (props) => {
   useEffect(() => {
     const rendered = worldLeaderboard.map((item, index) => (
       <div
-        key={Math.random()}
+        key={`worldLeaderboard_id${item.id}`}
       >
-        <SimpleCell
-          disabled
-          before={<Avatar size={48} src={item.photo} />}
-          indicator={`${item.bp} GP`}
-        >
-          {`${item.first_name} `}
-          <b>{item.last_name}</b>
-        </SimpleCell>
+        <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
+          <SimpleCell
+            before={<Avatar size={48} src={item.photo} />}
+            indicator={`${item.bp} GP`}
+          >
+            {`${item.first_name} `}
+            <b>{item.last_name}</b>
+          </SimpleCell>
+        </a>
         {index !== (worldLeaderboard.length - 1) && <Separator />}
       </div>
     ));

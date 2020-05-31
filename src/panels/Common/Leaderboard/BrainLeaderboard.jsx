@@ -24,17 +24,26 @@ const BrainLeaderboard = (props) => {
   const [contextIsOpened, setContextIsOpened] = useState(false);
   const [ratingType, setRatingType] = useState('score');
 
+  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
     setActiveStory(globalVariables.commonView.roots.main);
-    // window.history.back();
+    closedByHardwareBackButton = true;
   }, []);
   useEffect(() => {
+    closedByHardwareBackButton = false;
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
-    window.history.pushState({ page: 'Leaderboard' }, 'Leaderboard', `${window.location.search}`);
+    if (window.history.state) {
+      window.history.replaceState({ page: 'Leaderboard' }, 'Leaderboard', `${window.location.search}`);
+    } else {
+      window.history.pushState({ page: 'Leaderboard' }, 'Leaderboard', `${window.location.search}`);
+    }
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
       // window.history.back();
+      if (!closedByHardwareBackButton) {
+        // window.history.back();
+      }
     };
   }, []);
 

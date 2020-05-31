@@ -12,29 +12,37 @@ import RenderedCategories from './Components/RenderedCategories';
 
 const Shop = (props) => {
   const {
-    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView, setActiveStory,
+    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView, setActiveStory, nextView
   } = props;
   const pageCache = useSelector((state) => state.pageCache.shop);
   const [categories, setCategories] = useState(pageCache);
-  const [test, setTest] = useState(false);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
   const dispatch = useDispatch();
 
+  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
     // window.history.back();
     setActiveStory(globalVariables.commonView.roots.main);
+    closedByHardwareBackButton = true;
   }, []);
 
   useEffect(() => {
+    closedByHardwareBackButton = false;
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
-    window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
+    if (window.history.state) {
+      window.history.replaceState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
+    } else {
+      window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
+    }
     window.addEventListener('popstate', controlHardwareBackButton);
     window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-
+/*      if (!closedByHardwareBackButton) {
+        window.history.back();
+      }*/
     };
   }, []);
 
@@ -60,6 +68,10 @@ const Shop = (props) => {
       })
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
+        // console.info(err.code, err.response);
+        if (!err.response) {
+          nextView(globalVariables.view.start);
+        }
       });
     return () => {
       // setRenderedCategories([]);
@@ -111,6 +123,7 @@ Shop.propTypes = {
   setPopoutShopView: PropTypes.func.isRequired,
   popoutShopView: PropTypes.bool.isRequired,
   setActiveStory: PropTypes.func.isRequired,
+  nextView: PropTypes.func.isRequired,
 };
 Shop.defaultProps = {};
 export default Shop;

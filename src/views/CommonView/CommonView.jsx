@@ -147,6 +147,7 @@ const CommonView = (props) => {
             setPopoutShopView={setPopoutShopView}
             popoutShopView={false}
             setActiveStory={setActiveStory}
+            nextView={nextView}
           />
           <ShopQuestion
             id={globalVariables.commonView.panels.shopQuestion}

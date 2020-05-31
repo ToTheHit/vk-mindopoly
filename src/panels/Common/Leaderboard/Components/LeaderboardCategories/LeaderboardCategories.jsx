@@ -71,6 +71,7 @@ const LeaderboardCategories = (props) => {
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
+        console.info(data)
         const sortedQuestions = {};
         for (let i = 0; i < userQuestions.length; i += 1) {
           if (!sortedQuestions[userQuestions[i].category]) {
@@ -84,21 +85,22 @@ const LeaderboardCategories = (props) => {
 
         const rendered = data.data.map((category) => {
           const leaders = category.leaders.map((leader) => (
-            <SimpleCell
-              key={`Category-${category.name}_leader-${leader.user_id}`}
-              disabled
-              className="LeaderboardCategories__Category--leader"
-              before={<Avatar size={48} src={leader.photo} />}
-              description={(
-                <div
-                  className="LeaderboardCategories__Category--leader_description"
-                >
-                  {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
-                </div>
-              )}
-            >
-              {`${leader.first_name} ${leader.last_name}`}
-            </SimpleCell>
+            <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${leader.user_id}`}>
+              <SimpleCell
+                key={`Category-${category.name}_leader-${leader.user_id}`}
+                className="LeaderboardCategories__Category--leader"
+                before={<Avatar size={48} src={leader.photo} />}
+                description={(
+                  <div
+                    className="LeaderboardCategories__Category--leader_description"
+                  >
+                    {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
+                  </div>
+                )}
+              >
+                {`${leader.first_name} ${leader.last_name}`}
+              </SimpleCell>
+            </a>
           ));
           if (leaders.length === 0) return null;
           return (
@@ -122,7 +124,7 @@ const LeaderboardCategories = (props) => {
                       <Title level="3" weight="semibold">
                         {`${globalVariables.translateEnToRu(category.name)}`}
                       </Title>
-{/*                      <Caption
+                      {/*                      <Caption
                         className="LeaderboardCategories__Category--header-counter"
                         level="1"
                         weight="regular"

@@ -21,6 +21,10 @@ const WorkView = (props) => {
   const [popoutIsActive, setPopoutIsActive] = useState(true);
   const [popoutShadowIsActive, setPopoutShadowIsActive] = useState(false);
 
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <View
       id={id}

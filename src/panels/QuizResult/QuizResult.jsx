@@ -56,7 +56,11 @@ const QuizResult = (props) => {
   }, []);
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
-    window.history.pushState({ page: 'QuizResult' }, 'QuizResult', `${window.location.search}`);
+    if (window.history.state) {
+      window.history.replaceState({ page: 'QuizResult' }, 'QuizResult', `${window.location.search}`);
+    } else {
+      window.history.pushState({ page: 'QuizResult' }, 'QuizResult', `${window.location.search}`);
+    }
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);

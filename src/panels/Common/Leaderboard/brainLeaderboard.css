@@ -34,4 +34,9 @@
   transition: transform linear 200ms;
   transition: transform linear 200ms, -webkit-transform linear 200ms;
 }
+.BrainLeaderboard a {
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
 /*# sourceMappingURL=brainLeaderboard.css.map */

@@ -288,9 +288,7 @@ const Main = (props) => {
       case 'VKWebAppViewHide': {
         appIsClosed = true;
         if (window.history.length === 2) {
-          window.history.go(-1);
-          console.info('restore', window.history.state, window.history.length);
-          console.info('restore #2', window.history);
+          // window.history.go(-1);
         }
         break;
       }
@@ -317,7 +315,6 @@ const Main = (props) => {
 
   const controlHardwareBackButton = useCallback(() => {
     // window.history.back();
-    console.info('main', window.history.state);
     // setCloseApp(true);
     // console.info('inside callback:', canExit, mainViewModalName);
 
@@ -347,10 +344,8 @@ const Main = (props) => {
     window.addEventListener('focus', onRestore);
     window.addEventListener('popstate', controlHardwareBackButton);
     // window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
-    setTimeout(() => {
-      console.info(window.history.length);
-    }, 1000);
-    window.history.go(-1 * window.history.length - 1);
+
+    // window.history.go(-1);
     return () => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);

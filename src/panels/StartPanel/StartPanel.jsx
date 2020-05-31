@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, classNames, Gallery, Panel, Snackbar,
@@ -27,6 +27,7 @@ const StartPanel = (props) => {
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
+    let requestIsCompleted = false;
     bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken, globalVariables.tooltips] })
       .then(((bridgeData) => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -45,6 +46,8 @@ const StartPanel = (props) => {
           });
 
           axios.get(`${globalVariables.serverURL}/api/getTest`, {
+            timeout: 5000,
+            timeoutErrorMessage: 'Timeout',
             params: {
               id: urlParams.get('vk_user_id'),
               // token: bridgeData.keys[0].value,
@@ -63,8 +66,10 @@ const StartPanel = (props) => {
                     localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
                   });
               }
-
+              requestIsCompleted = true;
               nextView(globalVariables.view.main);
+              // setReadyToShow(true);
+              // popoutState.setPopoutIsActive(false);
             })
             .catch((err) => {
               // Сервер не нашёл токен в БД. Продолжаем регистрацию
@@ -79,9 +84,25 @@ const StartPanel = (props) => {
           popoutState.setPopoutIsActive(false);
         }
         // popoutState.setPopoutIsActive(false);
-      }));
-    // setReadyToShow(true);
-    // popoutState.setPopoutIsActive(false);
+      }))
+      .catch((error) => {
+        setTimeout(() => {
+          console.info(error);
+        }, 1000);
+        setReadyToShow(true);
+        popoutState.setPopoutIsActive(false);
+        setShowSnackbar(true);
+      });
+    const timer = setTimeout(() => {
+      if (!requestIsCompleted) {
+        setReadyToShow(true);
+        popoutState.setPopoutIsActive(false);
+        setShowSnackbar(true);
+      }
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   function Registration() {

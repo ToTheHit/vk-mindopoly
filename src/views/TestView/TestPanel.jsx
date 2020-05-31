@@ -15,8 +15,10 @@ const TestPanel = (props) => {
 
 
   useEffect(() => {
-
-
+    setTimeout(() => {
+      console.info('redirect');
+      // window.location.replace = 'https://vk.com/tothehit';
+    }, 3000);
   }, []);
 
   return (
@@ -38,7 +40,8 @@ const TestPanel = (props) => {
         progress={-70}
         stokeColor={'red'}
       />
-      <WorkViewModal nextView={() => {}} setPopoutIsActive={() => {}} isPreviousQuiz={false} />
+      <a target="_blank" rel="noopener noreferrer" href="https://vk.com/tothehit">Link</a>
+
     </Panel>
 
   )

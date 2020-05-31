@@ -6,26 +6,16 @@ import EffectDetailsHeader from './EffectDetailsHeader';
 import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent';
 import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
 import EffectMindopolistDetails from './EffectMindopolistDetails/EffectMindopolistDetails';
-import globalVariables from '../../../GlobalVariables';
 
 const EffectDetailsSelector = () => {
   const [isActive, setIsActive] = useState(false);
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
   const dispatch = useDispatch();
 
+  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
-    // console.info(document.getElementsByClassName('ModalRoot'))
-    /*    const element = document.getElementsByClassName('ModalRoot')[0];
-    const elClone = element.cloneNode(true);
-    element.parentNode.replaceChild(elClone, element);
-    // element.parentNode.removeChild(element);
-    elClone.parentNode.removeChild(elClone);
-    // document.body.style.overflow = 'scroll';
-    setIsActive(false); */
-
     setIsActive(false);
-    // window.history.go(2);
-
+    closedByHardwareBackButton = true;
   }, [setIsActive]);
 
   useEffect(() => {
@@ -44,11 +34,14 @@ const EffectDetailsSelector = () => {
 
   useEffect(() => {
     if (isActive) {
-      window.history.pushState({ page: 'EffectDetails' }, 'EffectDetails', `${window.location.search}`);
+      closedByHardwareBackButton = false;
+      window.history.pushState({ page: `EffectDetails_${Math.random()}` }, 'EffectDetails', `${window.location.search}`);
       window.addEventListener('popstate', controlHardwareBackButton);
     } else {
+      if (!closedByHardwareBackButton) {
+        window.history.back();
+      }
       window.removeEventListener('popstate', controlHardwareBackButton);
-      // window.history.back();
     }
   }, [isActive]);
 

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useState, useRef,
+  useCallback, useEffect, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import '../work.css';
@@ -29,6 +29,21 @@ const WorkGallery = (props) => {
   const [result, setResult] = useState([]);
   const cancelSource = React.useRef(null);
 
+  const controlHardwareBackButton = useCallback(() => {
+    nextView(globalVariables.view.main);
+  }, []);
+
+  useEffect(() => {
+    if (window.history.state) {
+      window.history.replaceState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+    } else {
+      window.history.pushState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+    }
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, []);
   const disableSwipe = useCallback((event) => {
     event.stopPropagation();
   }, []);
@@ -53,7 +68,7 @@ const WorkGallery = (props) => {
       if (i in array) {
         copy.push(array[i]);
         delete array[i];
-        n--;
+        n -= 1;
       }
     }
     if (prevIndex !== -1) {
@@ -118,7 +133,6 @@ const WorkGallery = (props) => {
       case 'VKWebAppViewRestore': {
         if (questions.length === 0) {
           cancelSource.current.cancel('Hide view');
-          window.removeEventListener('touchmove', disableSwipe, { passive: false, capture: true });
           setPopoutIsActive(false);
           nextView(globalVariables.view.main);
         }
@@ -261,13 +275,13 @@ const WorkGallery = (props) => {
               console.info(err);
               // Сервер не нашёл токен в БД.
               // Перемещение на стартовый экран
-              nextView(globalVariables.view.start);
+              nextView(globalVariables.view.main);
             });
         })
         .catch((bridgeError) => console.info('bridgeError', bridgeError));
     } else {
       // Перемещение на стартовый экран
-      nextView(globalVariables.view.start);
+      nextView(globalVariables.view.main);
     }
 
     // Выключаем возможность свайпать галерею

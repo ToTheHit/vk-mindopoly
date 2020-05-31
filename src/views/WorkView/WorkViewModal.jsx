@@ -21,13 +21,17 @@ const WorkViewModal = (props) => {
   }, []);
 
   useEffect(() => {
-    if (modalIsActive) {
-      window.history.pushState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+/*    if (modalIsActive) {
+      if (window.history.state) {
+        window.history.replaceState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+      } else {
+        window.history.pushState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+      }
       window.addEventListener('popstate', controlHardwareBackButton);
     } else {
       window.removeEventListener('popstate', controlHardwareBackButton);
       // window.history.back();
-    }
+    }*/
   }, [modalIsActive]);
 
   useEffect(() => {

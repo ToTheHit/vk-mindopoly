@@ -39,17 +39,25 @@ const ShopQuestion = (props) => {
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
   const userToken = useSelector((state) => state.userToken.token);
 
+  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
     setActivePanel(globalVariables.commonView.panels.shop);
-    // window.history.back();
+    closedByHardwareBackButton = true;
   }, []);
-
   useEffect(() => {
+    closedByHardwareBackButton = false;
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
-    window.history.pushState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
+    if (window.history.state) {
+      window.history.replaceState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
+    } else {
+      window.history.pushState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
+    }
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
+      if (!closedByHardwareBackButton) {
+        // window.history.back();
+      }
     };
   }, []);
 
@@ -123,7 +131,7 @@ const ShopQuestion = (props) => {
     Geography: {
       question: 'Столица Канады?',
       answers: [
-        'Торонто', 'Сингапур', 'Мехико', 'Рио-Де-Жанейро',
+        'Оттава', 'Сингапур', 'Мехико', 'Рио-Де-Жанейро',
       ],
     },
   };
