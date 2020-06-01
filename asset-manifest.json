@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/vk-extension-miniApp/static/css/main.f7a7efde.chunk.css",
-    "main.js": "/vk-extension-miniApp/static/js/main.d65707a9.chunk.js",
-    "main.js.map": "/vk-extension-miniApp/static/js/main.d65707a9.chunk.js.map",
+    "main.css": "/vk-extension-miniApp/static/css/main.eea22c32.chunk.css",
+    "main.js": "/vk-extension-miniApp/static/js/main.c4b97b87.chunk.js",
+    "main.js.map": "/vk-extension-miniApp/static/js/main.c4b97b87.chunk.js.map",
     "runtime-main.js": "/vk-extension-miniApp/static/js/runtime-main.a9232dc7.js",
     "runtime-main.js.map": "/vk-extension-miniApp/static/js/runtime-main.a9232dc7.js.map",
     "static/css/2.551d3f2e.chunk.css": "/vk-extension-miniApp/static/css/2.551d3f2e.chunk.css",
-    "static/js/2.0e861342.chunk.js": "/vk-extension-miniApp/static/js/2.0e861342.chunk.js",
-    "static/js/2.0e861342.chunk.js.map": "/vk-extension-miniApp/static/js/2.0e861342.chunk.js.map",
+    "static/js/2.5601301e.chunk.js": "/vk-extension-miniApp/static/js/2.5601301e.chunk.js",
+    "static/js/2.5601301e.chunk.js.map": "/vk-extension-miniApp/static/js/2.5601301e.chunk.js.map",
     "index.html": "/vk-extension-miniApp/index.html",
-    "precache-manifest.76dfcaec6a2e03c6bbd1c8bf95b14f07.js": "/vk-extension-miniApp/precache-manifest.76dfcaec6a2e03c6bbd1c8bf95b14f07.js",
+    "precache-manifest.61f95c3c0e4bc397305d87bf3fd9a52a.js": "/vk-extension-miniApp/precache-manifest.61f95c3c0e4bc397305d87bf3fd9a52a.js",
     "service-worker.js": "/vk-extension-miniApp/service-worker.js",
     "static/css/2.551d3f2e.chunk.css.map": "/vk-extension-miniApp/static/css/2.551d3f2e.chunk.css.map",
-    "static/css/main.f7a7efde.chunk.css.map": "/vk-extension-miniApp/static/css/main.f7a7efde.chunk.css.map",
-    "static/js/2.0e861342.chunk.js.LICENSE.txt": "/vk-extension-miniApp/static/js/2.0e861342.chunk.js.LICENSE.txt",
+    "static/css/main.eea22c32.chunk.css.map": "/vk-extension-miniApp/static/css/main.eea22c32.chunk.css.map",
+    "static/js/2.5601301e.chunk.js.LICENSE.txt": "/vk-extension-miniApp/static/js/2.5601301e.chunk.js.LICENSE.txt",
     "static/media/intro-logo-dark.png": "/vk-extension-miniApp/static/media/intro-logo-dark.71ed90b3.png",
     "static/media/intro-logo-light.png": "/vk-extension-miniApp/static/media/intro-logo-light.7d8b4497.png",
     "static/media/intro-market-dark_new.png": "/vk-extension-miniApp/static/media/intro-market-dark_new.e2716b68.png",
@@ -25,8 +25,8 @@
   "entrypoints": [
     "static/js/runtime-main.a9232dc7.js",
     "static/css/2.551d3f2e.chunk.css",
-    "static/js/2.0e861342.chunk.js",
-    "static/css/main.f7a7efde.chunk.css",
-    "static/js/main.d65707a9.chunk.js"
+    "static/js/2.5601301e.chunk.js",
+    "static/css/main.eea22c32.chunk.css",
+    "static/js/main.c4b97b87.chunk.js"
   ]
 }
