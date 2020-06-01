@@ -1,35 +1,38 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './shop.css';
-import { Div, Group, Header, Panel, PanelHeader, Snackbar, } from '@vkontakte/vkui';
+import {
+  Div, Group, Header, Panel, PanelHeader, Snackbar,
+} from '@vkontakte/vkui';
 
 import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import scroll from 'scroll';
 import globalVariables from '../../../GlobalVariables';
 import RenderedCategories from './Components/RenderedCategories';
 
+
 const Shop = (props) => {
   const {
-    id, setActivePanel, setQuestionData, setPopoutShopView, popoutShopView, setActiveStory, nextView
+    id, setActivePanel, setQuestionData, setPopoutShopView,
+    popoutShopView, setActiveStory,
+    nextView,
   } = props;
   const pageCache = useSelector((state) => state.pageCache.shop);
   const [categories, setCategories] = useState(pageCache);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
+  const scrollListener = useSelector((state) => state.scrollTo);
   const dispatch = useDispatch();
 
-  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
-    // window.history.back();
     setActiveStory(globalVariables.commonView.roots.main);
-    closedByHardwareBackButton = true;
   }, []);
 
   useEffect(() => {
-    closedByHardwareBackButton = false;
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     if (window.history.state) {
       window.history.replaceState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
@@ -40,11 +43,14 @@ const Shop = (props) => {
     window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-/*      if (!closedByHardwareBackButton) {
-        window.history.back();
-      }*/
     };
   }, []);
+
+  useEffect(() => {
+    if (scrollListener.scrollableElement === globalVariables.commonView.roots.shop) {
+      window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  }, [scrollListener]);
 
   const checkBalance = useCallback((category, price) => {
     if (userBalance >= price) {

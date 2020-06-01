@@ -38,6 +38,7 @@ const ShopQuestion = (props) => {
   const dispatch = useDispatch();
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
   const userToken = useSelector((state) => state.userToken.token);
+  const storedQuestion = useSelector((state) => state.shopQuestion.question);
 
   let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
@@ -178,6 +179,25 @@ const ShopQuestion = (props) => {
     cost: questionData.price,
   });
   const platform = usePlatform();
+
+  useEffect(() => {
+    dispatch({
+      type: 'UPDATE_SHOP_QUESTION',
+      payload: { question: savedUserQuestion },
+    });
+  }, [savedUserQuestion]);
+
+  useEffect(() => {
+    if (storedQuestion.category === questionData.category) {
+      setSavedUserQuestion(storedQuestion);
+    } else {
+      dispatch({
+        type: 'UPDATE_SHOP_QUESTION',
+        payload: { question: savedUserQuestion },
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (resultType) {
       if (resultType === 'accepted') {
@@ -275,8 +295,7 @@ const ShopQuestion = (props) => {
       refQuestionIncorrectAnswer2.current.value,
       refQuestionIncorrectAnswer3.current.value,
       refQuestionCorrectAnswer.current.value,
-    ]).size !== 4)
-    {
+    ]).size !== 4) {
       canSend = false;
       if (refQuestionCorrectAnswer.current.value === refQuestionIncorrectAnswer1.current.value) {
         console.info('1', refQuestionCorrectAnswer.current.value, refQuestionIncorrectAnswer1.current.value);

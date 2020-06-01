@@ -9,12 +9,15 @@ import axios from 'axios';
 import './main.css';
 import { useDispatch, useSelector } from 'react-redux';
 import bridge from '@vkontakte/vk-bridge';
+import scroll from 'scroll';
 import Balance from '../Components/Balance/Balance';
 import QuizCard from '../Components/QuizCard/QuizCard';
 import globalVariables from '../../../GlobalVariables';
 
 import NotificationSwitch from '../Components/NotificationSwitch/NotificationSwitch';
 import Mindbreakers from '../Components/Mindbrakers/Mindbreakers';
+
+const { CronJob } = require('cron');
 
 const Main = (props) => {
   const dispatch = useDispatch();
@@ -23,6 +26,7 @@ const Main = (props) => {
   const userQuestions = useSelector((state) => state.userQuestions);
   const tooltipsState = useSelector((state) => state.tooltip.mainScreenComplete);
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
+  const scrollListener = useSelector((state) => state.scrollTo);
 
   const {
     id, setActivePanel,
@@ -35,6 +39,13 @@ const Main = (props) => {
   const [questions, setQuestions] = useState(userQuestions.questions);
   const [VKuser, setVKuser] = useState(userInfo);
   const [updatingView, setUpdatingView] = useState(false);
+
+  useEffect(() => {
+    if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {
+      // scroll.top(document.body, 0);
+      window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  }, [scrollListener]);
 
   function updateView() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -319,6 +330,16 @@ const Main = (props) => {
     // console.info('inside callback:', canExit, mainViewModalName);
 
     // bridge.send('VKWebAppClose', { status: 'success' });
+  }, []);
+
+  useEffect(() => {
+    const job = new CronJob('0 */1 * * * *', (() => {
+      updateView();
+    }));
+    job.start();
+    return () => {
+      job.stop();
+    };
   }, []);
 
   useEffect(() => {

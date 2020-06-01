@@ -9,6 +9,7 @@ import TestPanel from './TestPanel';
 import TestPanel2 from './TestPanel2';
 import globalVariables from '../../GlobalVariables';
 import WorkViewModal from '../WorkView/WorkViewModal';
+// import { StatusBar } from 'react-native';
 
 const TestView = (props) => {
   const { id } = props;
@@ -125,7 +126,6 @@ const TestView = (props) => {
       type: 'CLEAR_QUIZ_RESULT',
     });*/
 
-/*
     bridge.send('VKWebAppStorageSet', {
       key: globalVariables.tooltips,
       value: JSON.stringify({
@@ -143,7 +143,6 @@ const TestView = (props) => {
       }),
       // value: '',
     });
-*/
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
           .then((data) => {

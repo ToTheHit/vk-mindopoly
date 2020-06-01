@@ -7,6 +7,8 @@ import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 import bridge from '@vkontakte/vk-bridge';
+import Scroll from 'react-scroll';
+import { useDispatch } from 'react-redux';
 import BrainLeaderboard from '../../panels/Common/Leaderboard/BrainLeaderboard';
 
 import './commonView.css';
@@ -16,10 +18,13 @@ import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetai
 import Main from '../../panels/Common/Main/Main';
 import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
 import globalVariables from '../../GlobalVariables';
+// const scroller = Scroll.scroller;
+const scroll = Scroll.animateScroll;
 
 const CommonView = (props) => {
   const { id, nextView } = props;
   const [activeStory, setActiveStory] = useState(globalVariables.commonView.roots.main);
+  const dispatch = useDispatch();
 
   // Main activity
   const [mainSelectedQuestion, setMainSelectedQuestion] = useState({});
@@ -53,9 +58,20 @@ const CommonView = (props) => {
   }, [shopActivePanel]);
 
   function changeStory(e) {
+    if (e.currentTarget.dataset.story === activeStory) {
+      dispatch({
+        type: 'SCROLL_TO',
+        payload: {
+          scrollableElement: activeStory,
+        },
+      });
+      scroll.scrollTo(0, {
+        duration: 200,
+        smooth: true,
+      });
+    }
     setActiveStory(e.currentTarget.dataset.story);
   }
-
 
   const SwipeBack = (view) => {
     switch (view) {

@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useEffect, useRef, useState, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import './quizBlock.css';
 import {
@@ -21,7 +23,7 @@ const QuizBlock = (props) => {
   const [stop, setStop] = useState(false);
   const [selectedButton, setSelectedButton] = useState(null);
   const [correctButton, setcorrectButton] = useState(-1);
-
+  const [timeIsOver, setTimeIsOver] = useState(false);
   useEffect(() => {
     switch (data.correctAnswerNumber) {
       case 0:
@@ -50,7 +52,6 @@ const QuizBlock = (props) => {
   useEffect(() => {
     if (lastQuestionInStorage.selectedAnswerNumber > -1 && time > 0) {
       if (data._id === lastQuestionInStorage.id) {
-        // console.info('quizBlock', lastQuestionInStorage)
         const arr = refsButton.current;
         setSelectedButton(arr[lastQuestionInStorage.selectedAnswerNumber]);
         setStop(true);
@@ -60,6 +61,7 @@ const QuizBlock = (props) => {
 
   useEffect(() => {
     if (time <= 0) {
+      setTimeIsOver(true);
       let incorrectAnswerNumber = -2;
       const arrayAnswersNumber = [0, 1, 2, 3];
       const rndNumber = Math.floor(Math.random() * 3);
@@ -92,22 +94,22 @@ const QuizBlock = (props) => {
     return 'disabled';
   }
 
-  return (
+  const renderedContent = useMemo(() => (
     <div style={{ paddingTop: 0 }}>
       <Div style={{ paddingBottom: 0 }}>
-        <Title level={1} weight="bold" className="Work--title" onClick={() => console.info(refsButton, selectedButton, correctButton)}>
+        <Title level={1} weight="bold" className="Work--title">
           {data.question}
         </Title>
       </Div>
       <Group
         className="Work--question"
         description={(data.requestedBy !== 0) && (
-          <div className="Work--question__author">
-            <Avatar size={24} src={data.requestedBy.photo} />
-            <div className="Work--question__author-name">
-              {`${data.requestedBy.first_name} ${data.requestedBy.last_name} - автор вопроса`}
-            </div>
+        <div className="Work--question__author">
+          <Avatar size={24} src={data.requestedBy.photo} />
+          <div className="Work--question__author-name">
+            {`${data.requestedBy.first_name} ${data.requestedBy.last_name} - автор вопроса`}
           </div>
+        </div>
         )}
       >
         <Div style={{ paddingTop: '2px' }}>
@@ -171,21 +173,27 @@ const QuizBlock = (props) => {
       </Group>
 
       {(selectedButton && data.explanation) && (
-        <Group>
-          <Div style={{ marginTop: 0 }}>
-            <Headline
-              level={2}
-              weight="semibold"
-              style={{ marginBottom: '7px' }}
-            >
-              Пояснение
-            </Headline>
-            <Text>
-              {data.explanation}
-            </Text>
-          </Div>
-        </Group>
+      <Group>
+        <Div style={{ marginTop: 0 }}>
+          <Headline
+            level={2}
+            weight="semibold"
+            style={{ marginBottom: '7px' }}
+          >
+            Пояснение
+          </Headline>
+          <Text>
+            {data.explanation}
+          </Text>
+        </Div>
+      </Group>
       )}
+    </div>
+  ), [timeIsOver, stop]);
+
+  return (
+    <div style={{ height: '100%' }}>
+      {renderedContent}
     </div>
   );
 };

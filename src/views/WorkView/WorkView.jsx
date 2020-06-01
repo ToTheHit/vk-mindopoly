@@ -4,6 +4,7 @@ import { PopoutWrapper, ScreenSpinner, View } from '@vkontakte/vkui';
 import WorkGallery from '../../panels/Work/WorkGallery/WorkGallery';
 import QuizResult from '../../panels/QuizResult/QuizResult';
 import WorkViewModal from './WorkViewModal';
+import './workView.css';
 
 const WorkView = (props) => {
   const popout = (
@@ -20,10 +21,6 @@ const WorkView = (props) => {
   const [activePanel, setActivePanel] = useState('WorkGallery');
   const [popoutIsActive, setPopoutIsActive] = useState(true);
   const [popoutShadowIsActive, setPopoutShadowIsActive] = useState(false);
-
-  useEffect(() => {
-    
-  }, []);
 
   return (
     <View

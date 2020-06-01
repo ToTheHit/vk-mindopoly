@@ -215,3 +215,34 @@ export function tooltip(state = {
       return state;
   }
 }
+
+
+export function shopQuestion(state = {
+  question: {
+    text: '',
+    answers: ['', '', '', ''],
+    explanation: '',
+    category: '',
+    correctAnswer: 0,
+    cost: 0,
+  },
+}, action) {
+  switch (action.type) {
+    case 'UPDATE_SHOP_QUESTION':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}
+
+export function scrollTo(state = {
+  scrollableElement: '',
+  top: 0,
+}, action) {
+  switch (action.type) {
+    case 'SCROLL_TO':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}

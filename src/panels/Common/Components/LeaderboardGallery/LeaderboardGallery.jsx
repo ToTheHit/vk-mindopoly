@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useRef, useState, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -15,18 +17,32 @@ import Icon56Users3Outline from '@vkontakte/icons/dist/56/users_3_outline';
 
 import './leaderboardGallery.css';
 import bridge from '@vkontakte/vk-bridge';
+import { useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
+
 
 const LeaderboardGallery = (props) => {
   const {
-    friendsLeaderboard, worldLeaderboard, activeTab, setActiveTab, spinnerIsActive, getFriendsAccess,
+    friendsLeaderboard, worldLeaderboard, activeTab,
+    setActiveTab, spinnerIsActive, getFriendsAccess,
   } = props;
+  const scrollListener = useSelector((state) => state.scrollTo);
+  const contentsRef = useRef([React.createRef(), React.createRef()]);
 
   const [slideIndex, setSlideIndex] = useState(0);
   // const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
   const [renderedFriendsLeaderboard, setRenderedFriendsLeaderBoard] = useState([]);
   const [renderedWorldLeaderboard, setRenderedWorldLeaderboard] = useState([]);
-  const [cardHeight, setCardHeight] = useState(0);
+
+  useEffect(() => {
+    if (scrollListener.scrollableElement === globalVariables.commonView.roots.leaderboard) {
+      if (slideIndex === 0) {
+        contentsRef.current[0].current.scroll({ top: 0, left: 0, behavior: 'smooth' });
+      } else {
+        contentsRef.current[1].current.scroll({ top: 0, left: 0, behavior: 'smooth' });
+      }
+    }
+  }, [scrollListener]);
 
   useEffect(() => {
     if (activeTab === 'WorldLeaderboardTab') setSlideIndex(0);
@@ -74,19 +90,74 @@ const LeaderboardGallery = (props) => {
     setRenderedWorldLeaderboard(rendered);
   }, [worldLeaderboard]);
 
-  useEffect(() => {
-    let height = 61;
+  const memoRenderedWorldLeaderboard = useMemo(() => (
+    <Card
+      mode="shadow"
+      className="LeaderboardGallery--card"
+      style={{ height: 'auto' }}
+    >
+      {renderedWorldLeaderboard}
+    </Card>
+  ), [renderedWorldLeaderboard.length]);
 
-    if (activeTab === 'WorldLeaderboardTab') {
-      height *= renderedWorldLeaderboard.length;
-    } else if (!localStorage.getItem(globalVariables.friendsAccessToken)) {
-      if (spinnerIsActive) {
-        height = 315 + 96;
-      } else height = 315;
-    } else height = height * renderedFriendsLeaderboard.length + 315;
+  const memoRenderedFriendsLeaderboard = useMemo(() => (
+    <Card
+      mode="shadow"
+      style={{ height: 'auto' }}
+      className="LeaderboardGallery--card"
+    >
+      {(localStorage.getItem(globalVariables.friendsAccessToken) && renderedFriendsLeaderboard)}
+      {spinnerIsActive && <PanelSpinner size="small" />}
+      {(!localStorage.getItem(globalVariables.friendsAccessToken) && (
+      <Placeholder
+        className="LeaderboardGenius__placeholder"
+        icon={(
+          <Icon56Users3Outline
+            width={56}
+            height={56}
+            style={{ color: 'var(--button_primary_background)' }}
+          />
+          )}
+        header="Доступ к друзьям"
+        action={(
+          <Button
+            size="l"
+            onClick={getFriendsAccess}
+          >
+            Разрешить
+          </Button>
+          )}
+      >
+        Мозгополии необходим список Ваших друзей, чтобы составить таблицу лидеров.
+      </Placeholder>
+      ))}
 
-    // setCardHeight(height);
-  }, [activeTab, renderedFriendsLeaderboard, renderedWorldLeaderboard, spinnerIsActive]);
+      {(localStorage.getItem(globalVariables.friendsAccessToken) && (
+      <Placeholder
+        className="LeaderboardGenius__placeholder"
+        icon={(
+          <Icon24UserAddOutline
+            width={56}
+            height={36}
+            style={{ color: 'var(--button_primary_background)' }}
+          />
+          )}
+        header="Пригласить друзей"
+        action={(
+          <Button
+            size="l"
+            onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
+          >
+            Пригласить
+          </Button>
+          )}
+      >
+        Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
+      </Placeholder>
+      ))}
+
+    </Card>
+  ), [renderedFriendsLeaderboard.length, spinnerIsActive]);
 
   return (
     <Gallery
@@ -104,74 +175,18 @@ const LeaderboardGallery = (props) => {
       align="center"
       // style={{ height: cardHeight }}
     >
-      <div className="LeaderboardGallery--content">
-        <Card
-          mode="shadow"
-          className="LeaderboardGallery--card"
-          style={{ height: 'auto' }}
-        >
-          {renderedWorldLeaderboard}
-        </Card>
+      <div
+        ref={contentsRef.current[0]}
+        className="LeaderboardGallery--content"
+      >
+        {memoRenderedWorldLeaderboard}
       </div>
 
-      <div className="LeaderboardGallery--content">
-        <Card
-          mode="shadow"
-          style={{ height: 'auto' }}
-          className="LeaderboardGallery--card"
-        >
-
-          {(localStorage.getItem(globalVariables.friendsAccessToken) && renderedFriendsLeaderboard)}
-          {spinnerIsActive && <PanelSpinner size="small" />}
-          {(!localStorage.getItem(globalVariables.friendsAccessToken) && (
-            <Placeholder
-              className="LeaderboardGenius__placeholder"
-              icon={(
-                <Icon56Users3Outline
-                  width={56}
-                  height={56}
-                  style={{ color: 'var(--button_primary_background)' }}
-                />
-              )}
-              header="Доступ к друзьям"
-              action={(
-                <Button
-                  size="l"
-                  onClick={getFriendsAccess}
-                >
-                  Разрешить
-                </Button>
-              )}
-            >
-              Мозгополии необходим список Ваших друзей, чтобы составить таблицу лидеров.
-            </Placeholder>
-          ))}
-
-          {(localStorage.getItem(globalVariables.friendsAccessToken) && (
-            <Placeholder
-              className="LeaderboardGenius__placeholder"
-              icon={(
-                <Icon24UserAddOutline
-                  width={56}
-                  height={36}
-                  style={{ color: 'var(--button_primary_background)' }}
-                />
-              )}
-              header="Пригласить друзей"
-              action={(
-                <Button
-                  size="l"
-                  onClick={() => bridge.send('VKWebAppShare', { link: 'https://vk.com/app7441788' })}
-                >
-                  Пригласить
-                </Button>
-              )}
-            >
-              Проверьте, смогут ли Ваши друзья ответить на придуманные Вами вопросы.
-            </Placeholder>
-          ))}
-
-        </Card>
+      <div
+        ref={contentsRef.current[1]}
+        className="LeaderboardGallery--content"
+      >
+        {memoRenderedFriendsLeaderboard}
       </div>
 
     </Gallery>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './leaderboardCategories.css';
 import {
   Avatar,
@@ -12,6 +12,8 @@ import {
 } from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import scroll from 'scroll';
+import SweetScroll from 'sweet-scroll';
 import globalVariables from '../../../../../GlobalVariables';
 import Icon64Math from '../../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../../assets/Icons/icn64_rus.png';
@@ -26,11 +28,33 @@ import Icon64Sport from '../../../../../assets/Icons/icn64_sport.png';
 import Icon64Other from '../../../../../assets/Icons/icn64_other.png';
 import Icon64Geography from '../../../../../assets/Icons/icn64_geography.png';
 
-const LeaderboardCategories = (props) => {
+const LeaderboardCategories = () => {
   const [spinnerIsActive, setSpinnerIsActive] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
-  const userInfo = useSelector((state) => state.userInfo);
   const userQuestions = useSelector((state) => state.userQuestions.questions.All);
+  const scrollListener = useSelector((state) => state.scrollTo);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollListener.scrollableElement === globalVariables.commonView.roots.leaderboard) {
+      /*      contentRef.current.overflow = 'hidden';
+      setTimeout(() => {
+        contentRef.current.style.overflow = 'scroll';
+        scroll.top(contentRef.current, 0);
+      }, 50); */
+      /*      const scroller = new SweetScroll(
+        {
+          duration: 500,
+          easing: 'linear',
+        },
+        contentRef.current,
+      );
+      scroller.toTop(0); */
+      // contentRef.current.scrollTo(0, 0);
+      contentRef.current.scroll({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  }, [scrollListener]);
+
 
   function getIcon(category) {
     switch (category) {
@@ -71,7 +95,6 @@ const LeaderboardCategories = (props) => {
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
-        console.info(data)
         const sortedQuestions = {};
         for (let i = 0; i < userQuestions.length; i += 1) {
           if (!sortedQuestions[userQuestions[i].category]) {
@@ -85,9 +108,13 @@ const LeaderboardCategories = (props) => {
 
         const rendered = data.data.map((category) => {
           const leaders = category.leaders.map((leader) => (
-            <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${leader.user_id}`}>
+            <a
+              key={`Category-${category.name}_leader-${leader.user_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://vk.com/id${leader.user_id}`}
+            >
               <SimpleCell
-                key={`Category-${category.name}_leader-${leader.user_id}`}
                 className="LeaderboardCategories__Category--leader"
                 before={<Avatar size={48} src={leader.photo} />}
                 description={(
@@ -130,7 +157,7 @@ const LeaderboardCategories = (props) => {
                         weight="regular"
                       >
                         {`${category.count} ${getCorrectWord(category.count)}`}
-                      </Caption>*/}
+                      </Caption> */}
                     </div>
                   </SimpleCell>
                 </Div>
@@ -156,7 +183,7 @@ const LeaderboardCategories = (props) => {
       });
   }, []);
   return (
-    <div style={{ paddingTop: 0 }} className="LeaderboardCategories">
+    <div ref={contentRef} style={{ paddingTop: 0 }} className="LeaderboardCategories">
 
       <Header
         subtitle="Станьте мозгополистом, покупая вопросы в магазине. Мозгополию можно составить из трёх вопросов одинаковой категории."

@@ -30,6 +30,12 @@ const WorkGallery = (props) => {
   const cancelSource = React.useRef(null);
 
   const controlHardwareBackButton = useCallback(() => {
+    dispatch({
+      type: 'UPDATE_WORK-VIEW-MODAL',
+      payload: {
+        modalIsActive: false,
+      },
+    });
     nextView(globalVariables.view.main);
   }, []);
 
@@ -364,13 +370,11 @@ const WorkGallery = (props) => {
         Мозговой отчёт
       </PanelHeader>
 
-      <div>
         <Gallery
           slideWidth="100%"
           slideIndex={questionIndex}
           align="center"
           onChange={(i) => setQuestionIndex(i)}
-          style={{ height: 'auto' }}
         >
           {questions.length > 0 && questions.map((item, index) => (
             <WorkGalleryPanel
@@ -396,7 +400,6 @@ const WorkGallery = (props) => {
             />
           ))}
         </Gallery>
-      </div>
 
     </Panel>
   );

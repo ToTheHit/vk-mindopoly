@@ -6,6 +6,8 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
+import smoothscroll from 'smoothscroll-polyfill';
+
 import {
   schemeChanger,
   quiz,
@@ -17,6 +19,8 @@ import {
   userQuestions,
   notificationsAllow,
   tooltip,
+  shopQuestion,
+  scrollTo,
 } from './ReduxReducers';
 
 const rootReducer = combineReducers({
@@ -29,13 +33,18 @@ const rootReducer = combineReducers({
   pageCache,
   userQuestions,
   notificationsAllow,
-  tooltip
+  tooltip,
+  shopQuestion,
+  scrollTo,
 });
 
 const store = createStore(rootReducer, {});
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit");
+
+// kick off the polyfill!
+smoothscroll.polyfill();
 
 ReactDOM.render(
   <Provider store={store}>

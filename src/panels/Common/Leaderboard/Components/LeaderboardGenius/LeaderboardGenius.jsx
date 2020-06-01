@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import './leaderboardGenius.css';
 import {
-  Button, Div, Group, PanelSpinner, Placeholder, Tabs, TabsItem,
+  Div, Group, PanelSpinner, Tabs, TabsItem,
 } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
-import Icon24UserAddOutline from '@vkontakte/icons/dist/24/user_add_outline';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import LeaderboardGallery from '../../../Components/LeaderboardGallery/LeaderboardGallery';
@@ -12,12 +11,14 @@ import globalVariables from '../../../../../GlobalVariables';
 
 const qs = require('querystring');
 
+
 const LeaderboardGenius = () => {
   const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
   const [spinnerIsActive, setSpinnerIsActive] = useState(true);
   const [worldLeaderboard, setWorldLeaderboard] = useState([]);
   const [friendsLeaderboard, setFriendsLeaderboard] = useState([]);
   const userTokens = useSelector((state) => state.userToken);
+
 
   function getLeaderboardFromServer(VKfriendsArray) {
     return new Promise((resolve, reject) => {
@@ -145,11 +146,9 @@ const LeaderboardGenius = () => {
     }
   }, [activeTab]);
 
-
   function getFriendsAccess() {
     bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
       .then((data) => {
-
         bridge.send('VKWebAppCallAPIMethod', {
           method: 'friends.getAppUsers',
           params: {
@@ -177,6 +176,12 @@ const LeaderboardGenius = () => {
         setSpinnerIsActive(false);
       });
   }
+
+/*  const renderedGallery = useMemo(() => {
+    return (
+
+    )
+  }, [friendsLeaderboard.length, worldLeaderboard.length]);*/
   return (
     <div className="LeaderboardGenius">
 
@@ -204,8 +209,10 @@ const LeaderboardGenius = () => {
           </Tabs>
 
         </Div>
-        {(spinnerIsActive && activeTab !== 'FriendsLeaderboardTab') && <PanelSpinner size="small" />}
+        {(spinnerIsActive && activeTab !== 'FriendsLeaderboardTab')
+        && <PanelSpinner size="small" />}
 
+        {/*{renderedGallery}*/}
         <LeaderboardGallery
           friendsLeaderboard={friendsLeaderboard}
           worldLeaderboard={worldLeaderboard}
@@ -214,6 +221,14 @@ const LeaderboardGenius = () => {
           spinnerIsActive={spinnerIsActive}
           getFriendsAccess={getFriendsAccess}
         />
+{/*        <LeaderboardGallery
+          friendsLeaderboard={friendsLeaderboard}
+          worldLeaderboard={worldLeaderboard}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          spinnerIsActive={spinnerIsActive}
+          getFriendsAccess={getFriendsAccess}
+        />*/}
 
       </Group>
     </div>

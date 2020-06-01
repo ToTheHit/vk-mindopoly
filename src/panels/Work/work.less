@@ -1,4 +1,10 @@
 .Work {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  //height: 300px;
 
   .ModalRoot {
     &__mask {
@@ -9,6 +15,11 @@
     }
   }
 
+  &--subTitle {
+    //position: sticky;
+    //top: 0;
+    background: var(--background_content);
+  }
   &--button {
     margin-top: 10px;
   }
@@ -26,6 +37,7 @@
     }
   }
   &--subTitle {
+    min-height: 58px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -86,4 +98,45 @@
     white-space: pre-line;
   }
 
+  .Gallery {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow: visible;
+    min-height: 1px;
+
+    &__viewport {
+      flex-grow: 1;
+      overflow: visible;
+      min-height: 1px;
+
+    }
+    &__slide {
+      height: auto;
+      overflow: visible;
+      padding-bottom: 10px;
+      min-height: 1px;
+    }
+  }
+
+  .WorkGalleryPanel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 1px;
+    //height: 500px;
+    height: 100%;
+
+    //overflow-y: scroll;
+    //-webkit-overflow-scrolling: touch;
+    //pointer-events: visible;
+  }
+  .WorkGalleryPanel--content {
+    flex-grow: 1;
+
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: visible;
+  }
 }

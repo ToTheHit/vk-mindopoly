@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { ConfigProvider, Root } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,24 +16,6 @@ const App = () => {
   const dispatch = useDispatch();
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
-  function UpdateTheme() {
-    // console.info(scheme);
-    if (scheme === 'bright_light' || scheme === 'client_light') {
-      bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'dark', action_bar_color: '#fff' })
-        .catch((err) => console.info(err));
-    } else if (scheme === 'space_gray' || scheme === 'client_dark') {
-      bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
-        .catch((err) => console.info(err));
-    }
-  }
-
-  /*  useEffect(() => {
-    UpdateTheme();
-  }, [scheme]); */
-
-  const [test, setTest] = useState('light');
-
-  // useEffect(() => console.info(test), [test])
   useEffect(() => {
     bridge.subscribe(({ detail: { type, data } }) => {
       switch (type) {
@@ -41,18 +23,6 @@ const App = () => {
           const schemeAttribute = document.createAttribute('scheme');
           schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
           document.body.attributes.setNamedItem(schemeAttribute);
-          setTest((data.appearance === 'light' ? 'dark' : 'light'));
-
-          // console.info('New scheme:', data.scheme);
-
-/*          if (data.scheme === 'bright_light' || data.scheme === 'client_light') {
-            bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'dark', action_bar_color: '#fff' })
-              .catch((err) => console.info(err));
-          } else if (data.scheme === 'space_gray' || data.scheme === 'client_dark') {
-            bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
-              .catch((err) => console.info(err));
-          }*/
-
 
           dispatch({
             type: 'UPDATE_SCHEME',
@@ -88,11 +58,43 @@ const App = () => {
     });
   }, []);
 
+  function changeStatusBarColor(schemeLocal) {
+    return new Promise((resolve) => {
+      if (schemeLocal === 'bright_light' || schemeLocal === 'client_light') {
+        bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'dark', action_bar_color: '#fff' })
+          .then((res) => resolve(res))
+          .catch((err) => {
+            if (err.error_data.error_code === 9) {
+              setTimeout(() => {
+                changeStatusBarColor(schemeLocal);
+              }, 500);
+            }
+          });
+      } else if (schemeLocal === 'space_gray' || schemeLocal === 'client_dark') {
+        bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
+          .then((res) => resolve(res))
+          .catch((err) => {
+            if (err.error_data.error_code === 9) {
+
+              setTimeout(() => {
+                changeStatusBarColor(schemeLocal);
+              }, 500);
+            }
+          });
+      }
+    });
+  }
+  useEffect(() => {
+    changeStatusBarColor(scheme);
+  }, [scheme]);
+
+
   return (
     <ConfigProvider
       webviewType="vkapps"
+      isWebView
       scheme={(((scheme === 'light' || scheme === 'bright_light') || scheme === 'client_light') ? 'bright_light' : 'space_gray')}
-      appearance={test}
+      appearance={(((scheme === 'light' || scheme === 'bright_light') || scheme === 'client_light') ? 'light' : 'dark')}
     >
       <Root activeView={activeView}>
         <StartView id={globalVariables.view.start} nextView={setActiveView} />

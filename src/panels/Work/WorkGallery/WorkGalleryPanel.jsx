@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button, Cell, Div, Panel, Text, Title,
-} from '@vkontakte/vkui';
-import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outline';
 import QuizBlock from '../QuizBlock/QuizBlock';
-import ProgressRing from '../../CustomComponents/ProgressRing/ProgressRing';
+import WorkGallerySubtitle from "./WorkGallerySubtitle";
 
 const WorkGalleryPanel = (props) => {
   const {
@@ -84,73 +80,28 @@ const WorkGalleryPanel = (props) => {
   }
 
   return (
-    <Panel id={id} className="WorkGalleryPanel" getRootRef={panelRef}>
-      <Div className="Work--subTitle">
-        {(questionIndex === 0 ? (
-          <Cell
-            multiline
-            description="Не учитывается"
-          >
-            <Text>
-              Вопрос для разогрева
-            </Text>
-          </Cell>
-        ) : (
-          <Cell
-            multiline
-            description={data.theme}
-          >
-            <Text>
-              {`Вопрос ${questionIndex} из ${totalQuestions - 1}`}
-            </Text>
-{/*            <Text>
-              {`Storage last ID: ${lastQuestionInStorage.id}`}
-            </Text>
-            <Text>
-              {`This quiz ID: ${data._id}`}
-            </Text>*/}
-          </Cell>
-        ))}
+    <div id={id} className="WorkGalleryPanel" ref={panelRef}>
+      <WorkGallerySubtitle time={time} showArrowNext={showArrowNext} questionIndex={questionIndex}
+                           category={data.theme} totalQuestions={totalQuestions}
+                           goToNextQuestion={goToNextQuestion} timeProgress={timeProgress} />
+      <div className="WorkGalleryPanel--content">
+        <QuizBlock
+          data={{
+            question: data.question,
+            answers: data.answers,
+            correctAnswer: data.correctAnswer,
+            correctAnswerNumber: data.correctAnswerNumber,
+            explanation: data.explanation,
+            requestedBy: data.requestedBy,
+            _id: data._id,
+          }}
+          time={time}
+          onComplete={onCompleteQuestion}
+          lastQuestionInStorage={lastQuestionInStorage}
+        />
 
-        {showArrowNext ? (
-          <div className="Work--arrowNext">
-            <Button mode="secondary" onClick={() => goToNextQuestion()}>
-              <Icon28ArrowRightOutline />
-            </Button>
-          </div>
-        ) : (
-          <div className="Work--timer">
-            <div className="Work--timer__gradient" />
-            <ProgressRing
-              className="Work--timer__circle"
-              radius={34}
-              stroke={5}
-              initialStrokeDashoffest={151}
-              progress={-1 * timeProgress}
-              transitionDuration={500}
-            />
-            <div className="Work--timer__gradient-mask" />
-            <div className="Work--timer__time">
-              <Title level={2} weight="semibold">{(time > 0 ? time.toFixed(0) : 0)}</Title>
-            </div>
-          </div>
-        )}
-      </Div>
-      <QuizBlock
-        data={{
-          question: data.question,
-          answers: data.answers,
-          correctAnswer: data.correctAnswer,
-          correctAnswerNumber: data.correctAnswerNumber,
-          explanation: data.explanation,
-          requestedBy: data.requestedBy,
-          _id: data._id,
-        }}
-        time={time}
-        onComplete={onCompleteQuestion}
-        lastQuestionInStorage={lastQuestionInStorage}
-      />
-    </Panel>
+      </div>
+    </div>
   );
 };
 

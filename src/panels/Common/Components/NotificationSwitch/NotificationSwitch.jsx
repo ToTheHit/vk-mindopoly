@@ -91,6 +91,23 @@ const NotificationSwitch = (props) => {
     });
   }
 
+  function getTime() {
+    let hours = timeToTest.hour;
+    let minutes = timeToTest.minute;
+    minutes += 1;
+    if (minutes === 60) {
+      hours += 1;
+      minutes = 0;
+    }
+    if (hours > 0) {
+      if (minutes > 0) {
+        return `${hours} ${getCorrectWordHours(hours)} ${minutes} ${getCorrectWordMinutes(minutes)}`;
+      }
+      return `${hours} ${getCorrectWordHours(hours)}`;
+    }
+    if (minutes > 1) return `${minutes} ${getCorrectWordMinutes(minutes)}`;
+    return 'Меньше минуты';
+  }
   return (
     <Div className="NotificationSwitch" style={{ paddingTop: 0 }}>
       <Card
@@ -101,10 +118,7 @@ const NotificationSwitch = (props) => {
             До следующего отчёта
           </Caption>
           <Title level="3" weight="regular" className="NotificationSwitch__date--time">
-            {(timeToTest.hour > 0 && `${timeToTest.hour} ${getCorrectWordHours(timeToTest.hour)}, ${timeToTest.minute + 1} ${getCorrectWordMinutes(timeToTest.minute + 1)}`)}
-            {((timeToTest.hour === 0 && timeToTest.minute > 0) && `${timeToTest.minute + 1} ${getCorrectWordMinutes(timeToTest.minute + 1)}`)}
-            {((timeToTest.hour === 0 && timeToTest.minute === 0) && 'Меньше минуты')}
-
+            {getTime()}
           </Title>
         </div>
         <Separator wide />
