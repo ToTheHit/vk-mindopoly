@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/vk-extension-miniApp/static/css/main.74867c06.chunk.css",
-    "main.js": "/vk-extension-miniApp/static/js/main.4023c142.chunk.js",
-    "main.js.map": "/vk-extension-miniApp/static/js/main.4023c142.chunk.js.map",
+    "main.js": "/vk-extension-miniApp/static/js/main.9004c25f.chunk.js",
+    "main.js.map": "/vk-extension-miniApp/static/js/main.9004c25f.chunk.js.map",
     "runtime-main.js": "/vk-extension-miniApp/static/js/runtime-main.a9232dc7.js",
     "runtime-main.js.map": "/vk-extension-miniApp/static/js/runtime-main.a9232dc7.js.map",
     "static/css/2.551d3f2e.chunk.css": "/vk-extension-miniApp/static/css/2.551d3f2e.chunk.css",
     "static/js/2.676df27d.chunk.js": "/vk-extension-miniApp/static/js/2.676df27d.chunk.js",
     "static/js/2.676df27d.chunk.js.map": "/vk-extension-miniApp/static/js/2.676df27d.chunk.js.map",
     "index.html": "/vk-extension-miniApp/index.html",
-    "precache-manifest.718a49a17c1d39dd0817eba2db17f07f.js": "/vk-extension-miniApp/precache-manifest.718a49a17c1d39dd0817eba2db17f07f.js",
+    "precache-manifest.a6ca7bcd98f016f9ca85ff4e1eec5cbf.js": "/vk-extension-miniApp/precache-manifest.a6ca7bcd98f016f9ca85ff4e1eec5cbf.js",
     "service-worker.js": "/vk-extension-miniApp/service-worker.js",
     "static/css/2.551d3f2e.chunk.css.map": "/vk-extension-miniApp/static/css/2.551d3f2e.chunk.css.map",
     "static/css/main.74867c06.chunk.css.map": "/vk-extension-miniApp/static/css/main.74867c06.chunk.css.map",
@@ -28,6 +28,6 @@
     "static/css/2.551d3f2e.chunk.css",
     "static/js/2.676df27d.chunk.js",
     "static/css/main.74867c06.chunk.css",
-    "static/js/main.4023c142.chunk.js"
+    "static/js/main.9004c25f.chunk.js"
   ]
 }
