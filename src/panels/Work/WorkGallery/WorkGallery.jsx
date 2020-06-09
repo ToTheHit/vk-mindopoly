@@ -96,7 +96,7 @@ const WorkGallery = (props) => {
   }
 
   useEffect(() => {
-    if (!modalStatus.modalIsActive && lastQuestionInStorage.selectedAnswerNumber !== -1) {
+    if (!modalStatus.modalIsActive && modalStatus.start && lastQuestionInStorage.selectedAnswerNumber !== -1) {
       if (result.length >= questions.length - 1) {
         setActivePanel('QuizResultPanel');
       } else if (modalStatus.start) {
@@ -125,7 +125,11 @@ const WorkGallery = (props) => {
             });
 
             setQuestionIndex(questionIndex + 1);
-          }));
+          }))
+          .catch((bridgeError) => {
+            console.info('bridgeError_WorkGallery', bridgeError);
+            nextView(globalVariables.view.start);
+          });
       }
     }
   }, [modalStatus]);
@@ -159,6 +163,8 @@ const WorkGallery = (props) => {
         keys: [globalVariables.quizQuestions, globalVariables.quizResult, 'secret'],
       })
         .then((storedQuiz) => {
+          // console.info('questions', storedQuiz.keys[0]);
+          // console.info('questions', storedQuiz.keys[0]);
           const simpleCrypto = new SimpleCrypto(storedQuiz.keys[2].value);
           let storedQuestions = [];
           let storedAnswers = [];
@@ -284,7 +290,10 @@ const WorkGallery = (props) => {
               nextView(globalVariables.view.main);
             });
         })
-        .catch((bridgeError) => console.info('bridgeError', bridgeError));
+        .catch((bridgeError) => {
+          console.info('bridgeError_WorkGallery', bridgeError);
+          nextView(globalVariables.view.start);
+        });
     } else {
       // Перемещение на стартовый экран
       nextView(globalVariables.view.main);
@@ -318,7 +327,11 @@ const WorkGallery = (props) => {
       bridge.send('VKWebAppStorageSet', {
         key: globalVariables.quizResult,
         value: JSON.stringify(answersToStore),
-      });
+      })
+        .catch((bridgeError) => {
+          console.info('bridgeError_WorkGallery', bridgeError);
+          nextView(globalVariables.view.start);
+        });
     }
   }, [result]);
 
@@ -337,7 +350,8 @@ const WorkGallery = (props) => {
 
   // Нажатие на стрелку, переход к следующему вопросу
   function goToNextQuestion() {
-    if (result.length === questions.length - 1) {
+    console.info(modalStatus.start)
+    if ((result.length === questions.length - 1) && modalStatus.start) {
       setActivePanel('QuizResultPanel');
     } else {
       bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
@@ -358,7 +372,11 @@ const WorkGallery = (props) => {
           });
 
           setQuestionIndex(questionIndex + 1);
-        }));
+        }))
+        .catch((bridgeError) => {
+          console.info('bridgeError_WorkGallery', bridgeError);
+          nextView(globalVariables.view.start);
+        });
     }
   }
 

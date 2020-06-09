@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './effectMindopolistDetails.css';
 import { useSelector } from 'react-redux';
-import {
-  Cell, Div, Header, Separator, SimpleCell, withModalRootContext,
-} from '@vkontakte/vkui';
+import { Cell, Div, SimpleCell, withModalRootContext, } from '@vkontakte/vkui';
 import Icon64Math from '../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../assets/Icons/icn64_rus.png';
 import Icon64Litra from '../../../../assets/Icons/icn64_litra.png';
@@ -18,14 +16,12 @@ import Icon64Sport from '../../../../assets/Icons/icn64_sport.png';
 import Icon64Other from '../../../../assets/Icons/icn64_other.png';
 import Icon64Geography from '../../../../assets/Icons/icn64_geography.png';
 import globalVariables from '../../../../GlobalVariables';
-import Icon48Bubble from '../../../../assets/Icons/icn48_bubble_plus.png';
-import Icon48Brain from '../../../../assets/Icons/icn48_brain.png';
-import Icon48Story from '../../../../assets/Icons/icn48_story.png';
 
 const EffectMindopolistDetails = (props) => {
   const { updateModalHeight } = props;
 
   const leadsCategories = useSelector((state) => state.userInfo.leads);
+
   function getIcon(category) {
     switch (category) {
       case 'Math':
@@ -95,6 +91,7 @@ EffectMindopolistDetails.propTypes = {
   updateModalHeight: PropTypes.func,
 };
 EffectMindopolistDetails.defaultProps = {
-  updateModalHeight: () => {},
+  updateModalHeight: () => {
+  },
 };
 export default withModalRootContext(EffectMindopolistDetails);

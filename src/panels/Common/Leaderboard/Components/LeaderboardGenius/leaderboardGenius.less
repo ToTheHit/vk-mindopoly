@@ -8,10 +8,12 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    &>:not(.Header):first-child {
+
+    & > :not(.Header):first-child {
       margin: 0;
     }
   }
+
   .Tabs {
     margin-top: 0 !important;
     margin-left: -15px;
@@ -32,6 +34,7 @@
       overflow: visible;
 
     }
+
     &__slide {
       height: auto;
       //padding: 24px;
@@ -42,15 +45,24 @@
       min-height: 1px;
     }
   }
+  .GalleryDark {
+    .Card {
+      background: var(--content_tint_background);
+    }
+  }
 
-  .Header{
+  .Header {
     &__content {
       padding-bottom: 0 !important;
     }
   }
+
   &__placeholder {
     background: var(--modal_card_background);
     border-radius: 10px;
+    &-dark {
+      background: var(--content_tint_background);
+    }
   }
 }
 

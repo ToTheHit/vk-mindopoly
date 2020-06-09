@@ -23,14 +23,14 @@ const WorkViewModal = (props) => {
   useEffect(() => {
     // document.body.style.overflow = 'hidden';
 
-    if (modalIsActive) {
+/*    if (modalIsActive) {
       document.body.style.overflow = 'hidden';
-    } else document.body.style.overflow = 'auto';
+    } else document.body.style.overflow = 'auto';*/
   }, [modalIsActive]);
 
   useEffect(() => {
     if (answersLength > 0) {
-      setButtonTitle('Продолжить');
+      setButtonTitle('Готов');
     } else setButtonTitle('Начать');
   }, [answersLength]);
 
@@ -52,10 +52,6 @@ const WorkViewModal = (props) => {
     });
   }
 
-  useEffect(() => {
-    // if (questionsLength > 0) setPopoutIsActive(false);
-  }, [questionsLength]);
-
   return (
     <ModalRoot
       activeModal={(modalIsActive && questionsLength > 0) ? 'Work--readyCheck' : null}
@@ -65,7 +61,6 @@ const WorkViewModal = (props) => {
         id="Work--readyCheck"
         icon={<Icon56ErrorOutline style={{ transform: 'rotate(180deg)' }} />}
         header={modalText}
-
         actions={[
           {
             title: 'Отложить',
@@ -76,7 +71,7 @@ const WorkViewModal = (props) => {
             },
           },
           {
-            title: 'Начать',
+            title: buttonTitle,
             mode: 'primary',
             action: () => closeModal(true),
           },

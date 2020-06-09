@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './brainLeaderboard.css';
 import PropTypes from 'prop-types';
+import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 import {
   Cell,
   List,
@@ -8,22 +9,21 @@ import {
   PanelHeader,
   PanelHeaderContent,
   PanelHeaderContext,
+  Snackbar,
 } from '@vkontakte/vkui';
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon28BrainOutline from '@vkontakte/icons/dist/28/brain_outline';
 import Icon28GridSquareOutline from '@vkontakte/icons/dist/28/grid_square_outline';
-import Scroll from 'react-scroll';
-import { useSelector } from 'react-redux';
 import LeaderboardGenius from './Components/LeaderboardGenius/LeaderboardGenius';
 import LeaderboardCategories from './Components/LeaderboardCategories/LeaderboardCategories';
 import globalVariables from '../../../GlobalVariables';
-
 
 const BrainLeaderboard = (props) => {
   const { id, setActiveStory } = props;
   const [contextIsOpened, setContextIsOpened] = useState(false);
   const [ratingType, setRatingType] = useState('score');
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   const controlHardwareBackButton = useCallback(() => {
     setActiveStory(globalVariables.commonView.roots.main);
@@ -100,14 +100,32 @@ const BrainLeaderboard = (props) => {
         </List>
       </PanelHeaderContext>
 
+      {showSnackbar && (
+        <Snackbar
+          duration={2000}
+          onClose={() => {
+            setShowSnackbar(false);
+          }}
+          before={(
+            <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
+          )}
+        >
+          Не удалось связаться с сервером
+        </Snackbar>
+      )}
+
       <div
         className="BrainLeaderboard"
       >
         {(ratingType === 'score' && (
-          <LeaderboardGenius />
+          <LeaderboardGenius
+            setShowSnackbar={setShowSnackbar}
+          />
         ))}
         {(ratingType === 'categories' && (
-          <LeaderboardCategories />
+          <LeaderboardCategories
+            setShowSnackbar={setShowSnackbar}
+          />
         ))}
       </div>
     </Panel>

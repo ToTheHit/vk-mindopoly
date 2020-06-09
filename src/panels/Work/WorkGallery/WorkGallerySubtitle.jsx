@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Cell, Div, Text, Title,
@@ -10,6 +10,7 @@ const WorkGallerySubtitle = (props) => {
   const {
     questionIndex, category, goToNextQuestion, showArrowNext, time, totalQuestions, timeProgress,
   } = props;
+  const [isUsed, setIsUsed] = useState(false);
   return (
     <Div className="Work--subTitle">
       {(questionIndex === 0 ? (
@@ -40,7 +41,15 @@ const WorkGallerySubtitle = (props) => {
 
       {showArrowNext ? (
         <div className="Work--arrowNext">
-          <Button mode="secondary" onClick={goToNextQuestion}>
+          <Button
+            mode="secondary"
+            onClick={() => {
+              if (!isUsed) {
+                setIsUsed(true);
+                goToNextQuestion();
+              }
+            }}
+          >
             <Icon28ArrowRightOutline />
           </Button>
         </div>

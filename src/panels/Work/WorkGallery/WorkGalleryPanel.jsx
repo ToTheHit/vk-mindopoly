@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import QuizBlock from '../QuizBlock/QuizBlock';
-import WorkGallerySubtitle from "./WorkGallerySubtitle";
+import WorkGallerySubtitle from './WorkGallerySubtitle';
 
 const WorkGalleryPanel = (props) => {
   const {
@@ -81,9 +81,15 @@ const WorkGalleryPanel = (props) => {
 
   return (
     <div id={id} className="WorkGalleryPanel" ref={panelRef}>
-      <WorkGallerySubtitle time={time} showArrowNext={showArrowNext} questionIndex={questionIndex}
-                           category={data.theme} totalQuestions={totalQuestions}
-                           goToNextQuestion={goToNextQuestion} timeProgress={timeProgress} />
+      <WorkGallerySubtitle
+        time={time}
+        showArrowNext={showArrowNext}
+        questionIndex={questionIndex}
+        category={data.theme}
+        totalQuestions={totalQuestions}
+        goToNextQuestion={goToNextQuestion}
+        timeProgress={timeProgress}
+      />
       <div className="WorkGalleryPanel--content">
         <QuizBlock
           data={{

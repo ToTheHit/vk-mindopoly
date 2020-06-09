@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './leaderboardCategories.css';
+import PropTypes from 'prop-types';
 import {
   Avatar,
   Caption,
@@ -12,8 +13,6 @@ import {
 } from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import scroll from 'scroll';
-import SweetScroll from 'sweet-scroll';
 import globalVariables from '../../../../../GlobalVariables';
 import Icon64Math from '../../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../../assets/Icons/icn64_rus.png';
@@ -28,7 +27,8 @@ import Icon64Sport from '../../../../../assets/Icons/icn64_sport.png';
 import Icon64Other from '../../../../../assets/Icons/icn64_other.png';
 import Icon64Geography from '../../../../../assets/Icons/icn64_geography.png';
 
-const LeaderboardCategories = () => {
+const LeaderboardCategories = (props) => {
+  const { setShowSnackbar } = props;
   const [spinnerIsActive, setSpinnerIsActive] = useState(true);
   const [leaderboard, setLeaderboard] = useState([]);
   const userQuestions = useSelector((state) => state.userQuestions.questions.All);
@@ -37,24 +37,9 @@ const LeaderboardCategories = () => {
 
   useEffect(() => {
     if (scrollListener.scrollableElement === globalVariables.commonView.roots.leaderboard) {
-      /*      contentRef.current.overflow = 'hidden';
-      setTimeout(() => {
-        contentRef.current.style.overflow = 'scroll';
-        scroll.top(contentRef.current, 0);
-      }, 50); */
-      /*      const scroller = new SweetScroll(
-        {
-          duration: 500,
-          easing: 'linear',
-        },
-        contentRef.current,
-      );
-      scroller.toTop(0); */
-      // contentRef.current.scrollTo(0, 0);
       contentRef.current.scroll({ top: 0, left: 0, behavior: 'smooth' });
     }
   }, [scrollListener]);
-
 
   function getIcon(category) {
     switch (category) {
@@ -178,7 +163,8 @@ const LeaderboardCategories = () => {
         setLeaderboard(rendered);
       })
       .catch((err) => {
-        setSpinnerIsActive(false);
+        // setSpinnerIsActive(false);
+        setShowSnackbar(true);
         console.info('LeaderboardCategories, GET api/getCategoriesState', err);
       });
   }, []);
@@ -194,6 +180,8 @@ const LeaderboardCategories = () => {
   );
 };
 
-LeaderboardCategories.propTypes = {};
+LeaderboardCategories.propTypes = {
+  setShowSnackbar: PropTypes.func.isRequired,
+};
 LeaderboardCategories.defaultProps = {};
 export default LeaderboardCategories;

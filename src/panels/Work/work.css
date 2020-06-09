@@ -139,7 +139,6 @@
 .Work .Gallery__slide {
   height: auto;
   overflow: visible;
-  padding-bottom: 10px;
   min-height: 1px;
 }
 .Work .WorkGalleryPanel {

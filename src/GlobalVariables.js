@@ -95,6 +95,7 @@ const globalVariables = {
       case 'GPtoday': return 'GPDetailsModalPage';
       case 'CoinsToday': return 'CoinsDetailsModalPage';
       case 'Mindopolist': return 'MindopolistDetailsModalPage';
+      case 'Pioneer': return 'PioneerModalPage';
       default: return null;
     }
   },

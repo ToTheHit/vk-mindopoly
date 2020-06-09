@@ -6,6 +6,7 @@ import EffectDetailsHeader from './EffectDetailsHeader';
 import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent';
 import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
 import EffectMindopolistDetails from './EffectMindopolistDetails/EffectMindopolistDetails';
+import EffectPioneerDetailsContent from './EffectPioneerDetails/EffectTaxDetailsContent';
 
 const EffectDetailsSelector = () => {
   const [isActive, setIsActive] = useState(false);
@@ -89,6 +90,11 @@ const EffectDetailsSelector = () => {
       >
         <Separator wide />
         <EffectMindopolistDetails />
+      </ModalPage>
+
+      <ModalPage id="PioneerModalPage" header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Первопроходец" />}>
+        <Separator wide />
+        <EffectPioneerDetailsContent />
       </ModalPage>
     </ModalRoot>
 

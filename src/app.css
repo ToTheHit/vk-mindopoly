@@ -23,4 +23,7 @@ textarea {
       -ms-user-select: auto;
           user-select: auto;
 }
+.Snackbar__in {
+  padding-top: 20px !important;
+}
 /*# sourceMappingURL=app.css.map */

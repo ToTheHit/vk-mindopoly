@@ -17,6 +17,13 @@ const WorkView = (props) => {
     </PopoutWrapper>
   );
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   const { id, nextView } = props;
   const [activePanel, setActivePanel] = useState('WorkGallery');
   const [popoutIsActive, setPopoutIsActive] = useState(true);

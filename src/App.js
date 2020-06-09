@@ -71,11 +71,10 @@ const App = () => {
             }
           });
       } else if (schemeLocal === 'space_gray' || schemeLocal === 'client_dark') {
-        bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#000' })
+        bridge.send('VKWebAppSetViewSettings', { status_bar_style: 'light', action_bar_color: '#19191a' })
           .then((res) => resolve(res))
           .catch((err) => {
             if (err.error_data.error_code === 9) {
-
               setTimeout(() => {
                 changeStatusBarColor(schemeLocal);
               }, 500);
@@ -87,7 +86,6 @@ const App = () => {
   useEffect(() => {
     changeStatusBarColor(scheme);
   }, [scheme]);
-
 
   return (
     <ConfigProvider

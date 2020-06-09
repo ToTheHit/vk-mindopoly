@@ -57,11 +57,17 @@
   padding-bottom: 30px;
   min-height: 1px;
 }
+.LeaderboardGenius .GalleryDark .Card {
+  background: var(--content_tint_background);
+}
 .LeaderboardGenius .Header__content {
   padding-bottom: 0 !important;
 }
 .LeaderboardGenius__placeholder {
   background: var(--modal_card_background);
   border-radius: 10px;
+}
+.LeaderboardGenius__placeholder-dark {
+  background: var(--content_tint_background);
 }
 /*# sourceMappingURL=leaderboardGenius.css.map */

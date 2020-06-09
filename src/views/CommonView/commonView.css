@@ -5,6 +5,9 @@
     }
   }*/
 }
+.CommonView__Epic-dark .Tabbar {
+  background: #1a1a1c;
+}
 #Leaderboard {
   overflow: hidden;
 }

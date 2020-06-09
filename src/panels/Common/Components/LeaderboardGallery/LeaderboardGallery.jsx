@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {
   Avatar,
   Button,
-  Card,
+  Card, classNames,
   Gallery,
   PanelSpinner,
   Placeholder,
@@ -27,10 +27,10 @@ const LeaderboardGallery = (props) => {
     setActiveTab, spinnerIsActive, getFriendsAccess,
   } = props;
   const scrollListener = useSelector((state) => state.scrollTo);
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
   const contentsRef = useRef([React.createRef(), React.createRef()]);
 
   const [slideIndex, setSlideIndex] = useState(0);
-  // const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
   const [renderedFriendsLeaderboard, setRenderedFriendsLeaderBoard] = useState([]);
   const [renderedWorldLeaderboard, setRenderedWorldLeaderboard] = useState([]);
 
@@ -63,8 +63,7 @@ const LeaderboardGallery = (props) => {
             <b>{item.last_name}</b>
           </SimpleCell>
         </a>
-        {/* {index !== (friendsLeaderboard.length - 1) && <Separator wide />} */}
-        <Separator />
+        {/*<Separator />*/}
       </div>
     ));
     setRenderedFriendsLeaderBoard(rendered);
@@ -84,7 +83,7 @@ const LeaderboardGallery = (props) => {
             <b>{item.last_name}</b>
           </SimpleCell>
         </a>
-        {index !== (worldLeaderboard.length - 1) && <Separator />}
+        {/*{index !== (worldLeaderboard.length - 1) && <Separator />}*/}
       </div>
     ));
     setRenderedWorldLeaderboard(rendered);
@@ -110,7 +109,7 @@ const LeaderboardGallery = (props) => {
       {spinnerIsActive && <PanelSpinner size="small" />}
       {(!localStorage.getItem(globalVariables.friendsAccessToken) && (
       <Placeholder
-        className="LeaderboardGenius__placeholder"
+        className={classNames('LeaderboardGenius__placeholder', { 'LeaderboardGenius__placeholder-dark': scheme === 'space_gray' })}
         icon={(
           <Icon56Users3Outline
             width={56}
@@ -134,7 +133,7 @@ const LeaderboardGallery = (props) => {
 
       {(localStorage.getItem(globalVariables.friendsAccessToken) && (
       <Placeholder
-        className="LeaderboardGenius__placeholder"
+        className={classNames('LeaderboardGenius__placeholder', { 'LeaderboardGenius__placeholder-dark': scheme === 'space_gray' })}
         icon={(
           <Icon24UserAddOutline
             width={56}
@@ -157,7 +156,7 @@ const LeaderboardGallery = (props) => {
       ))}
 
     </Card>
-  ), [renderedFriendsLeaderboard.length, spinnerIsActive]);
+  ), [renderedFriendsLeaderboard.length, spinnerIsActive, scheme]);
 
   return (
     <Gallery
@@ -173,7 +172,7 @@ const LeaderboardGallery = (props) => {
         }
       }}
       align="center"
-      // style={{ height: cardHeight }}
+      className={scheme === 'space_gray' && 'GalleryDark'}
     >
       <div
         ref={contentsRef.current[0]}
@@ -188,7 +187,6 @@ const LeaderboardGallery = (props) => {
       >
         {memoRenderedFriendsLeaderboard}
       </div>
-
     </Gallery>
   );
 };

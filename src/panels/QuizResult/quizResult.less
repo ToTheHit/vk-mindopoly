@@ -1,4 +1,7 @@
 .QuizResult {
+  overflow: scroll;
+  overflow-x: hidden;
+
   &--header {
     display: flex;
     justify-content: center;
@@ -67,4 +70,13 @@
     }
   }
 
+  &__stickerContainer {
+    position: absolute;
+    opacity: 0;
+    z-index: -5;
+    //transform: scale(0);
+    clip: rect(1px, 1px, 1px, 1px);
+    //visibility: hidden;
+    //clip: rect(0 0 0 0);
+  }
 }

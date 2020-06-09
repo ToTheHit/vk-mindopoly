@@ -114,7 +114,7 @@ const TestView = (props) => {
         }, 5000);
       })); */
 
-/*    bridge.send('VKWebAppStorageSet', {
+    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
       value: '',
     });
@@ -124,11 +124,11 @@ const TestView = (props) => {
     });
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
-    });*/
+    });
 
-    bridge.send('VKWebAppStorageSet', {
+/*    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.tooltips,
-      value: JSON.stringify({
+/!*      value: JSON.stringify({
         mainScreenComplete: false,
         story1: {
           balance: false,
@@ -140,9 +140,9 @@ const TestView = (props) => {
           notifications: false,
         },
         shop: true,
-      }),
-      // value: '',
-    });
+      }),*!/
+      value: '',
+    });*/
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
           .then((data) => {

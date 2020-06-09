@@ -8,7 +8,7 @@ import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outlin
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 import bridge from '@vkontakte/vk-bridge';
 import Scroll from 'react-scroll';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BrainLeaderboard from '../../panels/Common/Leaderboard/BrainLeaderboard';
 
 import './commonView.css';
@@ -25,6 +25,7 @@ const CommonView = (props) => {
   const { id, nextView } = props;
   const [activeStory, setActiveStory] = useState(globalVariables.commonView.roots.main);
   const dispatch = useDispatch();
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   // Main activity
   const [mainSelectedQuestion, setMainSelectedQuestion] = useState({});
@@ -93,6 +94,7 @@ const CommonView = (props) => {
 
   return (
     <Epic
+      className={(scheme === 'space_gray' && 'CommonView__Epic-dark')}
       id={id}
       activeStory={activeStory}
       tabbar={(

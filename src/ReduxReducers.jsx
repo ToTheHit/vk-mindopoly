@@ -59,6 +59,7 @@ export function userInfo(state = {
   isExamSuccess: false,
   isStoryConfirmed: false,
   effects: [],
+  isPioneer: false,
   selectedQuestionsCategory: {
     questions: [],
     category: 'All',

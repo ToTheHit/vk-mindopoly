@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import './leaderboardGenius.css';
 import {
   Div, Group, PanelSpinner, Tabs, TabsItem,
 } from '@vkontakte/vkui';
+import PropTypes from 'prop-types';
 import bridge from '@vkontakte/vk-bridge';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -11,14 +12,13 @@ import globalVariables from '../../../../../GlobalVariables';
 
 const qs = require('querystring');
 
-
-const LeaderboardGenius = () => {
+const LeaderboardGenius = (props) => {
+  const { setShowSnackbar } = props;
   const [activeTab, setActiveTab] = useState('WorldLeaderboardTab');
   const [spinnerIsActive, setSpinnerIsActive] = useState(true);
   const [worldLeaderboard, setWorldLeaderboard] = useState([]);
   const [friendsLeaderboard, setFriendsLeaderboard] = useState([]);
   const userTokens = useSelector((state) => state.userToken);
-
 
   function getLeaderboardFromServer(VKfriendsArray) {
     return new Promise((resolve, reject) => {
@@ -77,6 +77,7 @@ const LeaderboardGenius = () => {
               })
               .catch((error) => {
                 console.info('Error post /api/leaderboard', error);
+                setShowSnackbar(true);
               });
           });
       } else {
@@ -85,6 +86,10 @@ const LeaderboardGenius = () => {
             setSpinnerIsActive(false);
             setWorldLeaderboard(leaderboard.global);
             setFriendsLeaderboard(leaderboard.friends);
+          })
+          .catch((error) => {
+            console.info('Error post /api/leaderboard', error);
+            setShowSnackbar(true);
           });
       }
     } else {
@@ -94,57 +99,13 @@ const LeaderboardGenius = () => {
           setSpinnerIsActive(false);
           setWorldLeaderboard(leaderboard.global);
           setFriendsLeaderboard(leaderboard.friends);
+        })
+        .catch((error) => {
+          console.info('Error post /api/leaderboard', error);
+          setShowSnackbar(true);
         });
     }
   }, []);
-
-  useEffect(() => {
-    if (activeTab === 'FriendsLeaderboardTab' && localStorage.getItem(globalVariables.friendsAccessToken)) {
-      /*      setSpinnerIsActive(true);
-      bridge.send('VKWebAppCallAPIMethod', {
-        method: 'friends.getAppUsers',
-        params: {
-          v: '5.103',
-          access_token: `${localStorage.getItem(globalVariables.friendsAccessToken)}`,
-        },
-      })
-        .then((friendsData) => {
-          getLeaderboardFromServer(friendsData.response)
-            .then((leaderboard) => {
-              setSpinnerIsActive(false);
-              setWorldLeaderboard(leaderboard.global);
-              setFriendsLeaderboard(leaderboard.friends);
-            });
-        })
-        .catch((errorFriend) => console.error('errorFriends', errorFriend)); */
-
-      /*      bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
-        .then((data) => {
-          localStorage.setItem(globalVariables.friendsAccessToken, data.access_token);
-
-          bridge.send('VKWebAppCallAPIMethod', {
-            method: 'friends.getAppUsers',
-            params: {
-              v: '5.103',
-              access_token: `${data.access_token}`,
-            },
-          })
-            .then((friendsData) => {
-              getLeaderboardFromServer(friendsData.response)
-                .then((leaderboard) => {
-                  setSpinnerIsActive(false);
-                  setWorldLeaderboard(leaderboard.global);
-                  setFriendsLeaderboard(leaderboard.friends);
-                });
-            })
-            .catch((errorFriend) => console.error('errorFriends', errorFriend));
-        })
-        .catch((err) => {
-          console.info(err);
-          setSpinnerIsActive(false);
-        }); */
-    }
-  }, [activeTab]);
 
   function getFriendsAccess() {
     bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'friends' })
@@ -164,6 +125,10 @@ const LeaderboardGenius = () => {
                 setSpinnerIsActive(false);
                 setWorldLeaderboard(leaderboard.global);
                 setFriendsLeaderboard(leaderboard.friends);
+              })
+              .catch((error) => {
+                console.info('Error post /api/leaderboard', error);
+                setShowSnackbar(true);
               });
           })
           .catch((errorFriend) => {
@@ -177,11 +142,6 @@ const LeaderboardGenius = () => {
       });
   }
 
-/*  const renderedGallery = useMemo(() => {
-    return (
-
-    )
-  }, [friendsLeaderboard.length, worldLeaderboard.length]);*/
   return (
     <div className="LeaderboardGenius">
 
@@ -212,7 +172,6 @@ const LeaderboardGenius = () => {
         {(spinnerIsActive && activeTab !== 'FriendsLeaderboardTab')
         && <PanelSpinner size="small" />}
 
-        {/*{renderedGallery}*/}
         <LeaderboardGallery
           friendsLeaderboard={friendsLeaderboard}
           worldLeaderboard={worldLeaderboard}
@@ -221,20 +180,14 @@ const LeaderboardGenius = () => {
           spinnerIsActive={spinnerIsActive}
           getFriendsAccess={getFriendsAccess}
         />
-{/*        <LeaderboardGallery
-          friendsLeaderboard={friendsLeaderboard}
-          worldLeaderboard={worldLeaderboard}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          spinnerIsActive={spinnerIsActive}
-          getFriendsAccess={getFriendsAccess}
-        />*/}
 
       </Group>
     </div>
   );
 };
 
-LeaderboardGenius.propTypes = {};
+LeaderboardGenius.propTypes = {
+  setShowSnackbar: PropTypes.func.isRequired,
+};
 LeaderboardGenius.defaultProps = {};
 export default LeaderboardGenius;

@@ -51,7 +51,9 @@ const Main = (props) => {
     const urlParams = new URLSearchParams(window.location.search);
     if (!userToken) {
       // Перемещение на стартовый экран
-      nextView(globalVariables.view.start);
+      setTimeout(() => {
+        nextView(globalVariables.view.start);
+      }, 3000);
     } else {
       // console.info(urlParams.get('vk_user_id'), userToken)
       axios.all([
@@ -90,6 +92,7 @@ const Main = (props) => {
             lastExamReward: srvData.lastExamReward,
             confirmReward: srvData.confirmReward,
             leads: srvData.leads,
+            isPioneer: srvData.isPioneer,
             storiesCount: srvData.storiesCount,
             effects: [],
             msToNextExam: srvData.msToNextExam,
@@ -222,6 +225,28 @@ const Main = (props) => {
               },
             );
           }
+          if (user.isPioneer) {
+            effectsArray.push(
+              {
+                name: 'Pioneer',
+                count: 'Первопроходец',
+                currency: '',
+                description: 'Достижение',
+                icon: (
+                  <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <g id="icn32_pioneer" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                      <g id="Icons-28/compass_outline_28-@-explore" transform="translate(2.000000, 2.000000)">
+                        <g id="compass_outline_28">
+                          <polygon points="0 0 28 0 28 28 0 28" />
+                          <path d="M14,2 C20.627417,2 26,7.372583 26,14 C26,20.627417 20.627417,26 14,26 C7.372583,26 2,20.627417 2,14 C2,7.372583 7.372583,2 14,2 Z M14,4 C8.4771525,4 4,8.4771525 4,14 C4,19.5228475 8.4771525,24 14,24 C19.5228475,24 24,19.5228475 24,14 C24,8.4771525 19.5228475,4 14,4 Z M18.9486833,10.3162278 L16.9486833,16.3162278 C16.8491483,16.6148328 16.6148328,16.8491483 16.3162278,16.9486833 L10.3162278,18.9486833 C9.53446974,19.2092693 8.79073069,18.4655303 9.0513167,17.6837722 L11.0513167,11.6837722 C11.1508517,11.3851672 11.3851672,11.1508517 11.6837722,11.0513167 L17.6837722,9.0513167 C18.4655303,8.79073069 19.2092693,9.53446974 18.9486833,10.3162278 Z M16.4188612,11.5811388 L12.7905694,12.7905694 L11.5811388,16.4188612 L15.2094306,15.2094306 L16.4188612,11.5811388 Z" id="↳-Icon-Color" fill="#D1D10B" fillRule="nonzero" />
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                ),
+              },
+            );
+          }
           user.effects = effectsArray;
           setVKuser({ ...VKuser, ...user });
           setEffects(effectsArray);
@@ -231,13 +256,14 @@ const Main = (props) => {
           setUpdatingView(false);
         })
         .catch((err) => {
+          setPopoutMainView(true);
           setTimeout(() => {
-            console.error('Main, Get /api/, Token not found');
-            console.error('Main, Get /api/', err);
-          }, 1000);
+            console.info('Main, Get /api/, Token not found');
+            console.info('Main, Get /api/', err);
+            nextView(globalVariables.view.start);
+          }, 3000);
           // Сервер не нашёл токен в БД.
           // Перемещение на стартовый экран
-          nextView(globalVariables.view.start);
         });
     }
   }
@@ -360,6 +386,15 @@ const Main = (props) => {
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
     });
+    /*    setTimeout(() => {
+      dispatch({
+        type: 'UPDATE_WORK-VIEW-MODAL',
+        payload: {
+          modalIsActive: false,
+        },
+      });
+    }, 1000); */
+
 
     bridge.subscribe(bridgeOnRestore);
     window.addEventListener('focus', onRestore);
