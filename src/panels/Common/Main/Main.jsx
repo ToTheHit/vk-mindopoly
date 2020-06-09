@@ -93,6 +93,7 @@ const Main = (props) => {
             confirmReward: srvData.confirmReward,
             leads: srvData.leads,
             isPioneer: srvData.isPioneer,
+            isMaster: srvData.isMaster,
             storiesCount: srvData.storiesCount,
             effects: [],
             msToNextExam: srvData.msToNextExam,
@@ -225,6 +226,29 @@ const Main = (props) => {
               },
             );
           }
+          if (user.isMaster) {
+            effectsArray.push(
+              {
+                name: 'Master',
+                count: 'Магистр',
+                currency: '',
+                description: 'Достижение',
+                icon: (
+                  <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <g id="icn32_edu" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                      <g id="Icons-20/education_outline_20" transform="translate(3.000000, 3.000000)">
+                        <g id="education_outline_20">
+                          <rect x="0" y="0" width="26" height="26" />
+                          <path d="M13.7813128,2.80046795 L23.8564215,8.32515779 C24.3948726,8.62041767 24.6997844,9.17610164 24.7004118,9.74968051 L24.7,9.75 L24.7,16.8 C24.7,17.2142136 24.3642136,17.55 23.95,17.55 L23.5,17.55 C23.0857864,17.55 22.75,17.2142136 22.75,16.8 L22.7495872,11.7813102 L20.7995872,12.8503102 L20.8,16.9 C20.8,20.5406145 17.2678179,23.4 13,23.4 C8.73218212,23.4 5.2,20.5406145 5.2,16.9 L5.19958722,12.8503102 L2.14357855,11.1748422 C1.35665993,10.7433351 1.06854199,9.75560583 1.50004913,8.96868721 C1.64888561,8.69726134 1.87215269,8.47399427 2.14357855,8.32515779 L12.2186872,2.80046795 C12.7053779,2.53359089 13.2946221,2.53359089 13.7813128,2.80046795 Z M18.8495872,13.9193102 L13.7813128,16.6995321 C13.2946221,16.9664091 12.7053779,16.9664091 12.2186872,16.6995321 L7.14958722,13.9203102 L7.15,16.9 C7.15,19.362132 9.72913104,21.45 13,21.45 C16.270869,21.45 18.85,19.362132 18.85,16.9 L18.8495872,13.9193102 Z M13,4.59596523 L3.60083701,9.75 L13,14.9040348 L22.399163,9.75 L13,4.59596523 Z" id="↳-Icon-Color" fill="#5856D6" />
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                ),
+              },
+            );
+          }
+
           if (user.isPioneer) {
             effectsArray.push(
               {

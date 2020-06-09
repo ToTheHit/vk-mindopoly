@@ -96,8 +96,12 @@ const globalVariables = {
       case 'CoinsToday': return 'CoinsDetailsModalPage';
       case 'Mindopolist': return 'MindopolistDetailsModalPage';
       case 'Pioneer': return 'PioneerModalPage';
+      case 'Master': return 'MasterModalPage';
       default: return null;
     }
+  },
+  leaderboardBadgeType: {
+    master: 'leaderboardBadgeMaster',
   },
 };
 

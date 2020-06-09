@@ -24,6 +24,11 @@
 .Work--button {
   margin-top: 10px;
 }
+.Work--question a {
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
 .Work--question .Group__description {
   padding-bottom: 5px;
 }

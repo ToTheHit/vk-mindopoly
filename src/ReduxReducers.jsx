@@ -60,6 +60,7 @@ export function userInfo(state = {
   isStoryConfirmed: false,
   effects: [],
   isPioneer: false,
+  isMaster: false,
   selectedQuestionsCategory: {
     questions: [],
     category: 'All',
