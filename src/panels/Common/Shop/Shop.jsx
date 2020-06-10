@@ -113,8 +113,6 @@ const Shop = (props) => {
           </div>
         </Group>
       )}
-
-
     </Panel>
   );
 };

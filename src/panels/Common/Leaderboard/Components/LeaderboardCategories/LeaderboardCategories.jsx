@@ -112,7 +112,7 @@ const LeaderboardCategories = (props) => {
                     >
                       {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
                     </div>
-                )}
+                  )}
                 >
                   {`${leader.first_name} ${leader.last_name}`}
                 </SimpleCell>
@@ -129,6 +129,10 @@ const LeaderboardCategories = (props) => {
                   style={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                   <SimpleCell
+                    style={{
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                    }}
                     disabled
                     before={(
                       <div

@@ -478,7 +478,7 @@ const QuizResult = (props) => {
         <Card
           mode="outline"
         >
-          <Div className="QuizResult--rowContainer">
+          <Div className="QuizResult--rowContainer" style={{paddingLeft: 0, paddingRight: 0}}>
             <SimpleCell
               disabled
               before={(

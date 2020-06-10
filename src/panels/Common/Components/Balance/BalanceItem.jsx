@@ -45,7 +45,6 @@ const BalanceItem = (props) => {
       onClick={() => openModal()}
       className={classNames('Balance__cardEffect', { 'Balance__cardEffect-dark': scheme === 'space_gray' })}
     >
-      <div style={{ padding: '0 12px' }}>
         <SimpleCell
           className="Balance__effect"
           disabled
@@ -64,7 +63,6 @@ const BalanceItem = (props) => {
             {`${count} ${currency}`}
           </div>
         </SimpleCell>
-      </div>
     </Card>
   );
 };
