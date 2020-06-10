@@ -27,6 +27,7 @@ const Main = (props) => {
   const tooltipsState = useSelector((state) => state.tooltip.mainScreenComplete);
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
   const scrollListener = useSelector((state) => state.scrollTo);
+  let appIsClosed = false;
 
   const {
     id, setActivePanel,
@@ -51,6 +52,7 @@ const Main = (props) => {
     const urlParams = new URLSearchParams(window.location.search);
     if (!userToken) {
       // Перемещение на стартовый экран
+      console.info('Main, Get /api/, Token not found');
       setTimeout(() => {
         nextView(globalVariables.view.start);
       }, 3000);
@@ -96,7 +98,10 @@ const Main = (props) => {
             isMaster: srvData.isMaster,
             storiesCount: srvData.storiesCount,
             effects: [],
-            msToNextExam: srvData.msToNextExam,
+            msToNextExam: {
+              value: srvData.msToNextExam.value,
+              isUpdating: srvData.msToNextExam.isUpdating,
+            },
           };
           if (!tooltipsState && !user.isExamAvailable) {
             dispatch({
@@ -248,7 +253,6 @@ const Main = (props) => {
               },
             );
           }
-
           if (user.isPioneer) {
             effectsArray.push(
               {
@@ -282,9 +286,13 @@ const Main = (props) => {
         .catch((err) => {
           setPopoutMainView(true);
           setTimeout(() => {
-            console.info('Main, Get /api/, Token not found');
+            console.info('Main, Get /api/, Server response Error');
             console.info('Main, Get /api/', err);
-            nextView(globalVariables.view.start);
+            if (appIsClosed) {
+              console.info('Main, Get /api/, Error was in hidden app');
+            } else {
+              nextView(globalVariables.view.start);
+            }
           }, 3000);
           // Сервер не нашёл токен в БД.
           // Перемещение на стартовый экран
@@ -339,11 +347,12 @@ const Main = (props) => {
     }
   }, [questions]);
 
-  let appIsClosed = false;
   const bridgeOnRestore = useCallback((e) => {
     switch (e.detail.type) {
       case 'VKWebAppViewRestore': {
-        updateView();
+        setTimeout(() => {
+          updateView();
+        }, 1000);
         break;
       }
       case 'VKWebAppViewHide': {
@@ -361,7 +370,9 @@ const Main = (props) => {
   const onRestore = useCallback(() => {
     if (appIsClosed) {
       appIsClosed = false;
-      updateView();
+      setTimeout(() => {
+        updateView();
+      }, 1000);
     }
   }, []);
 
@@ -384,7 +395,9 @@ const Main = (props) => {
 
   useEffect(() => {
     const job = new CronJob('0 */1 * * * *', (() => {
-      updateView();
+      setTimeout(() => {
+        updateView();
+      }, 1000);
     }));
     job.start();
     return () => {

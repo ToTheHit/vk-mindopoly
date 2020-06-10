@@ -67,7 +67,10 @@ export function userInfo(state = {
   },
   selectedTab: '',
   leads: [],
-  msToNextExam: 0,
+  msToNextExam: {
+    value: 0,
+    isUpdating: false,
+  },
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':

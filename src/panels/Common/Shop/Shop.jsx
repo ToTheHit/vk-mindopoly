@@ -9,7 +9,6 @@ import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
 
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import scroll from 'scroll';
 import globalVariables from '../../../GlobalVariables';
 import RenderedCategories from './Components/RenderedCategories';
 
@@ -74,13 +73,11 @@ const Shop = (props) => {
       })
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
-        // console.info(err.code, err.response);
         if (!err.response) {
           nextView(globalVariables.view.start);
         }
       });
     return () => {
-      // setRenderedCategories([]);
     };
   }, []);
 

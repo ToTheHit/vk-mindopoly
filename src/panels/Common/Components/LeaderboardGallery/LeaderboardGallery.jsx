@@ -71,19 +71,17 @@ const LeaderboardGallery = (props) => {
             </SimpleCell>
           </a>
         </div>
-      ); 
+      );
     });
     setRenderedFriendsLeaderBoard(rendered);
   }, [friendsLeaderboard]);
 
   useEffect(() => {
     const rendered = worldLeaderboard.map((item) => {
-      const badgeColor = '#5856D6';
       return (
         <div
           key={`worldLeaderboard_id${item.id}`}
         >
-          {console.info(item)}
           <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
             <SimpleCell
               before={(
