@@ -60,13 +60,17 @@ export function userInfo(state = {
   isStoryConfirmed: false,
   effects: [],
   isPioneer: false,
+  isMaster: false,
   selectedQuestionsCategory: {
     questions: [],
     category: 'All',
   },
   selectedTab: '',
   leads: [],
-  msToNextExam: 0,
+  msToNextExam: {
+    value: 0,
+    isUpdating: false,
+  },
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':

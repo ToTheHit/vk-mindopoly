@@ -38,7 +38,7 @@ const NotificationSwitch = (props) => {
   }
 
   useEffect(() => {
-    let s = msToNextExam;
+    let s = msToNextExam.value;
     const ms = s % 1000;
     s = (s - ms) / 1000;
     const secs = s % 60;
@@ -50,7 +50,7 @@ const NotificationSwitch = (props) => {
       hour: hrs,
       minute: mins,
     });
-  }, [msToNextExam]);
+  }, [msToNextExam.value, msToNextExam.isUpdating]);
 
   function updateNotificationsStatus(status) {
     if (status) {
@@ -92,6 +92,9 @@ const NotificationSwitch = (props) => {
   }
 
   function getTime() {
+    if (msToNextExam.isUpdating) {
+      return 'Осталось еще чуть-чуть';
+    }
     let hours = timeToTest.hour;
     let minutes = timeToTest.minute;
     minutes += 1;

@@ -67,9 +67,9 @@ const StartPanel = (props) => {
                   });
               }
               requestIsCompleted = true;
-              nextView(globalVariables.view.main);
-              // setReadyToShow(true);
-              // popoutState.setPopoutIsActive(false);
+              setTimeout(() => {
+                nextView(globalVariables.view.main);
+              }, 900);
             })
             .catch((err) => {
               // Сервер не нашёл токен в БД. Продолжаем регистрацию

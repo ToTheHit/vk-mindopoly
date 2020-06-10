@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ModalPage, ModalRoot, Separator } from '@vkontakte/vkui';
+import {
+  Div,
+  ModalPage, ModalRoot, Separator, Text,
+} from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import EffectGPDetailsContent from './EffectGPDetails/EffectGPDetailsContent';
 import EffectDetailsHeader from './EffectDetailsHeader';
@@ -7,6 +10,7 @@ import EffectTaxDetailsContent from './EffectTaxDetails/EffectTaxDetailsContent'
 import EffectCoinsDetailsContent from './EffectCoinsDetails/EffectCoinsDetailsContent';
 import EffectMindopolistDetails from './EffectMindopolistDetails/EffectMindopolistDetails';
 import EffectPioneerDetailsContent from './EffectPioneerDetails/EffectTaxDetailsContent';
+import EffectMasterDetailsContent from "./EffectMasterDetails/EffectMasterDetailsContent";
 
 const EffectDetailsSelector = () => {
   const [isActive, setIsActive] = useState(false);
@@ -95,6 +99,11 @@ const EffectDetailsSelector = () => {
       <ModalPage id="PioneerModalPage" header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Первопроходец" />}>
         <Separator wide />
         <EffectPioneerDetailsContent />
+      </ModalPage>
+
+      <ModalPage id="MasterModalPage" header={<EffectDetailsHeader status={{ isActive, setIsActive }} text="Магистр" />}>
+        <Separator wide />
+        <EffectMasterDetailsContent />
       </ModalPage>
     </ModalRoot>
 

@@ -19,6 +19,7 @@ import './leaderboardGallery.css';
 import bridge from '@vkontakte/vk-bridge';
 import { useSelector } from 'react-redux';
 import globalVariables from '../../../../GlobalVariables';
+import LeaderboardBadge from "../../Leaderboard/Components/LeaderboardBadge/LeaderboardBadge";
 
 
 const LeaderboardGallery = (props) => {
@@ -50,42 +51,53 @@ const LeaderboardGallery = (props) => {
   }, [activeTab]);
 
   useEffect(() => {
-    const rendered = friendsLeaderboard.map((item) => (
-      <div
-        key={`worldLeaderboard_id${item.id}`}
-      >
-        <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
-          <SimpleCell
-            before={<Avatar size={48} src={item.photo} />}
-            indicator={`${item.bp} GP`}
-          >
-            {`${item.first_name} `}
-            <b>{item.last_name}</b>
-          </SimpleCell>
-        </a>
-        {/*<Separator />*/}
-      </div>
-    ));
+    const rendered = friendsLeaderboard.map((item) => {
+      const badgeColor = '#5856D6';
+      return (
+        <div
+          key={`worldLeaderboard_id${item.id}`}
+        >
+          <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
+            <SimpleCell
+              before={(
+                <Avatar size={48} src={item.photo}>
+                  {(item.isMaster) && <LeaderboardBadge type={globalVariables.leaderboardBadgeType.master} />}
+                </Avatar>
+              )}
+              indicator={`${item.bp} GP`}
+            >
+              {`${item.first_name} `}
+              <b>{item.last_name}</b>
+            </SimpleCell>
+          </a>
+        </div>
+      );
+    });
     setRenderedFriendsLeaderBoard(rendered);
   }, [friendsLeaderboard]);
 
   useEffect(() => {
-    const rendered = worldLeaderboard.map((item, index) => (
-      <div
-        key={`worldLeaderboard_id${item.id}`}
-      >
-        <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
-          <SimpleCell
-            before={<Avatar size={48} src={item.photo} />}
-            indicator={`${item.bp} GP`}
-          >
-            {`${item.first_name} `}
-            <b>{item.last_name}</b>
-          </SimpleCell>
-        </a>
-        {/*{index !== (worldLeaderboard.length - 1) && <Separator />}*/}
-      </div>
-    ));
+    const rendered = worldLeaderboard.map((item) => {
+      return (
+        <div
+          key={`worldLeaderboard_id${item.id}`}
+        >
+          <a target="_blank" rel="noopener noreferrer" href={`https://vk.com/id${item.id}`}>
+            <SimpleCell
+              before={(
+                <Avatar size={48} src={item.photo}>
+                  {(item.isMaster) && <LeaderboardBadge type={globalVariables.leaderboardBadgeType.master} />}
+                </Avatar>
+            )}
+              indicator={`${item.bp} GP`}
+            >
+              {`${item.first_name} `}
+              <b>{item.last_name}</b>
+            </SimpleCell>
+          </a>
+        </div>
+      );
+    });
     setRenderedWorldLeaderboard(rendered);
   }, [worldLeaderboard]);
 

@@ -23,7 +23,7 @@ const globalVariables = {
   authToken: 'authToken',
   friendsAccessToken: 'friendsAccessToken',
   notificationAllow: 'notificationAllow',
-  serverURL: 'https://mindopoly.tech',
+  serverURL: 'https://mindopoly.ml',
   quizResult: 'quizResult',
   quizQuestions: 'quizQuestions',
   tooltips: 'tooltips',
@@ -96,8 +96,12 @@ const globalVariables = {
       case 'CoinsToday': return 'CoinsDetailsModalPage';
       case 'Mindopolist': return 'MindopolistDetailsModalPage';
       case 'Pioneer': return 'PioneerModalPage';
+      case 'Master': return 'MasterModalPage';
       default: return null;
     }
+  },
+  leaderboardBadgeType: {
+    master: 'leaderboardBadgeMaster',
   },
 };
 

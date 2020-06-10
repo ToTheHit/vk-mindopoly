@@ -92,28 +92,33 @@ const LeaderboardCategories = (props) => {
         // console.info(sortedQuestions);
 
         const rendered = data.data.map((category) => {
-          const leaders = category.leaders.map((leader) => (
-            <a
-              key={`Category-${category.name}_leader-${leader.user_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`https://vk.com/id${leader.user_id}`}
-            >
-              <SimpleCell
-                className="LeaderboardCategories__Category--leader"
-                before={<Avatar size={48} src={leader.photo} />}
-                description={(
-                  <div
-                    className="LeaderboardCategories__Category--leader_description"
-                  >
-                    {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
-                  </div>
-                )}
+          const leaders = category.leaders.map((leader) => {
+            const badgeColor = '#5856D6';
+            return (
+              <a
+                key={`Category-${category.name}_leader-${leader.user_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://vk.com/id${leader.user_id}`}
               >
-                {`${leader.first_name} ${leader.last_name}`}
-              </SimpleCell>
-            </a>
-          ));
+                <SimpleCell
+                  className="LeaderboardCategories__Category--leader"
+                  before={(
+                    <Avatar size={48} src={leader.photo} />
+                  )}
+                  description={(
+                    <div
+                      className="LeaderboardCategories__Category--leader_description"
+                    >
+                      {`${leader.categoryQuestionsCount} ${getCorrectWord(leader.categoryQuestionsCount)}`}
+                    </div>
+                )}
+                >
+                  {`${leader.first_name} ${leader.last_name}`}
+                </SimpleCell>
+              </a>
+            );
+          });
           if (leaders.length === 0) return null;
           return (
             <Group
