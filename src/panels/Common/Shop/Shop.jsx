@@ -108,9 +108,9 @@ const Shop = (props) => {
             </Header>
           )}
         >
-          <Div style={{ paddingTop: '4px' }}>
+          <div style={{ paddingTop: '4px' }}>
             <RenderedCategories checkBalance={checkBalance} categories={categories} />
-          </Div>
+          </div>
         </Group>
       )}
 
