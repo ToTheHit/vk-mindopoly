@@ -82,6 +82,10 @@
   line-height: 1.29;
   letter-spacing: -0.15px;
 }
+.Balance__effect .SimpleCell {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 .Balance__effect .SimpleCell__main {
   padding-right: 0;
 }
