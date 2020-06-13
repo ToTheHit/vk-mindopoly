@@ -33,7 +33,7 @@ const EffectCoinsDetailsContent = (props) => {
   // const confirmReward = 999;
   const quizIncome = useSelector((state) => state.userInfo.lastExamReward.coins);
   // const quizIncome = 999;
-  const storiesCount = useSelector((state) => state.userInfo.storiesCount);
+  // const storiesCount = useSelector((state) => state.userInfo.storiesCount);
   // const storiesCount = {today: 999};
 
   const [questionsIncome, setQuestionIncome] = useState(0);
@@ -184,7 +184,7 @@ const EffectCoinsDetailsContent = (props) => {
           </SimpleCell>
         ))}
 
-        {(storiesCount.today > 0 && (
+{/*        {(storiesCount.today > 0 && (
           <SimpleCell
             disabled
             className={'EffectGPDetails--itemIncome'}
@@ -198,9 +198,9 @@ const EffectCoinsDetailsContent = (props) => {
           >
             Публикация истории
           </SimpleCell>
-        ))}
+        ))}*/}
 
-        {(((confirmReward > 0 || quizIncome > 0 || storiesCount.today > 0) && (categoryIncome.length > 0)) && (
+        {(((confirmReward > 0 || quizIncome > 0) && (categoryIncome.length > 0)) && (
           <Separator style={{ marginTop: '16px' }} wide />
         ))}
 
