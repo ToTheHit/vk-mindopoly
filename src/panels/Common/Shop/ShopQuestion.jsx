@@ -188,14 +188,14 @@ const ShopQuestion = (props) => {
   });
   const platform = usePlatform();
 
-/*  useEffect(() => {
+  /*  useEffect(() => {
     setSavedUserQuestion(
       (prevState) => ({
         ...prevState,
         ...{ text: questionValue, explanation: explanationValue },
       }),
     );
-  }, [questionValue, explanationValue]);*/
+  }, [questionValue, explanationValue]); */
 
   useEffect(() => {
     setSymbolCounter({
@@ -469,9 +469,9 @@ const ShopQuestion = (props) => {
           >
             <FormLayout className="ShopQuestion--form">
               <Textarea
-                id={'shopquestion-question'}
+                id="shopquestion-question"
                 top="Вопрос"
-                placeholder={(storedQuestion.text.length === 0 && `Например, «${inputPlaceholders[questionData.category].question}»`)}
+                placeholder={(storedQuestion.text.length === 0 ? `Например, «${inputPlaceholders[questionData.category].question}»` : '')}
                 getRef={refQuestionText}
                 status={((resultType === resultTypeOptions.alreadyExist) || emptyInput.input0 || symbolCounter.question < 0) && 'error'}
                 bottom={(resultType === resultTypeOptions.alreadyExist)
@@ -485,8 +485,8 @@ const ShopQuestion = (props) => {
                   }
                   setEmptyInput((prevState) => ({ ...prevState, ...{ input0: false } }));
                 }}
-                type={'text'}
-                defaultValue={(storedQuestion.text.length > 0 && storedQuestion.text)}
+                type="text"
+                defaultValue={((storedQuestion.category === questionData.category) && (storedQuestion.text.length > 0) ? storedQuestion.text : '')}
               />
 
               <FormLayoutGroup
@@ -565,8 +565,8 @@ const ShopQuestion = (props) => {
 
               <Textarea
                 top="Пояснение (+5 GP)"
-                placeholder={(storedQuestion.explanation.length === 0 && "Введите текст пояснения для Вашего вопроса")}
-                id={'shopquestion-explanation'}
+                placeholder={(storedQuestion.explanation.length === 0 ? 'Введите текст пояснения для Вашего вопроса' : '')}
+                id="shopquestion-explanation"
                 status={(symbolCounter.explanation < 0) && 'error'}
                 getRef={refQuestionExplanation}
                 bottom={(symbolCounter.explanation >= 0 ? `Осталось символов: ${symbolCounter.explanation}` : `Пояснение не может содержать более ${maxSymbolsInInput.explanation} символов`)}
@@ -574,7 +574,7 @@ const ShopQuestion = (props) => {
                   setExplanationValue(e.target.value);
                   setSavedUserQuestion({ ...savedUserQuestion, ...{ explanation: e.target.value } });
                 }}
-                defaultValue={(storedQuestion.explanation.length > 0 && storedQuestion.explanation)}
+                defaultValue={((storedQuestion.category === questionData.category) && (storedQuestion.explanation.length > 0) ? storedQuestion.explanation : '')}
               />
             </FormLayout>
 
