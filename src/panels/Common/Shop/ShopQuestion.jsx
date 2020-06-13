@@ -42,7 +42,9 @@ const ShopQuestion = (props) => {
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
   const userToken = useSelector((state) => state.userToken.token);
   const storedQuestion = useSelector((state) => state.shopQuestion.question);
+  const unapprovedQuestions = useSelector((state) => state.userQuestions.unapprovedQuestions);
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar1, setShowSnackbar1] = useState({ state: false, msg: '' });
 
   let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
@@ -376,6 +378,12 @@ const ShopQuestion = (props) => {
               },
             },
           });
+          dispatch({
+            type: 'UPDATE_USER_QUESTIONS',
+            payload: {
+              unapprovedQuestions: (unapprovedQuestions + 1),
+            },
+          });
           setSavedUserQuestion({
             text: '',
             answers: [
@@ -575,8 +583,6 @@ const ShopQuestion = (props) => {
                 mode="commerce"
                 size="xl"
                 onClick={() => {
-                  // setUndef();
-
                   sendQuestion();
                 }}
               >
@@ -600,6 +606,18 @@ const ShopQuestion = (props) => {
           >
             {globalVariables.translateEnToRu(questionData.category)}
           </PanelHeader>
+          {showSnackbar1.state && (
+            <Snackbar
+              duration={2000}
+              onClose={() => setShowSnackbar1({ state: false, msg: '' })}
+              before={(
+                <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
+              )}
+            >
+              {showSnackbar1.msg}
+            </Snackbar>
+          )}
+
           <Group>
             {(resultType === resultTypeOptions.accepted) && (
               <Placeholder
@@ -626,8 +644,16 @@ const ShopQuestion = (props) => {
                       className="ShopQuestion--placeholder__button"
                       mode="primary"
                       onClick={() => {
-                        setResultType('');
-                        setActiveSubviewPanel('ShopQuestionSubview-makeQuestion');
+                        if (userBalance >= questionData.price) {
+                          if (unapprovedQuestions < globalVariables.maxUnapprovedQuestionCount) {
+                            setActiveSubviewPanel('ShopQuestionSubview-makeQuestion');
+                            setResultType('');
+                          } else {
+                            setShowSnackbar1({ state: true, msg: 'У Вас слишком много вопросов на рассмотрении.' });
+                          }
+                        } else {
+                          setShowSnackbar1({ state: true, msg: 'Вам не хватает монет для покупки еще одного вопроса.' });
+                        }
                       }}
                     >
                       Купить еще

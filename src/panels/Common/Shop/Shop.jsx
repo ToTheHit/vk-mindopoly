@@ -22,8 +22,9 @@ const Shop = (props) => {
   const pageCache = useSelector((state) => state.pageCache.shop);
   const [categories, setCategories] = useState(pageCache);
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({ state: false, msg: '' });
   const userBalance = useSelector((state) => state.userInfo.coins.overall);
+  const unapprovedQuestions = useSelector((state) => state.userQuestions.unapprovedQuestions);
   const scrollListener = useSelector((state) => state.scrollTo);
   const dispatch = useDispatch();
 
@@ -53,12 +54,17 @@ const Shop = (props) => {
 
   const checkBalance = useCallback((category, price) => {
     if (userBalance >= price) {
-      setQuestionData({ category, price });
-      setActivePanel('ShopQuestion');
+      if (unapprovedQuestions < globalVariables.maxUnapprovedQuestionCount) {
+        setQuestionData({ category, price });
+        setActivePanel('ShopQuestion');
+      } else {
+        setShowSnackbar({ state: true, msg: 'У Вас слишком много вопросов на рассмотрении.' });
+      }
     } else {
-      setShowSnackbar(true);
+      setShowSnackbar({ state: true, msg: 'Вам не хватает монет для покупки этого вопроса.' });
     }
   }, [setActivePanel, setQuestionData, userBalance]);
+
 
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
@@ -86,15 +92,15 @@ const Shop = (props) => {
       <PanelHeader>
         Магазин
       </PanelHeader>
-      {showSnackbar && (
+      {showSnackbar.state && (
         <Snackbar
           duration={2000}
-          onClose={() => setShowSnackbar(false)}
+          onClose={() => setShowSnackbar({ state: false, msg: '' })}
           before={(
             <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
           )}
         >
-          Вам не хватает монет для покупки этого вопроса.
+          {showSnackbar.msg}
         </Snackbar>
       )}
 

@@ -107,6 +107,7 @@ export function userQuestions(state = {
   },
   selectedQuestionsCategory: [],
   category: 'All',
+  unapprovedQuestions: 0,
   categoriesHorizontalScroll: 0,
 }, action) {
   switch (action.type) {

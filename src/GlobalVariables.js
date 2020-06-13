@@ -103,6 +103,7 @@ const globalVariables = {
   leaderboardBadgeType: {
     master: 'leaderboardBadgeMaster',
   },
+  maxUnapprovedQuestionCount: 12,
 };
 
 export default globalVariables;

@@ -332,9 +332,11 @@ const Main = (props) => {
         Geography: [],
         Other: [],
       };
+      let unapprovedQuestions = 0;
       for (let i = 0; i < questions.length; i += 1) {
         questionsCategories.All.push(questions[i]);
         questionsCategories[questions[i].category].push(questions[i]);
+        if (!questions[i].approved) unapprovedQuestions += 1;
       }
       dispatch({
         type: 'UPDATE_USER_QUESTIONS',
@@ -342,6 +344,7 @@ const Main = (props) => {
           category: (userQuestions.category === 'All' ? 'All' : userQuestions.category),
           questions: questionsCategories,
           selectedQuestionsCategory: (userQuestions.category === 'All' ? questionsCategories.All : questionsCategories[userQuestions.category]),
+          unapprovedQuestions,
         },
       });
     }

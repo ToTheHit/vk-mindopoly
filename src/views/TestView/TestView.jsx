@@ -114,7 +114,7 @@ const TestView = (props) => {
         }, 5000);
       })); */
 
-    bridge.send('VKWebAppStorageSet', {
+/*    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.quizResult,
       value: '',
     });
@@ -124,7 +124,7 @@ const TestView = (props) => {
     });
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
-    });
+    });*/
 
 /*    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.tooltips,
@@ -169,6 +169,22 @@ const TestView = (props) => {
 
           }) */
 
+    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stats, friends' })
+      .then((data) => {
+        setTimeout(() => console.info(data), 1000)
+        bridge.send('VKWebAppCallAPIMethod', {
+          method: 'stats.get',
+          params: {
+            v: '5.103',
+            access_token: data.access_token,
+            app_id: 7441788,
+            interval: 'all',
+            extended: 1
+          }
+        })
+          .then((data) => setTimeout(() => console.info(data), 1000))
+          .catch((error) => setTimeout(() => console.info(error), 1000));
+      });
   }, []);
 
   const [activePanel, setAcitvePanel] = useState('1');
