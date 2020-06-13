@@ -27,7 +27,7 @@ const StartPanel = (props) => {
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   useEffect(() => {
-    let requestIsCompleted = false;
+    let requestIsCompleted = true;
     bridge.send('VKWebAppStorageGet', { keys: [globalVariables.authToken, globalVariables.tooltips] })
       .then(((bridgeData) => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -72,6 +72,7 @@ const StartPanel = (props) => {
               }, 900);
             })
             .catch((err) => {
+              requestIsCompleted = false;
               // Сервер не нашёл токен в БД. Продолжаем регистрацию
               setTimeout(() => {
                 console.info(err);
@@ -89,6 +90,7 @@ const StartPanel = (props) => {
         setTimeout(() => {
           console.info(error);
         }, 1000);
+        requestIsCompleted = false;
         setReadyToShow(true);
         popoutState.setPopoutIsActive(false);
         setShowSnackbar(true);

@@ -178,7 +178,7 @@ const WorkGallery = (props) => {
           // console.info('storedAnswers', storedAnswers)
           axios.get(`${globalVariables.serverURL}/api/exam`, {
             cancelToken: cancelSource.current.token,
-            timeout: 5000,
+            timeout: 10000,
             timeoutErrorMessage: 'Timeout',
             params: {
               id: urlParams.get('vk_user_id'),
