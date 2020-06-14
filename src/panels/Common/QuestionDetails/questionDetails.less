@@ -1,4 +1,27 @@
 .QuestionDetails {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  -webkit-transform: translate3d(0,0,0);
+
+  .Panel__in {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 1px;
+    -webkit-transform: translate3d(0,0,0);
+  }
+
+  &--content {
+    flex-grow: 1;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: visible;
+    -webkit-transform: translate3d(0,0,0);
+  }
   &__answersGroup {
     margin-top: 20px;
   }

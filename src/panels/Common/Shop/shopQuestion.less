@@ -1,4 +1,42 @@
 .ShopQuestion {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  position: relative;
+
+  .View {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 1px;
+    height: 100vh;
+  }
+  &__Subview {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 1px;
+    .Panel__in {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      overflow: hidden;
+      min-height: 1px;
+      padding-bottom: 0 !important;
+    }
+  }
+  .Group {
+    flex-grow: 1;
+
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: visible;
+    margin-bottom: 48px;
+  }
 
   .Group>:not(.Header):first-child {
     margin-top: 0;
@@ -71,9 +109,5 @@
     }
   }
 
-  &__Subview {
-    .Panel__in {
-      padding-bottom: 0 !important;
-    }
-  }
+
 }

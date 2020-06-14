@@ -83,6 +83,7 @@ const Shop = (props) => {
           nextView(globalVariables.view.start);
         }
       });
+
     return () => {
     };
   }, []);
@@ -105,19 +106,23 @@ const Shop = (props) => {
       )}
 
       {!popoutShopView && (
-        <Group
-          header={(
-            <Header
-              subtitle="Чем больше вопросов в категории, тем выше их цена. Однако, дешёвые вопросы более востребованы и принесут больше GP."
+        <>
+          <div className="Shop__content">
+            <Group
+              header={(
+                <Header
+                  subtitle="Чем больше вопросов в категории, тем выше их цена. Однако, дешёвые вопросы более востребованы и принесут больше GP."
+                >
+                  Вопросы
+                </Header>
+              )}
             >
-              Вопросы
-            </Header>
-          )}
-        >
-          <div style={{ paddingTop: '4px' }}>
-            <RenderedCategories checkBalance={checkBalance} categories={categories} />
+              <div style={{ paddingTop: '4px' }}>
+                <RenderedCategories checkBalance={checkBalance} categories={categories} />
+              </div>
+            </Group>
           </div>
-        </Group>
+        </>
       )}
     </Panel>
   );

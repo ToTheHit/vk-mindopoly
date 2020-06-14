@@ -5,7 +5,6 @@ import {
   Card,
   classNames,
   Div,
-  Group,
   Header,
   HorizontalScroll,
   InfoRow,
@@ -63,152 +62,148 @@ const QuestionDetails = (props) => {
       >
         Вопрос
       </PanelHeader>
-      <Group>
-        <Div>
-          <Title level="1" weight="bold">
-            {selectedQuestion.text}
-          </Title>
+      <Div className="QuestionDetails--content">
+        <Title level="1" weight="bold">
+          {selectedQuestion.text}
+        </Title>
 
-          <div className="QuestionDetails__answersGroup">
-            <AnswerButton
-              className="QuestionDetails__answer"
-              label={selectedQuestion.answers[0]}
-              answerNumber={0}
-              type="correct"
-            />
-            <AnswerButton
-              className="QuestionDetails__answer"
-              label={selectedQuestion.answers[1]}
-              answerNumber={1}
-              type=""
-            />
-            <AnswerButton
-              className="QuestionDetails__answer"
-              label={selectedQuestion.answers[2]}
-              answerNumber={2}
-              type=""
-            />
-            <AnswerButton
-              className="QuestionDetails__answer"
-              label={selectedQuestion.answers[3]}
-              answerNumber={3}
-              type=""
-            />
-          </div>
+        <div className="QuestionDetails__answersGroup">
+          <AnswerButton
+            className="QuestionDetails__answer"
+            label={selectedQuestion.answers[0]}
+            answerNumber={0}
+            type="correct"
+          />
+          <AnswerButton
+            className="QuestionDetails__answer"
+            label={selectedQuestion.answers[1]}
+            answerNumber={1}
+            type=""
+          />
+          <AnswerButton
+            className="QuestionDetails__answer"
+            label={selectedQuestion.answers[2]}
+            answerNumber={2}
+            type=""
+          />
+          <AnswerButton
+            className="QuestionDetails__answer"
+            label={selectedQuestion.answers[3]}
+            answerNumber={3}
+            type=""
+          />
+        </div>
 
 
-          <div className="QuestionDetails__generalInfo">
-            <Header
-              style={{ marginTop: '15px', padding: 0 }}
-            >
-              Общая информация
-            </Header>
+        <div className="QuestionDetails__generalInfo">
+          <Header
+            style={{ marginTop: '15px', padding: 0 }}
+          >
+            Общая информация
+          </Header>
 
-            <Card
-              mode={scheme === 'space_gray' ? 'tint' : 'outline'}
-              className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
-            >
-              <Div>
-                <InfoRow header="Категория вопроса">
-                  {globalVariables.translateEnToRu(selectedQuestion.category)}
-                </InfoRow>
-                <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                <InfoRow header="GP за ошибку">
-                  {selectedQuestion.bpForError}
-                </InfoRow>
-              </Div>
-            </Card>
-          </div>
+          <Card
+            mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+            className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
+          >
+            <Div>
+              <InfoRow header="Категория вопроса">
+                {globalVariables.translateEnToRu(selectedQuestion.category)}
+              </InfoRow>
+              <Separator style={{ margin: '13px 0 11px 0' }} wide />
+              <InfoRow header="GP за ошибку">
+                {selectedQuestion.bpForError}
+              </InfoRow>
+            </Div>
+          </Card>
+        </div>
 
-          <div className="QuestionDetails__statistics">
-            <Header
-              style={{ marginTop: '15px', padding: 0 }}
-            >
-              Статистика
-            </Header>
+        <div className="QuestionDetails__statistics">
+          <Header
+            style={{ marginTop: '15px', padding: 0 }}
+          >
+            Статистика
+          </Header>
 
-            {(selectedQuestion.approved && (
-              <>
-                <HorizontalScroll>
-                  <Tabs>
-                    <TabsItem
-                      selected={activeTab === 'Today'}
-                      onClick={() => setActiveTab('Today')}
-                    >
-                      За сегодня
-                    </TabsItem>
-                    <TabsItem
-                      selected={activeTab === 'Yesterday'}
-                      onClick={() => setActiveTab('Yesterday')}
-                    >
-                      За вчера
-                    </TabsItem>
-                    <TabsItem
-                      selected={activeTab === 'Overall'}
-                      onClick={() => setActiveTab('Overall')}
-                    >
-                      Все время
-                    </TabsItem>
-                  </Tabs>
-                </HorizontalScroll>
-                <Card
-                  mode={scheme === 'space_gray' ? 'tint' : 'outline'}
-                  className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
-                >
-                  <Div>
-                    <InfoRow header="Показов игрокам">
-                      {(activeTab === 'Today') && (selectedQuestion.views.today)}
-                      {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday)}
-                      {(activeTab === 'Overall') && (selectedQuestion.views.overall)}
-                    </InfoRow>
-                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                    <InfoRow header="Правильных ответов">
-                      {(activeTab === 'Today') && (selectedQuestion.views.today - selectedQuestion.error_count.today)}
-                      {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday - selectedQuestion.error_count.yesterday)}
-                      {(activeTab === 'Overall') && (selectedQuestion.views.overall - selectedQuestion.error_count.overall)}
-                    </InfoRow>
-                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                    <InfoRow header="Неправильных ответов">
-                      {(activeTab === 'Today') && (selectedQuestion.error_count.today)}
-                      {(activeTab === 'Yesterday') && (selectedQuestion.error_count.yesterday)}
-                      {(activeTab === 'Overall') && (selectedQuestion.error_count.overall)}
-                    </InfoRow>
-                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                    <InfoRow header="Получено GP">
-                      {(activeTab === 'Today') && (selectedQuestion.bpEarned.today)}
-                      {(activeTab === 'Yesterday') && (selectedQuestion.bpEarned.yesterday)}
-                      {(activeTab === 'Overall') && (selectedQuestion.bpEarned.overall)}
-                    </InfoRow>
-                    <Separator style={{ margin: '13px 0 11px 0' }} wide />
-                    <InfoRow header="Получено монет">
-                      {(activeTab === 'Today') && (selectedQuestion.coinsEarned.today)}
-                      {(activeTab === 'Yesterday') && (selectedQuestion.coinsEarned.yesterday)}
-                      {(activeTab === 'Overall') && (selectedQuestion.coinsEarned.overall)}
-                    </InfoRow>
-                  </Div>
-                </Card>
-              </>
-            ))}
-            {(!selectedQuestion.approved && (
-              <Placeholder
-                icon={(
-                  <Icon56RecentOutline
-                    height={48}
-                    width={48}
-                    style={{ color: 'var(--button_primary_background)' }}
-                  />
-                )}
+          {(selectedQuestion.approved && (
+            <>
+              <HorizontalScroll>
+                <Tabs>
+                  <TabsItem
+                    selected={activeTab === 'Today'}
+                    onClick={() => setActiveTab('Today')}
+                  >
+                    За сегодня
+                  </TabsItem>
+                  <TabsItem
+                    selected={activeTab === 'Yesterday'}
+                    onClick={() => setActiveTab('Yesterday')}
+                  >
+                    За вчера
+                  </TabsItem>
+                  <TabsItem
+                    selected={activeTab === 'Overall'}
+                    onClick={() => setActiveTab('Overall')}
+                  >
+                    Все время
+                  </TabsItem>
+                </Tabs>
+              </HorizontalScroll>
+              <Card
+                mode={scheme === 'space_gray' ? 'tint' : 'outline'}
+                className={classNames('QuestionDetails__generalInfo--card', { 'QuestionDetails__generalInfo--card-dark': scheme === 'space_gray' })}
               >
-                Сейчас этот вопрос проверяется правительством Мозгополии.
-                Статистика будет доступна после одобрения вопроса.
-              </Placeholder>
-            ))}
+                <Div>
+                  <InfoRow header="Показов игрокам">
+                    {(activeTab === 'Today') && (selectedQuestion.views.today)}
+                    {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday)}
+                    {(activeTab === 'Overall') && (selectedQuestion.views.overall)}
+                  </InfoRow>
+                  <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                  <InfoRow header="Правильных ответов">
+                    {(activeTab === 'Today') && (selectedQuestion.views.today - selectedQuestion.error_count.today)}
+                    {(activeTab === 'Yesterday') && (selectedQuestion.views.yesterday - selectedQuestion.error_count.yesterday)}
+                    {(activeTab === 'Overall') && (selectedQuestion.views.overall - selectedQuestion.error_count.overall)}
+                  </InfoRow>
+                  <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                  <InfoRow header="Неправильных ответов">
+                    {(activeTab === 'Today') && (selectedQuestion.error_count.today)}
+                    {(activeTab === 'Yesterday') && (selectedQuestion.error_count.yesterday)}
+                    {(activeTab === 'Overall') && (selectedQuestion.error_count.overall)}
+                  </InfoRow>
+                  <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                  <InfoRow header="Получено GP">
+                    {(activeTab === 'Today') && (selectedQuestion.bpEarned.today)}
+                    {(activeTab === 'Yesterday') && (selectedQuestion.bpEarned.yesterday)}
+                    {(activeTab === 'Overall') && (selectedQuestion.bpEarned.overall)}
+                  </InfoRow>
+                  <Separator style={{ margin: '13px 0 11px 0' }} wide />
+                  <InfoRow header="Получено монет">
+                    {(activeTab === 'Today') && (selectedQuestion.coinsEarned.today)}
+                    {(activeTab === 'Yesterday') && (selectedQuestion.coinsEarned.yesterday)}
+                    {(activeTab === 'Overall') && (selectedQuestion.coinsEarned.overall)}
+                  </InfoRow>
+                </Div>
+              </Card>
+            </>
+          ))}
+          {(!selectedQuestion.approved && (
+            <Placeholder
+              icon={(
+                <Icon56RecentOutline
+                  height={48}
+                  width={48}
+                  style={{ color: 'var(--button_primary_background)' }}
+                />
+              )}
+            >
+              Сейчас этот вопрос проверяется правительством Мозгополии.
+              Статистика будет доступна после одобрения вопроса.
+            </Placeholder>
+          ))}
 
-          </div>
-        </Div>
-      </Group>
-
-
+        </div>
+      </Div>
     </Panel>
   );
 };

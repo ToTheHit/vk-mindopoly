@@ -1,3 +1,71 @@
+.ShopQuestion {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  position: relative;
+}
+.ShopQuestion .View {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  height: 100vh;
+}
+.ShopQuestion__Subview {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+}
+.ShopQuestion__Subview .Panel__in {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: hidden;
+  min-height: 1px;
+  padding-bottom: 0 !important;
+}
+.ShopQuestion .Group {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: visible;
+  margin-bottom: 48px;
+}
 .ShopQuestion .Group > :not(.Header):first-child {
   margin-top: 0;
 }
@@ -36,8 +104,5 @@
 }
 .ShopQuestion--placeholder__button {
   margin: 0 8px;
-}
-.ShopQuestion__Subview .Panel__in {
-  padding-bottom: 0 !important;
 }
 /*# sourceMappingURL=shopQuestion.css.map */

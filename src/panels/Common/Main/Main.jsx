@@ -440,12 +440,15 @@ const Main = (props) => {
     window.addEventListener('focus', onRestore);
     window.addEventListener('popstate', controlHardwareBackButton);
     // window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
+    document.body.style.overflow = 'auto';
 
     // window.history.go(-1);
     return () => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);
       window.removeEventListener('popstate', controlHardwareBackButton);
+      document.body.style.overflow = 'hidden';
+
     };
   }, []);
 
@@ -458,9 +461,10 @@ const Main = (props) => {
       <PullToRefresh
         onRefresh={() => setUpdatingView(true)}
         isFetching={updatingView}
-
       >
-        <div style={{ opacity: (popoutMainView ? '0' : '1') }}>
+        <div
+          style={{ opacity: (popoutMainView ? '0' : '1') }}
+        >
           <Balance
             coins={VKuser.coins.overall}
             GP={VKuser.GP.overall}

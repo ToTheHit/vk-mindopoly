@@ -438,6 +438,7 @@ const ShopQuestion = (props) => {
       <View
         activePanel={activeSubviewPanel}
         popout={(checkingProgress && <ScreenSpinner />)}
+        className={'ShopQuestion__View'}
       >
         <Panel
           id="ShopQuestionSubview-makeQuestion"

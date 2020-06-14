@@ -153,6 +153,10 @@ const WorkGallery = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    console.info('update questions');
+  }, [questions]);
+
   // Первое получение всех вопросов
   useEffect(() => {
     cancelSource.current = axios.CancelToken.source();
@@ -350,7 +354,6 @@ const WorkGallery = (props) => {
 
   // Нажатие на стрелку, переход к следующему вопросу
   function goToNextQuestion() {
-    console.info(modalStatus.start)
     if ((result.length === questions.length - 1) && modalStatus.start) {
       setActivePanel('QuizResultPanel');
     } else {
