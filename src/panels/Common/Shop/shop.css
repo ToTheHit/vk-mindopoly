@@ -40,6 +40,29 @@
 .Shop--item .SimpleCell__main {
   padding-left: 10px;
 }
+.Shop--item .Button.Tappable--active {
+  opacity: 1 !important;
+}
+.Shop--item__buttonCover {
+  opacity: 1;
+}
+.Shop--item__buttonCover:hover {
+  opacity: 0.6;
+}
+.Shop--item__button {
+  position: relative;
+  opacity: 1;
+  -webkit-transition: opacity 200ms;
+  -o-transition: opacity 200ms;
+  transition: opacity 200ms;
+}
+.Shop--item__button::after {
+  position: absolute;
+  content: '';
+  height: 100%;
+  width: 100%;
+  background-color: red;
+}
 .Shop--icon {
   width: 48px;
   height: 48px;

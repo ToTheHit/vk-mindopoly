@@ -42,11 +42,10 @@ const BrainLeaderboard = (props) => {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
     const scrollPosition = window.pageYOffset;
-    document.body.style.overflow = 'hidden';
+    // document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'visible';
+      // document.body.style.overflow = 'visible';
       window.scrollTo(0, scrollPosition);
     };
   }, []);

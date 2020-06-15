@@ -26,6 +26,34 @@
         padding-left: 10px;
       }
     }
+    .Button.Tappable--active {
+      opacity: 1 !important;
+    }
+
+    &__buttonCover {
+      //background-color: red;
+      opacity: 1;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+    &__button {
+      position: relative;
+      opacity: 1;
+      transition: opacity 200ms;
+      &::after {
+        position: absolute;
+        content: '';
+        height: 100%;
+        width: 100%;
+        background-color: red;
+      }
+
+      &:hover {
+        //background-color: red;
+      }
+    }
   }
 
   &--icon {

@@ -75,14 +75,18 @@ const RenderedCategories = (props) => {
             isShown={tooltipState && (index === 0)}
             onClose={onCloseTooltipBalance}
           >
-            <Button
-              mode="secondary"
-              onClick={() => {
-                checkBalance(item.name, item.price);
-              }}
-            >
-              {`${item.price} монет`}
-            </Button>
+            <div className={'Shop--item__buttonCover'}>
+              <Button
+                mode="secondary"
+                className={'Shop--item__button'}
+                onClick={() => {
+                  checkBalance(item.name, item.price);
+                }}
+              >
+                {`${item.price} монет`}
+              </Button>
+            </div>
+
           </Tooltip>
         )}
         before={(

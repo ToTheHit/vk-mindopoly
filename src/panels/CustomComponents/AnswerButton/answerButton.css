@@ -35,6 +35,13 @@
           align-items: center;
   padding: 0 12px;
   border-radius: 10px;
+  -webkit-transition: -webkit-transform 100ms;
+  transition: -webkit-transform 100ms;
+  -o-transition: transform 100ms;
+  transition: transform 100ms;
+  transition: transform 100ms, -webkit-transform 100ms;
+  -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
 }
 .AnswerButton--button--correct {
   background: #4bb34b !important;
@@ -49,8 +56,9 @@
   color: red !important;
 }
 .AnswerButton--button--pressed {
-  -webkit-animation: AnswerPressed 0.1s forwards;
-          animation: AnswerPressed 0.1s forwards;
+  -webkit-transform: translate3d(2px, 0, 0);
+          transform: translate3d(2px, 0, 0);
+  background: var(--input_border);
 }
 .AnswerButton--label {
   font-size: 17px;
@@ -66,8 +74,6 @@
 }
 @-webkit-keyframes AnswerPressed {
   0% {
-    -webkit-transform: translateY(0px);
-            transform: translateY(0px);
     background: var(--button_secondary_background);
   }
   100% {
@@ -78,8 +84,6 @@
 }
 @keyframes AnswerPressed {
   0% {
-    -webkit-transform: translateY(0px);
-            transform: translateY(0px);
     background: var(--button_secondary_background);
   }
   100% {

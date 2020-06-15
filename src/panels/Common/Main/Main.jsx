@@ -426,29 +426,17 @@ const Main = (props) => {
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
     });
-    /*    setTimeout(() => {
-      dispatch({
-        type: 'UPDATE_WORK-VIEW-MODAL',
-        payload: {
-          modalIsActive: false,
-        },
-      });
-    }, 1000); */
-
 
     bridge.subscribe(bridgeOnRestore);
     window.addEventListener('focus', onRestore);
     window.addEventListener('popstate', controlHardwareBackButton);
-    // window.history.pushState({page: 'Main'}, 'Main', `${window.location.search}`);
     document.body.style.overflow = 'auto';
 
-    // window.history.go(-1);
     return () => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('focus', onRestore);
       window.removeEventListener('popstate', controlHardwareBackButton);
       document.body.style.overflow = 'hidden';
-
     };
   }, []);
 

@@ -11,7 +11,8 @@
           flex-grow: 1;
   overflow: hidden;
   min-height: 1px;
-  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .QuestionDetails .Panel__in {
   display: -webkit-box;
@@ -26,16 +27,17 @@
           flex-grow: 1;
   overflow: hidden;
   min-height: 1px;
-  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .QuestionDetails--content {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
   overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
   pointer-events: visible;
-  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .QuestionDetails__answersGroup {
   margin-top: 20px;

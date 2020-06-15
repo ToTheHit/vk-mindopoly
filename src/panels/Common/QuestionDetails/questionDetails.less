@@ -4,7 +4,8 @@
   flex-grow: 1;
   overflow: hidden;
   min-height: 1px;
-  -webkit-transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   .Panel__in {
     display: flex;
@@ -12,15 +13,17 @@
     flex-grow: 1;
     overflow: hidden;
     min-height: 1px;
-    -webkit-transform: translate3d(0,0,0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   &--content {
     flex-grow: 1;
     overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+    //-webkit-overflow-scrolling: touch;
     pointer-events: visible;
-    -webkit-transform: translate3d(0,0,0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   &__answersGroup {
     margin-top: 20px;
