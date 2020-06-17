@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState, } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import './mindbreakers.css';
 import {
@@ -14,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import RenderedQuestionCard from './RenderedQuestionCard';
-import globalVariables from '../../../../GlobalVariables';
+import globalVariables from '../../../../../GlobalVariables';
 
 const Mindbreakers = (props) => {
   const { setActivePanel, setSelectedQuestion, setActiveStory } = props;

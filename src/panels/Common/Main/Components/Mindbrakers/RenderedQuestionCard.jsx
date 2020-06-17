@@ -4,11 +4,11 @@ import {
   Card, classNames, SimpleCell, Subhead, Text, Div
 } from '@vkontakte/vkui';
 import { useSelector } from 'react-redux';
-import globalVariables from '../../../../GlobalVariables';
+import globalVariables from '../../../../../GlobalVariables';
 import './renderedQuestionCard.css';
 
 const RenderedQuestionCard = (props) => {
-  const { questions, setSelectedQuestion, setActivePanel } = props;
+  const { questions, setSelectedQuestion, setActivePanel, showCategoryType } = props;
   const scheme = useSelector((state) => state.schemeChanger.scheme);
 
   return (
@@ -35,18 +35,16 @@ const RenderedQuestionCard = (props) => {
           // expandable
           // disabled
         >
-          <div
-            className={
-              classNames('RenderedQuestionCard--card__header')
-            }
-            style={{ color: globalVariables.categoryColor(item.category) }}
-          >
-{/*            <div
-              className="RenderedQuestionCard--card__header-dot"
-              style={{ backgroundColor: globalVariables.categoryColor(item.category) }}
-            />*/}
-            {globalVariables.translateEnToRu(item.category)}
-          </div>
+          {(showCategoryType && (
+            <div
+              className={
+                classNames('RenderedQuestionCard--card__header')
+              }
+              style={{ color: globalVariables.categoryColor(item.category) }}
+            >
+              {globalVariables.translateEnToRu(item.category)}
+            </div>
+          ))}
           <Text className="RenderedQuestionCard--card__text">
             {item.text}
           </Text>
@@ -93,6 +91,9 @@ RenderedQuestionCard.propTypes = {
     }),
     text: PropTypes.string,
   })).isRequired,
+  showCategoryType: PropTypes.bool,
 };
-RenderedQuestionCard.defaultProps = {};
+RenderedQuestionCard.defaultProps = {
+  showCategoryType: false,
+};
 export default RenderedQuestionCard;

@@ -1,6 +1,9 @@
 .Balance {
   margin-top: 20px;
 }
+.Balance__cardEffect {
+  overflow: visible;
+}
 .Balance__cardEffect-dark {
   background: var(--content_tint_background);
 }

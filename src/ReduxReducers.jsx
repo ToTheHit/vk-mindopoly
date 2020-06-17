@@ -50,7 +50,7 @@ export function userInfo(state = {
   },
   first_name: '',
   last_name: '',
-  photo_200: '',
+  photo_100: '',
   tax: 0,
   friendsPlace: 1,
   worldPlace: 1,
@@ -118,13 +118,18 @@ export function userQuestions(state = {
         ...state,
         selectedQuestionsCategory: state.questions[action.payload.category],
         category: action.payload.category,
-        categoriesHorizontalScroll: action.payload.categoriesHorizontalScroll,
+        categoriesHorizontalScroll: action.payload.categoriesHorizontalScroll || 0,
+      };
+    case 'RESET_SELECTED_CATEGORY':
+      return {
+        ...state,
+        selectedQuestionsCategory: [],
+        category: 'All',
       };
     default:
       return state;
   }
 }
-
 
 export function mainViewModal(state = { modalName: null }, action) {
   switch (action.type) {
@@ -221,7 +226,6 @@ export function tooltip(state = {
       return state;
   }
 }
-
 
 export function shopQuestion(state = {
   question: {

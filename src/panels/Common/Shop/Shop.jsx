@@ -29,6 +29,7 @@ const Shop = (props) => {
   const dispatch = useDispatch();
 
   const controlHardwareBackButton = useCallback(() => {
+    console.info('SHOP', window.history.state);
     setActiveStory(globalVariables.commonView.roots.main);
   }, []);
 
@@ -40,7 +41,6 @@ const Shop = (props) => {
       window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
     }
     window.addEventListener('popstate', controlHardwareBackButton);
-    window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
     };

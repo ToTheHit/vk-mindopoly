@@ -6,7 +6,7 @@ import {
   Button, Card, Cell, Div, Subhead, Text, Tooltip,
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
-import globalVariables from '../../../../GlobalVariables';
+import globalVariables from '../../../../../GlobalVariables';
 
 const QuizCard = (props) => {
   const { completed, nextView } = props;

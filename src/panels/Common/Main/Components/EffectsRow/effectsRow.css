@@ -1,0 +1,45 @@
+.EffectsRow {
+  position: relative;
+  z-index: 0;
+}
+.EffectsRow .Group__description {
+  padding-bottom: 20px;
+}
+.EffectsRow__header {
+  padding-top: 7px;
+}
+.EffectsRow__header .Header__content {
+  padding-bottom: 0 !important;
+  padding-top: 0;
+}
+.EffectsRow .HorizontalScroll {
+  overflow: visible;
+}
+.EffectsRow .HorizontalScroll__in {
+  padding-top: 20px;
+  margin-top: -20px;
+  padding-left: 20px;
+  margin-left: -20px;
+}
+.EffectsRow__scroll {
+  overflow: visible;
+  margin: 12px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.EffectsRow__item {
+  margin-left: 12px;
+  position: relative;
+}
+.EffectsRow__item:last-child {
+  margin-right: 12px;
+  padding-right: 12px;
+}
+.EffectsRow .Caption {
+  letter-spacing: -0.08px;
+}
+/*# sourceMappingURL=effectsRow.css.map */

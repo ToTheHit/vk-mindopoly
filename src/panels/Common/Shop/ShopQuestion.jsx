@@ -46,13 +46,12 @@ const ShopQuestion = (props) => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState({ state: false, msg: '' });
 
-  let closedByHardwareBackButton = false;
   const controlHardwareBackButton = useCallback(() => {
+    console.info('SHOP QUESTION', window.history.state);
+
     setActivePanel(globalVariables.commonView.panels.shop);
-    closedByHardwareBackButton = true;
   }, []);
   useEffect(() => {
-    closedByHardwareBackButton = false;
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     if (window.history.state) {
       window.history.replaceState({ page: 'ShopQuestion' }, 'ShopQuestion', `${window.location.search}`);
@@ -62,9 +61,6 @@ const ShopQuestion = (props) => {
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-      if (!closedByHardwareBackButton) {
-        // window.history.back();
-      }
     };
   }, []);
 

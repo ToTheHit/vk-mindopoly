@@ -6,8 +6,9 @@ import {
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28UserCircleOutline from '@vkontakte/icons/dist/28/user_circle_outline';
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
+import Icon20EducationOutline from '@vkontakte/icons/dist/20/education_outline';
 import bridge from '@vkontakte/vk-bridge';
-import Scroll from 'react-scroll';
+// import Scroll from 'react-scroll';
 import { useDispatch, useSelector } from 'react-redux';
 import BrainLeaderboard from '../../panels/Common/Leaderboard/BrainLeaderboard';
 
@@ -18,8 +19,11 @@ import EffectDetailsSelector from '../../panels/Common/EffectDetails/EffectDetai
 import Main from '../../panels/Common/Main/Main';
 import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails';
 import globalVariables from '../../GlobalVariables';
-// const scroller = Scroll.scroller;
-const scroll = Scroll.animateScroll;
+import QuestionsList from '../../panels/Common/QuestionsList/QuestionsList';
+import RejectedQuestion from '../../panels/Common/RejectedQuestion/RejectedQuestion';
+import Homework from "../../panels/Common/Homework/Homework";
+
+// const scroll = Scroll.animateScroll;
 
 const CommonView = (props) => {
   const { id, nextView } = props;
@@ -37,7 +41,7 @@ const CommonView = (props) => {
     if (mainActivePanel === 'Main') {
       setMainHistory(['Main']);
       bridge.send('VKWebAppDisableSwipeBack');
-    } else {
+    } else if (mainActivePanel !== mainHistory[mainHistory.length - 1]) {
       setMainHistory(((prevState) => [...prevState, mainActivePanel]));
       bridge.send('VKWebAppEnableSwipeBack');
     }
@@ -66,10 +70,10 @@ const CommonView = (props) => {
           scrollableElement: activeStory,
         },
       });
-      scroll.scrollTo(0, {
+/*      scroll.scrollTo(0, {
         duration: 200,
         smooth: true,
-      });
+      });*/
     }
     setActiveStory(e.currentTarget.dataset.story);
   }
@@ -108,6 +112,13 @@ const CommonView = (props) => {
           </TabbarItem>
           <TabbarItem
             onClick={changeStory}
+            selected={activeStory === globalVariables.commonView.roots.homework}
+            data-story={globalVariables.commonView.roots.homework}
+          >
+            <Icon20EducationOutline height={28} width={28} />
+          </TabbarItem>
+          <TabbarItem
+            onClick={changeStory}
             selected={activeStory === globalVariables.commonView.roots.shop}
             data-story={globalVariables.commonView.roots.shop}
           >
@@ -141,6 +152,17 @@ const CommonView = (props) => {
             setPopoutMainView={setMainPopoutView}
             popoutMainView={mainPopoutView}
           />
+          <QuestionsList
+            id={globalVariables.commonView.panels.questionsList}
+            setActivePanel={setMainActivePanel}
+            setSelectedQuestion={setMainSelectedQuestion}
+          />
+          <RejectedQuestion
+            id={globalVariables.commonView.panels.rejectedQuestion}
+            setActivePanel={setMainActivePanel}
+            selectedQuestion={mainSelectedQuestion}
+            setActiveStory={setActiveStory}
+          />
           <QuestionDetails
             id={globalVariables.commonView.panels.questionDetails}
             setActivePanel={setMainActivePanel}
@@ -148,7 +170,13 @@ const CommonView = (props) => {
           />
         </View>
       </Root>
-
+      <Root id={globalVariables.commonView.roots.homework} activeView="HomeworkView">
+        <View activePanel="Homework" id="HomeworkView">
+          <Homework
+            id={globalVariables.commonView.panels.homework}
+          />
+        </View>
+      </Root>
       <Root id={globalVariables.commonView.roots.shop} activeView="ShopView">
         <View
           className="ShopView"

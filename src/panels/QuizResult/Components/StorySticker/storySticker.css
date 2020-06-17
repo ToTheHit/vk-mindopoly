@@ -1,15 +1,15 @@
 @font-face {
-  font-family: "SFProDisplay";
+  font-family: "SF UI Display";
   font-weight: 700;
   src: url("./SF-UI-Display-Bold.otf");
 }
 @font-face {
-  font-family: "SFProText";
+  font-family: "SF UI Text";
   font-weight: 500;
   src: url("./SF-UI-Text-Medium.otf");
 }
 @font-face {
-  font-family: "SFProText";
+  font-family: "SF UI Text";
   font-weight: normal;
   src: url("./SF-UI-Text-Regular.otf");
 }
@@ -49,7 +49,7 @@
   width: auto;
 }
 .StorySticker .sticker-title {
-  font-family: 'SFProDisplay';
+  font-family: 'SF UI Display';
   font-size: 24px;
   font-weight: bold;
   font-stretch: normal;
@@ -77,7 +77,7 @@
 .StorySticker .sticker-question {
   border-radius: 10px;
   background-color: rgba(0, 28, 61, 0.05);
-  font-family: 'SFProText';
+  font-family: 'SF UI Text', sans-serif;
   font-size: 17px;
   font-weight: 500;
   font-stretch: normal;
@@ -128,7 +128,7 @@
           align-items: center;
 }
 .StorySticker .author-name {
-  font-family: 'SFProText';
+  font-family: 'SF UI Text', sans-serif;
   font-size: 14px;
   font-weight: normal;
   font-stretch: normal;

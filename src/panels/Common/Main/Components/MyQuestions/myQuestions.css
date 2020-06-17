@@ -1,0 +1,21 @@
+.MyQuestions__header .Header__content {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.MyQuestions__icon {
+  width: 40px;
+  height: 40px;
+  background-size: 40px 40px;
+  background-repeat: no-repeat;
+  margin-right: 12px;
+}
+.MyQuestions .Caption {
+  letter-spacing: -0.08px;
+}
+.MyQuestions .Group__description {
+  padding-bottom: 0;
+}
+.MyQuestions__category {
+  letter-spacing: -0.41px;
+}
+/*# sourceMappingURL=myQuestions.css.map */

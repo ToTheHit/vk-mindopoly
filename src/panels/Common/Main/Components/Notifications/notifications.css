@@ -1,0 +1,22 @@
+.Notifications__header .Header__content {
+  padding-top: 20px !important;
+  padding-bottom: 10px !important;
+}
+.Notifications__icon {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  background-position: inherit;
+  margin-right: 12px;
+  -ms-flex-item-align: baseline;
+      align-self: baseline;
+  margin-top: 11px;
+}
+.Notifications__description {
+  letter-spacing: -0.08px;
+}
+.Notifications__title {
+  letter-spacing: -0.15px;
+}
+/*# sourceMappingURL=notifications.css.map */

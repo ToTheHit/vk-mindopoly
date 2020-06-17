@@ -44,7 +44,9 @@ const EffectDetailsSelector = () => {
       window.addEventListener('popstate', controlHardwareBackButton);
     } else {
       if (!closedByHardwareBackButton) {
-        window.history.back();
+        if (mainViewModalName) {
+          window.history.back();
+        }
       }
       window.removeEventListener('popstate', controlHardwareBackButton);
     }
