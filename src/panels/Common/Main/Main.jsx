@@ -87,7 +87,7 @@ const Main = (props) => {
             GP: srvData.bp,
             GPgrowth: srvData.bp.today,
             coins: srvData.coins,
-            tax: srvData.tax,
+            tax: parseInt(srvData.coins.overall * srvData.tax, 10),
             isExamAvailable: srvData.isExamAvailable,
             isExamSuccess: srvData.isExamSuccess,
             isStoryConfirmed: srvData.isStoryConfirmed,
