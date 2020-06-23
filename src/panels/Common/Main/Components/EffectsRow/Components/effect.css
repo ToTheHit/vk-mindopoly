@@ -1,0 +1,30 @@
+.Effect__cardEffect {
+  z-index: 3;
+  position: relative;
+}
+.Effect__cardEffect-dark {
+  background: var(--content_tint_background);
+}
+.Effect__content {
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: -0.15px;
+}
+.Effect__content .SimpleCell__main {
+  padding-right: 0;
+}
+.Effect__content .SimpleCell__description {
+  margin-top: 0;
+}
+.Effect__icon {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  background-position: inherit;
+  padding-right: 6px;
+}
+/*# sourceMappingURL=effect.css.map */

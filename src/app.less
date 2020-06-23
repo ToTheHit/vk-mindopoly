@@ -1,3 +1,7 @@
+.collapse-css-transition {
+  transition: height 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .divider {
   width: 100%;
   height: 10px;
@@ -18,6 +22,9 @@ html, body {
 * {
   user-select: none;
 }
+.InfoRow {
+  user-select: none !important;
+}
 
 input, textarea {
   user-select: auto;
@@ -25,4 +32,20 @@ input, textarea {
 
 .Snackbar__in {
   padding-top: 20px !important;
+}
+
+.PanelHeader {
+  &__content {
+    padding-top: 5px;
+  }
+}
+
+@font-face {
+  font-family: 'TT Commons';
+  src: local('TT Commons  Demi Bold'), local('TT-Commons--Demi-Bold'),
+  url('./fonts/TTCommons/TTCommons-DemiBold.woff2') format('woff2'),
+  url('./fonts/TTCommons/TTCommons-DemiBold.woff') format('woff'),
+  url('./fonts/TTCommons/TTCommons-DemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
 }

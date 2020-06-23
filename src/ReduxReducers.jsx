@@ -13,7 +13,12 @@ export function schemeChanger(state = { scheme: 'light', quizResult: [] }, actio
   }
 }
 
-export function quiz(state = { quizResult: [], questions: [] }, action) {
+export function quiz(state = {
+  quizResult: [],
+  questions: [],
+  reportQuestionID: '',
+  confirmReportByQuestionID: '',
+}, action) {
   switch (action.type) {
     case 'UPDATE_QUIZ_RESULT':
       return {
@@ -24,6 +29,8 @@ export function quiz(state = { quizResult: [], questions: [] }, action) {
       return {
         quizResult: [],
         questions: [],
+        reportQuestionID: '',
+        confirmReportByQuestionID: '',
       };
     default:
       return state;
@@ -50,7 +57,7 @@ export function userInfo(state = {
   },
   first_name: '',
   last_name: '',
-  photo_200: '',
+  photo_100: '',
   tax: 0,
   friendsPlace: 1,
   worldPlace: 1,
@@ -71,6 +78,7 @@ export function userInfo(state = {
     value: 0,
     isUpdating: false,
   },
+  notifications: [],
 }, action) {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
@@ -118,13 +126,18 @@ export function userQuestions(state = {
         ...state,
         selectedQuestionsCategory: state.questions[action.payload.category],
         category: action.payload.category,
-        categoriesHorizontalScroll: action.payload.categoriesHorizontalScroll,
+        categoriesHorizontalScroll: action.payload.categoriesHorizontalScroll || 0,
+      };
+    case 'RESET_SELECTED_CATEGORY':
+      return {
+        ...state,
+        selectedQuestionsCategory: [],
+        category: 'All',
       };
     default:
       return state;
   }
 }
-
 
 export function mainViewModal(state = { modalName: null }, action) {
   switch (action.type) {
@@ -142,6 +155,7 @@ export function workViewModal(state = {
   modalIsActive: false,
   questionsLength: 0,
   start: false,
+  isStartModal: true,
 }, action) {
   switch (action.type) {
     case 'UPDATE_WORK-VIEW-MODAL':
@@ -222,7 +236,6 @@ export function tooltip(state = {
   }
 }
 
-
 export function shopQuestion(state = {
   question: {
     text: '',
@@ -242,6 +255,7 @@ export function shopQuestion(state = {
 }
 
 export function scrollTo(state = {
+  activeStory: '',
   scrollableElement: '',
   top: 0,
 }, action) {

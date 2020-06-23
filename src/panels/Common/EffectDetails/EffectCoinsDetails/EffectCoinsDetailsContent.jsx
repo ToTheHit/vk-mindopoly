@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './effectCoinsDetailsContent.css';
 import { useSelector } from 'react-redux';
-import { Cell, Div, Header, Separator, SimpleCell, withModalRootContext, } from '@vkontakte/vkui';
+import {
+  Cell, Div, Header, Separator, SimpleCell, withModalRootContext,
+} from '@vkontakte/vkui';
 import PropTypes from 'prop-types';
 import Icon64Math from '../../../../assets/Icons/icn64_math.png';
 import Icon64Russian from '../../../../assets/Icons/icn64_rus.png';
@@ -70,12 +72,19 @@ const EffectCoinsDetailsContent = (props) => {
     }
   }
 
+  function getCorrectWord(count) {
+    const cases = [2, 0, 1, 1, 1, 2];
+    return ['монета', 'монеты', 'монет'][(count % 100 > 4 && count % 100 < 20) ? 2 : cases[(count % 10 < 5) ? count % 10 : 5]];
+  }
+
   const [description, setDescription] = useState(
     (coinsToday === 0
       ? 'Ваш доход на сегодня равен нулю. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.'
-      : (questionsIncome === 0 ? `Ваш доход за сегодня составил ${coinsToday} монет. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.`
-        : `Ваш доход за сегодня составил ${coinsToday} монет. Доход с вопросов составил ${questionsIncome} монет.`)),
+      : (questionsIncome === 0 ? `Ваш доход за сегодня составил ${coinsToday} ${getCorrectWord(coinsToday)}. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.`
+        : `Ваш доход за сегодня составил ${coinsToday} ${getCorrectWord(coinsToday)}. Доход с вопросов составил ${questionsIncome} ${getCorrectWord(questionsIncome)}.`)),
   );
+
+
   // const [description1, setDescription1] = useState();
 
   useEffect(() => {
@@ -88,9 +97,9 @@ const EffectCoinsDetailsContent = (props) => {
     if (coinsToday === 0) {
       setDescription('Ваш доход на сегодня равен нулю. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.');
     } else if (questionsIncome === 0) {
-      setDescription(`Ваш доход за сегодня составил ${coinsToday} монет. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.`);
+      setDescription(`Ваш доход за сегодня составил ${coinsToday} ${getCorrectWord(coinsToday)}. Купите вопросы в магазине, чтобы начать зарабатывать на их показах другим игрокам.`);
     } else {
-      setDescription(`Ваш доход за сегодня составил ${coinsToday} монет. Доход с вопросов составил ${questionsIncome} монет.`);
+      setDescription(`Ваш доход за сегодня составил ${coinsToday} ${getCorrectWord(coinsToday)}. Доход с вопросов составил ${questionsIncome} ${getCorrectWord(questionsIncome)}.`);
     }
   }, [coinsToday, categoryIncome.length, questionsIncome]);
 
@@ -137,7 +146,7 @@ const EffectCoinsDetailsContent = (props) => {
             style={{ backgroundImage: `url(${getIcon(item)})` }}
           />
         )}
-        indicator={`+${sortedQuestions[item]} монет`}
+        indicator={`+${sortedQuestions[item]} ${getCorrectWord(sortedQuestions[item])}`}
       >
         {globalVariables.translateEnToRu(item)}
       </SimpleCell>
@@ -184,7 +193,7 @@ const EffectCoinsDetailsContent = (props) => {
           </SimpleCell>
         ))}
 
-{/*        {(storiesCount.today > 0 && (
+        {/*        {(storiesCount.today > 0 && (
           <SimpleCell
             disabled
             className={'EffectGPDetails--itemIncome'}
@@ -198,7 +207,7 @@ const EffectCoinsDetailsContent = (props) => {
           >
             Публикация истории
           </SimpleCell>
-        ))}*/}
+        ))} */}
 
         {(((confirmReward > 0 || quizIncome > 0) && (categoryIncome.length > 0)) && (
           <Separator style={{ marginTop: '16px' }} wide />

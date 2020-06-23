@@ -18,6 +18,17 @@
 
     }
   }
+
+  .Header__content {
+    font-family: "TT Commons", -apple-system, system-ui, Helvetica Neue, Roboto, sans-serif;
+    //font-family: var(--font-tt);
+    //font-family: "TT Commons";
+    font-size: 23px !important;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 1.24;
+  }
+
   &--BrainHeader {
     padding: 23px 12px 0 12px;
   }
@@ -29,11 +40,6 @@
     }
   }
 
-  .SimpleCell {
-    &__indicator {
-      font-size: 14px !important;
-    }
-  }
 
   &--button__showAllQuestions {
     //margin-right: -16px;
@@ -79,4 +85,37 @@
     border-radius: 10px;
     color: #FFFFFF;
   }
+
+  &__header {
+    .FixedLayout {
+      //position: absolute;
+    }
+    .PanelHeader{
+      position: absolute;
+      &__fixed {
+        //position: relative;
+      }
+    }
+    &--content {
+      display: flex;
+      align-items: center;
+    }
+  }
+  &__photo {
+    padding-right: 12px !important;
+  }
+  &__name {
+    letter-spacing: -0.24px;
+    color: #71757a;
+  }
+}
+
+@font-face {
+  font-family: 'TT Commons ';
+  src: local('TT Commons  Demi Bold'), local('TT-Commons--Demi-Bold'),
+  url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.woff2') format('woff2'),
+  url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.woff') format('woff'),
+  url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
 }

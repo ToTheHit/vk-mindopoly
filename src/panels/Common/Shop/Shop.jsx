@@ -40,7 +40,6 @@ const Shop = (props) => {
       window.history.pushState({ page: 'Shop' }, 'Shop', `${window.location.search}`);
     }
     window.addEventListener('popstate', controlHardwareBackButton);
-    window.scrollTo(0, 0);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
     };
@@ -69,7 +68,6 @@ const Shop = (props) => {
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
-        // console.info(data);
         setCategories(data.data);
         dispatch({
           type: 'PAGE_CACHE',
@@ -80,11 +78,10 @@ const Shop = (props) => {
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
         if (!err.response) {
-          nextView(globalVariables.view.start);
+          // nextView(globalVariables.view.start);
+          nextView(globalVariables.view.connectionLost);
         }
       });
-    return () => {
-    };
   }, []);
 
   return (

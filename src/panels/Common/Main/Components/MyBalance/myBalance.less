@@ -1,0 +1,67 @@
+.MyBalance {
+  &__header {
+    .Header__content {
+      padding-top: 10px !important;
+      //font-family: var(--font-tt);
+      //font-family: "TT Commons", -apple-system, system-ui, Helvetica Neue, Roboto, sans-serif;
+    }
+    //font-family: sans-serif !important;
+  }
+
+  &__cardRow {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-top: 3px;
+    padding-bottom: 0;
+  }
+  &__card {
+    height: 76px;
+    width: 50%;
+
+    &:nth-child(1) {
+      margin-right: 5px;
+    }
+    &:nth-child(3) {
+      margin-left: 5px;
+    }
+
+    &--content {
+      display: flex;
+      justify-content: space-between;
+    }
+    &--iconPlace {
+      width: 32px;
+      height: 32px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &_coins {
+        background-color: #ff9f0a;
+      }
+      &_GP {
+        background-color: #5856d6;
+      }
+    }
+    &--icon {
+      color: #FFFFFF;
+    }
+    &--title {
+      font-family: "SF Pro Text", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.08px;
+      //color: rgba(60, 60, 67, 0.6);
+      color: var(--tabbar_tablet_text_secondary);
+      line-height: 1.38;
+      margin-top: 2px;
+    }
+    &--counter {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.38px;
+    }
+  }
+}

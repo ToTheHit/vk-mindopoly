@@ -27,6 +27,7 @@ const MainView = (props) => {
   }, [activePanel]);
 
   const goBack = () => {
+    console.info('goBack');
     const historyTemp = history;
     historyTemp.pop();
     setActivePanel(historyTemp[historyTemp.length - 1]);

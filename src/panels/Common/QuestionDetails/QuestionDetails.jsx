@@ -28,13 +28,30 @@ import globalVariables from '../../../GlobalVariables';
 const QuestionDetails = (props) => {
   const { id, setActivePanel, selectedQuestion } = props;
   const platform = usePlatform();
-  const scheme = useSelector((state) => state.schemeChanger.scheme);
-
   const [activeTab, setActiveTab] = useState('Today');
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  const scheme = useSelector((state) => state.schemeChanger.scheme);
+  const selectedCategory = useSelector((state) => state.userQuestions.category);
+  const scrollListener = useSelector((state) => state.scrollTo);
+
+  useEffect(() => {
+    if (isFirstRender) setIsFirstRender(false);
+    else if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {
+      if (selectedCategory === 'All') {
+        setActivePanel(globalVariables.commonView.panels.main);
+      } else {
+        setActivePanel(globalVariables.commonView.panels.questionsList);
+      }
+    }
+  }, [scrollListener]);
 
   const controlHardwareBackButton = useCallback(() => {
-    setActivePanel(globalVariables.commonView.panels.main);
-    // window.history.back();
+    if (selectedCategory === 'All') {
+      setActivePanel(globalVariables.commonView.panels.main);
+    } else {
+      setActivePanel(globalVariables.commonView.panels.questionsList);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,7 +64,6 @@ const QuestionDetails = (props) => {
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
       window.removeEventListener('popstate', controlHardwareBackButton);
-      // window.history.back();
     };
   }, []);
 
@@ -57,7 +73,13 @@ const QuestionDetails = (props) => {
         left={(
           <PanelHeaderBack
             label={(platform === IOS && 'Назад')}
-            onClick={() => setActivePanel('Main')}
+            onClick={() => {
+              if (selectedCategory === 'All') {
+                setActivePanel(globalVariables.commonView.panels.main);
+              } else {
+                setActivePanel(globalVariables.commonView.panels.questionsList);
+              }
+            }}
           />
         )}
       >
@@ -95,7 +117,19 @@ const QuestionDetails = (props) => {
               type=""
             />
           </div>
-
+          <div
+            className="QuestionDetails__explanation"
+            style={{display: (selectedQuestion.explanation ? 'block' : 'none')}}
+          >
+            <Header
+              style={{ marginTop: '15px', padding: 0 }}
+            >
+              Пояснение
+            </Header>
+            <div>
+              {selectedQuestion.explanation}
+            </div>
+          </div>
 
           <div className="QuestionDetails__generalInfo">
             <Header
@@ -219,6 +253,7 @@ QuestionDetails.propTypes = {
   selectedQuestion: PropTypes.shape({
     text: PropTypes.string,
     answers: PropTypes.arrayOf(PropTypes.string),
+    explanation: PropTypes.string,
     approved: PropTypes.bool,
     category: PropTypes.string,
     bpForError: PropTypes.number,

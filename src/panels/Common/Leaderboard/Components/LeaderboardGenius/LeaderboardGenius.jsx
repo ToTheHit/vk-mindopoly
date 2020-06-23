@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import bridge from '@vkontakte/vk-bridge';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import LeaderboardGallery from '../../../Components/LeaderboardGallery/LeaderboardGallery';
+import LeaderboardGallery from '../LeaderboardGallery/LeaderboardGallery';
 import globalVariables from '../../../../../GlobalVariables';
 
 const qs = require('querystring');
