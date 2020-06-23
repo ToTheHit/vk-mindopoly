@@ -12,7 +12,10 @@
 }
 .Main .Header__content {
   font-family: "TT Commons", -apple-system, system-ui, Helvetica Neue, Roboto, sans-serif;
+  font-size: 23px !important;
   font-weight: 600;
+  font-style: normal;
+  line-height: 1.24;
 }
 .Main--BrainHeader {
   padding: 23px 12px 0 12px;
@@ -87,5 +90,11 @@
 .Main__name {
   letter-spacing: -0.24px;
   color: #71757a;
+}
+@font-face {
+  font-family: 'TT Commons ';
+  src: local('TT Commons  Demi Bold'), local('TT-Commons--Demi-Bold'), url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.woff2') format('woff2'), url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.woff') format('woff'), url('/src/assets/fonts/1TTCommons/TTCommons-DemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
 }
 /*# sourceMappingURL=main.css.map */

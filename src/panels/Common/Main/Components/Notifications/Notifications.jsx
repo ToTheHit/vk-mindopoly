@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './notifications.css';
 import {
@@ -10,6 +10,7 @@ import globalVariables from '../../../../../GlobalVariables';
 const Notifications = (props) => {
   const { notifications, setActivePanel, setSelectedQuestion } = props;
   const allQuestions = useSelector((state) => state.userQuestions.questions.All);
+  const notifications1 = useSelector((state) => state.userInfo.notifications);
 
   function getIcon(type, code) {
     if (type === globalVariables.notificationType.QuestionResult) {
@@ -78,13 +79,10 @@ const Notifications = (props) => {
     return null;
   }
 
-  function getDescription(item) {
+  function getReason(item) {
     if (item.type === globalVariables.notificationType.QuestionResult) {
-      if (item.code === 0) return item.text;
-/*      if (item.reason) {
-        return `${item.text} [${item.reason}]`;
-      }*/
-      return `${item.text} [${globalVariables.getReasonByCode(item.code)}]`;
+      if (item.notificationObject.code === 0) return item.notificationObject.text;
+      return `${item.notificationObject.text} [${globalVariables.getReasonByCode(item.notificationObject.code)}]`;
     } if (item.type === globalVariables.notificationType.Achievement) {
 
     }
@@ -93,8 +91,8 @@ const Notifications = (props) => {
 
   function getRedirect(item) {
     if (item.type === globalVariables.notificationType.QuestionResult) {
-      if (item.code === 0) {
-        const questionTemp = allQuestions.find((question) => question._id === item.questionID);
+      if (item.notificationObject.code === 0) {
+        const questionTemp = allQuestions.find((question) => question._id === item.notificationObject.questionID);
         setSelectedQuestion(questionTemp);
         setActivePanel(globalVariables.commonView.panels.questionDetails);
       } else {
@@ -118,8 +116,8 @@ const Notifications = (props) => {
   }
 
   const renderedNotifications = useMemo(() => {
-    if (notifications.length > 0 && allQuestions.length > 0) {
-      return notifications.map((item) => {
+    if (notifications1.length > 0) {
+      return notifications1.map((item) => {
         if (item.category === 'All') return null;
         return (
           <SimpleCell
@@ -131,21 +129,21 @@ const Notifications = (props) => {
               <div
                 className="Notifications__icon"
               >
-                {getIcon(item.type, item.code)}
+                {getIcon(item.type, item.notificationObject.code)}
               </div>
             )}
             indicator={item.length}
             description={(
               <div className="Notifications__description">
-                {getDescription(item)}
+                {getReason(item)}
               </div>
             )}
             onClick={() => {
               getRedirect(item);
             }}
           >
-            <Subhead weight="regular" className={"Notifications__title"}>
-              {getTitle(item.type, item.code)}
+            <Subhead weight="regular" className="Notifications__title">
+              {getTitle(item.type, item.notificationObject.code)}
             </Subhead>
           </SimpleCell>
         );
@@ -176,11 +174,13 @@ const Notifications = (props) => {
 Notifications.propTypes = {
   notifications: PropTypes.arrayOf(PropTypes.shape({
     type: PropTypes.string,
-    code: PropTypes.number,
-    text: PropTypes.string,
-    reason: PropTypes.string,
-    questionID: PropTypes.string,
     id: PropTypes.string,
+    notificationObject: PropTypes.shape({
+      code: PropTypes.number,
+      text: PropTypes.string,
+      reason: PropTypes.string,
+      questionID: PropTypes.string,
+    }),
   })).isRequired,
   setActivePanel: PropTypes.func.isRequired,
   setSelectedQuestion: PropTypes.func.isRequired,

@@ -21,7 +21,7 @@ import QuestionDetails from '../../panels/Common/QuestionDetails/QuestionDetails
 import globalVariables from '../../GlobalVariables';
 import QuestionsList from '../../panels/Common/QuestionsList/QuestionsList';
 import RejectedQuestion from '../../panels/Common/RejectedQuestion/RejectedQuestion';
-import Homework from "../../panels/Common/Homework/Homework";
+import Homework from '../../panels/Common/Homework/Homework';
 
 // const scroll = Scroll.animateScroll;
 
@@ -62,19 +62,20 @@ const CommonView = (props) => {
     }
   }, [shopActivePanel]);
 
+  // Homework activity
+  const [popoutHomeworkView, setPopoutHomeworkView] = useState(true);
+
   function changeStory(e) {
-    if (e.currentTarget.dataset.story === activeStory) {
-      dispatch({
-        type: 'SCROLL_TO',
-        payload: {
-          scrollableElement: activeStory,
-        },
-      });
-/*      scroll.scrollTo(0, {
-        duration: 200,
-        smooth: true,
-      });*/
+    dispatch({
+      type: 'SCROLL_TO',
+      payload: {
+        scrollableElement: activeStory,
+      },
+    });
+    if (e.currentTarget.dataset.story !== activeStory) {
+      window.scroll({ top: 0, left: 0 });
     }
+
     setActiveStory(e.currentTarget.dataset.story);
   }
 
@@ -171,9 +172,16 @@ const CommonView = (props) => {
         </View>
       </Root>
       <Root id={globalVariables.commonView.roots.homework} activeView="HomeworkView">
-        <View activePanel="Homework" id="HomeworkView">
+        <View
+          activePanel="Homework"
+          id="HomeworkView"
+          popout={(popoutHomeworkView && (<ScreenSpinner />))}
+        >
           <Homework
             id={globalVariables.commonView.panels.homework}
+            setPopoutHomeworkView={setPopoutHomeworkView}
+            nextView={nextView}
+            setActiveStory={setActiveStory}
           />
         </View>
       </Root>
@@ -191,7 +199,7 @@ const CommonView = (props) => {
             setActivePanel={setShopActivePanel}
             setQuestionData={setQuestionData}
             setPopoutShopView={setPopoutShopView}
-            popoutShopView={false}
+            popoutShopView={popoutShopView}
             setActiveStory={setActiveStory}
             nextView={nextView}
           />

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import './rejectedQuestion.css';
 import {
@@ -17,13 +17,25 @@ import Icon24MarketOutline from '@vkontakte/icons/dist/24/market_outline';
 import globalVariables from '../../../GlobalVariables';
 
 const RejectedQuestion = (props) => {
-  const { setActivePanel, id, selectedQuestion, setActiveStory } = props;
+  const {
+    setActivePanel, id, selectedQuestion, setActiveStory,
+  } = props;
   const platform = usePlatform();
   const scheme = useSelector((state) => state.schemeChanger.scheme);
+  const scrollListener = useSelector((state) => state.scrollTo);
+
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (isFirstRender) setIsFirstRender(false);
+    else if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {
+      setActivePanel(globalVariables.commonView.panels.main);
+    }
+  }, [scrollListener]);
 
   function getReasonDescription() {
-    if (selectedQuestion.reason) return selectedQuestion.reason;
-    return globalVariables.getReasonDescriptionByCode(selectedQuestion.code);
+    if (selectedQuestion.notificationObject.reason) return selectedQuestion.notificationObject.reason;
+    return globalVariables.getReasonDescriptionByCode(selectedQuestion.notificationObject.code);
   }
 
   const controlHardwareBackButton = useCallback(() => {
@@ -63,7 +75,7 @@ const RejectedQuestion = (props) => {
           separator="hide"
           header={(
             <Title level="1" weight="bold" className="RejectedQuestion__header">
-              {selectedQuestion.text}
+              {selectedQuestion.notificationObject.text}
             </Title>
           )}
         >
@@ -79,7 +91,7 @@ const RejectedQuestion = (props) => {
                 className="RejectedQuestion__reason"
                 weight="regular"
               >
-                {`Причина: ${globalVariables.getReasonByCode(selectedQuestion.code)}`}
+                {`Причина: ${globalVariables.getReasonByCode(selectedQuestion.notificationObject.code)}`}
               </Text>
               <Subhead
                 className={classNames('RejectedQuestion__description', { 'RejectedQuestion__description-dark': scheme === 'space_gray' })}
@@ -111,9 +123,14 @@ RejectedQuestion.propTypes = {
   setActivePanel: PropTypes.func.isRequired,
   setActiveStory: PropTypes.func.isRequired,
   selectedQuestion: PropTypes.shape({
-    text: PropTypes.string,
-    code: PropTypes.number,
-    reason: PropTypes.string,
+    type: PropTypes.string,
+    id: PropTypes.string,
+    notificationObject: PropTypes.shape({
+      code: PropTypes.number,
+      text: PropTypes.string,
+      reason: PropTypes.string,
+      questionID: PropTypes.string,
+    }),
   }).isRequired,
   id: PropTypes.string.isRequired,
 };

@@ -4,15 +4,19 @@ import React, {
 import PropTypes from 'prop-types';
 import './quizBlock.css';
 import {
-  Avatar, Div, Group, Headline, Text, Title,
+  Avatar, Button, Div, Group, Headline, Text, Title,
 } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
+import { useDispatch, useSelector } from 'react-redux';
 import AnswerButton from '../../CustomComponents/AnswerButton/AnswerButton';
 
 const QuizBlock = (props) => {
   const {
     data, time, onComplete, lastQuestionInStorage,
   } = props;
+  const confirmReportByQuestionID = useSelector((state) => state.quiz.confirmReportByQuestionID);
+
+  const dispatch = useDispatch();
 
   const refsButton = useRef([
     React.createRef(),
@@ -24,6 +28,14 @@ const QuizBlock = (props) => {
   const [selectedButton, setSelectedButton] = useState(null);
   const [correctButton, setcorrectButton] = useState(-1);
   const [timeIsOver, setTimeIsOver] = useState(false);
+  const [reportIsAvailable, setReportIsAvailable] = useState(true);
+
+  useEffect(() => {
+    if (confirmReportByQuestionID === data._id) {
+      setReportIsAvailable(false);
+    }
+  }, [confirmReportByQuestionID]);
+
   useEffect(() => {
     switch (data.correctAnswerNumber) {
       case 0:
@@ -81,6 +93,21 @@ const QuizBlock = (props) => {
       else bridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' });
     }
   }, [selectedButton]);
+
+  function openModalCard() {
+    dispatch({
+      type: 'UPDATE_QUIZ_RESULT',
+      payload: {
+        reportQuestionID: data._id,
+      },
+    });
+    dispatch({
+      type: 'UPDATE_WORK-VIEW-MODAL',
+      payload: {
+        modalIsActive: true,
+      },
+    });
+  }
 
   function getType(ref) {
     if (time > 0 && !stop) {
@@ -204,9 +231,21 @@ const QuizBlock = (props) => {
           </Div>
         </Group>
         )}
+
+        {((selectedButton && reportIsAvailable) && (
+          <Div style={{ paddingTop: '8px' }}>
+            <Button
+              mode="secondary"
+              size="xl"
+              onClick={() => openModalCard()}
+            >
+              Плохой вопрос
+            </Button>
+          </Div>
+        ))}
       </div>
     );
-  }, [timeIsOver, stop]);
+  }, [timeIsOver, stop, reportIsAvailable]);
 
   return (
     <div style={{ height: '100%' }}>

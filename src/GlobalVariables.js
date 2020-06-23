@@ -4,7 +4,7 @@ const globalVariables = {
     main: 'MainView',
     work: 'WorkView',
     test: 'TestView',
-    page404: 'Page404',
+    connectionLost: 'ConnectionLost',
   },
   commonView: {
     roots: {
@@ -27,7 +27,7 @@ const globalVariables = {
   authToken: 'authToken',
   friendsAccessToken: 'friendsAccessToken',
   notificationAllow: 'notificationAllow',
-  serverURL: 'https://mindopoly.ml',
+  serverURL: 'https://mindopoly.tech',
   quizResult: 'quizResult',
   quizQuestions: 'quizQuestions',
   tooltips: 'tooltips',
@@ -111,16 +111,25 @@ const globalVariables = {
 
   getReasonByCode(code) {
     switch (code) {
-      case 1: return 'Копия чужого вопроса';
-      case 2: return 'Нет образовательно подтекста';
-      case 3: return 'Особое решение модерации';
+      case 10: return 'Копия чужого вопроса';
+      case 11: return 'Нет образовательно подтекста';
+      case 12: return 'Непостоянная информация';
+      case 13: return 'Ненормативная лексика';
+      case 14: return 'Некорректный набор ответов';
+      case 15: return 'Невозможно проверить правильность ответа';
+      case 16: return 'Особое решение администрации';
       default: return null;
     }
   },
   getReasonDescriptionByCode(code) {
     switch (code) {
-      case 1: return 'К сожалению, подобный вопрос зарегистрировал другой пользователь. Мы вернули потраченные монеты на Ваш счёт.';
-      case 2: return 'Тестовое пояснение';
+      case 10: return 'Этот вопрос принадлежит другому игроку. Мы вернули потраченные монеты на Ваш счёт.';
+      case 11: return 'К сожалению, этот вопрос не несет образовательного контекста. Мозгополия – образовательная мини-игра. Мы вернули потраченные монеты на Ваш счёт.';
+      case 12: return 'Правильный ответ на этот вопрос может измениться в будущем. Мы вернули потраченные монеты на Ваш счёт.';
+      case 13: return 'Мы не одобряем ненормативную лексику в вопросах. В Мозгополии зарегистрированы дети. Мы вернули потраченные монеты на Ваш счёт.';
+      case 14: return 'К сожалению, набор ответов не подходят по смыслу к Вашему вопросу. Мы вернули потраченные монеты на Ваш счёт.';
+      case 15: return 'К сожалению, нам не удалось проверить правильность ответа на этот вопрос. Мы вернули потраченные монеты на Ваш счёт.np';
+      case 16: return 'Особое решение администрации';
       default: return null;
     }
   },

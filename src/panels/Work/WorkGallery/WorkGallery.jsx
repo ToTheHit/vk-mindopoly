@@ -19,6 +19,7 @@ const WorkGallery = (props) => {
   const dispatch = useDispatch();
   const modalStatus = useSelector((state) => state.workViewModal);
   const userToken = useSelector((state) => state.userToken.token);
+  const reportQuestionID = useSelector((state) => state.quiz.reportQuestionID);
 
   const [questions, setQuestions] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -36,14 +37,35 @@ const WorkGallery = (props) => {
         modalIsActive: false,
       },
     });
-    nextView(globalVariables.view.main);
-  }, []);
+    if (reportQuestionID.length === 0) {
+      nextView(globalVariables.view.main);
+    } else {
+      dispatch({
+        type: 'UPDATE_QUIZ_RESULT',
+        payload: {
+          reportQuestionID: '',
+        },
+      });
+      if (window.history.state) {
+        window.history.replaceState({ page: 'WorkViewGallery' }, 'WorkViewGallery', `${window.location.search}`);
+      } else {
+        window.history.pushState({ page: 'WorkViewGallery' }, 'WorkViewGallery', `${window.location.search}`);
+      }
+    }
+  }, [reportQuestionID]);
+
+  useEffect(() => {
+    window.addEventListener('popstate', controlHardwareBackButton);
+    return () => {
+      window.removeEventListener('popstate', controlHardwareBackButton);
+    };
+  }, [reportQuestionID]);
 
   useEffect(() => {
     if (window.history.state) {
-      window.history.replaceState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+      window.history.replaceState({ page: 'WorkViewGallery' }, 'WorkViewGallery', `${window.location.search}`);
     } else {
-      window.history.pushState({ page: 'WorkViewModal' }, 'WorkViewModal', `${window.location.search}`);
+      window.history.pushState({ page: 'WorkViewGallery' }, 'WorkViewGallery', `${window.location.search}`);
     }
     window.addEventListener('popstate', controlHardwareBackButton);
     return () => {
@@ -99,7 +121,7 @@ const WorkGallery = (props) => {
     if (!modalStatus.modalIsActive && modalStatus.start && lastQuestionInStorage.selectedAnswerNumber !== -1) {
       if (result.length >= questions.length - 1) {
         setActivePanel('QuizResultPanel');
-      } else if (modalStatus.start) {
+      } else if (modalStatus.start && modalStatus.isStartModal) {
         bridge.send('VKWebAppStorageGet', { keys: [globalVariables.quizResult] })
           .then(((data) => {
             let storedQuestions;
@@ -128,7 +150,9 @@ const WorkGallery = (props) => {
           }))
           .catch((bridgeError) => {
             console.info('bridgeError_WorkGallery', bridgeError);
-            nextView(globalVariables.view.start);
+            setTimeout(() => {
+              nextView(globalVariables.view.start);
+            }, 1000);
           });
       }
     }
@@ -287,12 +311,18 @@ const WorkGallery = (props) => {
               console.info(err);
               // Сервер не нашёл токен в БД.
               // Перемещение на стартовый экран
-              nextView(globalVariables.view.main);
+              // nextView(globalVariables.view.main);
+              setTimeout(() => {
+                nextView(globalVariables.view.connectionLost);
+              }, 1000);
             });
         })
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
-          nextView(globalVariables.view.start);
+          // nextView(globalVariables.view.start);
+          setTimeout(() => {
+            nextView(globalVariables.view.connectionLost);
+          }, 1000);
         });
     } else {
       // Перемещение на стартовый экран
@@ -330,7 +360,8 @@ const WorkGallery = (props) => {
       })
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
-          nextView(globalVariables.view.start);
+          // nextView(globalVariables.view.start);
+          nextView(globalVariables.view.connectionLost);
         });
     }
   }, [result]);
@@ -350,7 +381,6 @@ const WorkGallery = (props) => {
 
   // Нажатие на стрелку, переход к следующему вопросу
   function goToNextQuestion() {
-    console.info(modalStatus.start)
     if ((result.length === questions.length - 1) && modalStatus.start) {
       setActivePanel('QuizResultPanel');
     } else {
@@ -375,7 +405,8 @@ const WorkGallery = (props) => {
         }))
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
-          nextView(globalVariables.view.start);
+          nextView(globalVariables.view.connectionLost);
+          // nextView(globalVariables.view.start);
         });
     }
   }
@@ -388,36 +419,36 @@ const WorkGallery = (props) => {
         Мозговой отчёт
       </PanelHeader>
 
-        <Gallery
-          slideWidth="100%"
-          slideIndex={questionIndex}
-          align="center"
-          onChange={(i) => setQuestionIndex(i)}
-        >
-          {questions.length > 0 && questions.map((item, index) => (
-            <WorkGalleryPanel
-              key={`WorkGalleryPanel_${index}`}
-              id={`WorkGalleryPanel-${index}`}
-              questionIndex={index}
-              totalQuestions={questions.length}
-              data={{
-                question: item.question,
-                answers: item.answers,
-                correctAnswer: item.correctAnswer,
-                correctAnswerNumber: item.correctAnswerNumber,
-                explanation: item.explanation,
-                theme: item.theme,
-                requestedBy: item.requestedBy,
-                _id: item._id,
-              }}
-              setResult={setResult}
-              start={(questionIndex === index) && modalStatus.start && !modalStatus.modalIsActive}
-              goToNextQuestion={goToNextQuestion}
-              timeToAnswer={timeToAnswer}
-              lastQuestionInStorage={lastQuestionInStorage}
-            />
-          ))}
-        </Gallery>
+      <Gallery
+        slideWidth="100%"
+        slideIndex={questionIndex}
+        align="center"
+        onChange={(i) => setQuestionIndex(i)}
+      >
+        {questions.length > 0 && questions.map((item, index) => (
+          <WorkGalleryPanel
+            key={`WorkGalleryPanel_${index}`}
+            id={`WorkGalleryPanel-${index}`}
+            questionIndex={index}
+            totalQuestions={questions.length}
+            data={{
+              question: item.question,
+              answers: item.answers,
+              correctAnswer: item.correctAnswer,
+              correctAnswerNumber: item.correctAnswerNumber,
+              explanation: item.explanation,
+              theme: item.theme,
+              requestedBy: item.requestedBy,
+              _id: item._id,
+            }}
+            setResult={setResult}
+            start={(questionIndex === index) && modalStatus.start && !modalStatus.modalIsActive}
+            goToNextQuestion={goToNextQuestion}
+            timeToAnswer={timeToAnswer}
+            lastQuestionInStorage={lastQuestionInStorage}
+          />
+        ))}
+      </Gallery>
 
     </Panel>
   );

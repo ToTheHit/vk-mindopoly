@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './questionsList.css';
 import {
@@ -14,6 +14,16 @@ const QuestionsList = (props) => {
   const platform = usePlatform();
   const selectedQuestionsList = useSelector((state) => state.userQuestions.selectedQuestionsCategory);
   const selectedCategory = useSelector((state) => state.userQuestions.category);
+  const scrollListener = useSelector((state) => state.scrollTo);
+
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (isFirstRender) setIsFirstRender(false);
+    else if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {
+      setActivePanel(globalVariables.commonView.panels.main);
+    }
+  }, [scrollListener]);
 
   const controlHardwareBackButton = useCallback(() => {
     setActivePanel(globalVariables.commonView.panels.main);

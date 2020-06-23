@@ -5,11 +5,35 @@ import {
   Caption,
   Group, Header, HorizontalScroll, Tooltip,
 } from '@vkontakte/vkui';
-import BalanceItem from '../Balance/BalanceItem';
-import Effect from "./Components/Effect";
+import { useDispatch, useSelector } from 'react-redux';
+import Effect from './Components/Effect';
 
 const EffectsRow = (props) => {
-  const { effects } = props;
+  const { effects, popoutMainView } = props;
+  const dispatch = useDispatch();
+  const tooltipsStory1 = useSelector((state) => state.tooltip.story1);
+  const tooltipsStory2 = useSelector((state) => state.tooltip.story2);
+
+  function onCloseTooltipBalance() {
+    dispatch({
+      type: 'TOOLTIP_UPDATE_STORY1',
+      payload: {
+        taxEffect: false,
+      },
+    });
+  }
+
+  function onCloseTooltipEffect() {
+    dispatch({
+      type: 'TOOLTIP_UPDATE_STORY2',
+      payload: {
+        GPeffect: false,
+        GPeffectCompleted: true,
+        notifications: true,
+      },
+    });
+  }
+
   return (
     <Group
       className="EffectsRow"
@@ -20,8 +44,8 @@ const EffectsRow = (props) => {
         </Header>
       )}
       description={(
-        <Caption level={'1'} weight={'regular'}>
-          Нажмите на карточку, чтобы посмотреть её описание. Проведите слева на право, чтобы увидеть все карточки.
+        <Caption level="1" weight="regular">
+          Нажмите на карточку, чтобы посмотреть её описание. Проведите справа налево, чтобы увидеть все карточки.
         </Caption>
       )}
     >
@@ -32,55 +56,55 @@ const EffectsRow = (props) => {
           effects.map((effect) => {
             if (effect.name === 'GPtoday') {
               return (
-              /*                <Tooltip
+                <Tooltip
                   key={`BalanceItem__${effect.name}`}
                   text="Это эффект профиля. Нажмите на него, чтобы открыть."
                   isShown={tooltipsStory2.GPeffect && !tooltipsStory2.GPeffectCompleted && effect.name === 'GPtoday' && !popoutMainView}
                   onClose={onCloseTooltipEffect}
                   offsetX={12}
-                > */
-                <div
-                  className="EffectsRow__item"
-                  key={`Effect__${effect.name}`}
                 >
-                  {/* <ScalableButton borderRadius={'Card'}> */}
-                  <Effect
-                    count={effect.count}
-                    currency={effect.currency}
-                    icon={effect.icon}
-                    description={effect.description}
-                    name={effect.name}
-                  />
+                  <div
+                    className="EffectsRow__item"
+                    key={`Effect__${effect.name}`}
+                  >
+                    {/* <ScalableButton borderRadius={'Card'}> */}
+                    <Effect
+                      count={effect.count}
+                      currency={effect.currency}
+                      icon={effect.icon}
+                      description={effect.description}
+                      name={effect.name}
+                    />
 
-                  {/* </ScalableButton> */}
-                </div>
-              // </Tooltip>
+                    {/* </ScalableButton> */}
+                  </div>
+                </Tooltip>
               );
             } if (effect.name === 'Tax') {
               return (
-              /*                <Tooltip
+                <Tooltip
                   key={`BalanceItem__${effect.name}`}
                   text="Если Вы пропустите ежедневный тест, правительство спишет с Вашего монетного счёта налог."
                   isShown={tooltipsStory1.taxEffect && effect.name === 'Tax' && !popoutMainView}
-                  onClose={() => onCloseTooltipBalance(2)}
+                  onClose={() => onCloseTooltipBalance()}
                   offsetX={12}
-                > */
-                <div
-                  className="EffectsRow__item"
-                  key={`Effect__${effect.name}`}
                 >
-                  {/* <ScalableButton borderRadius={'Card'}> */}
-                  <Effect
-                    count={effect.count}
-                    currency={effect.currency}
-                    icon={effect.icon}
-                    description={effect.description}
-                    name={effect.name}
-                  />
+                  <div
+                    className="EffectsRow__item"
+                    key={`Effect__${effect.name}`}
+                  >
+                    {/* <ScalableButton borderRadius={'Card'}> */}
+                    <Effect
+                      count={effect.count}
+                      currency={effect.currency}
+                      icon={effect.icon}
+                      description={effect.description}
+                      name={effect.name}
+                    />
 
-                  {/* </ScalableButton> */}
-                </div>
-              // </Tooltip>
+                    {/* </ScalableButton> */}
+                  </div>
+                </Tooltip>
               );
             }
             return (
@@ -111,11 +135,12 @@ const EffectsRow = (props) => {
 
 EffectsRow.propTypes = {
   effects: PropTypes.arrayOf(PropTypes.shape({
-    count: PropTypes.number,
+    count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     currency: PropTypes.string,
     icon: PropTypes.any,
     description: PropTypes.string,
   })).isRequired,
+  popoutMainView: PropTypes.bool.isRequired,
 };
 EffectsRow.defaultProps = {};
 export default EffectsRow;

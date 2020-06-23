@@ -29,7 +29,6 @@ const Shop = (props) => {
   const dispatch = useDispatch();
 
   const controlHardwareBackButton = useCallback(() => {
-    console.info('SHOP', window.history.state);
     setActiveStory(globalVariables.commonView.roots.main);
   }, []);
 
@@ -69,7 +68,6 @@ const Shop = (props) => {
   useEffect(() => {
     axios.get(`${globalVariables.serverURL}/api/getCategoriesState`)
       .then((data) => {
-        // console.info(data);
         setCategories(data.data);
         dispatch({
           type: 'PAGE_CACHE',
@@ -80,11 +78,10 @@ const Shop = (props) => {
       .catch((err) => {
         console.info('Main, get/userQuestions', err);
         if (!err.response) {
-          nextView(globalVariables.view.start);
+          // nextView(globalVariables.view.start);
+          nextView(globalVariables.view.connectionLost);
         }
       });
-    return () => {
-    };
   }, []);
 
   return (

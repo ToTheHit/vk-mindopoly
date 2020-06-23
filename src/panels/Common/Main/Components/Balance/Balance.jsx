@@ -15,6 +15,7 @@ const Balance = (props) => {
   const dispatch = useDispatch();
   const tooltipsStory1 = useSelector((state) => state.tooltip.story1);
   const tooltipsStory2 = useSelector((state) => state.tooltip.story2);
+
   function onCloseTooltipBalance(tooltipNumber) {
     if (tooltipNumber === 1) {
       dispatch({
@@ -188,25 +189,24 @@ const Balance = (props) => {
                     </div>
                   </Tooltip>
                 );
-              } else {
-                return (
-                  <div
-                    className="Balance__row-scroll__item"
-                    key={`BalanceItem__${effect.name}`}
-                  >
-                    {/* <ScalableButton borderRadius={'Card'}> */}
-                    <BalanceItem
-                      count={effect.count}
-                      currency={effect.currency}
-                      icon={effect.icon}
-                      description={effect.description}
-                      name={effect.name}
-                    />
-
-                    {/* </ScalableButton> */}
-                  </div>
-                )
               }
+              return (
+                <div
+                  className="Balance__row-scroll__item"
+                  key={`BalanceItem__${effect.name}`}
+                >
+                  {/* <ScalableButton borderRadius={'Card'}> */}
+                  <BalanceItem
+                    count={effect.count}
+                    currency={effect.currency}
+                    icon={effect.icon}
+                    description={effect.description}
+                    name={effect.name}
+                  />
+
+                  {/* </ScalableButton> */}
+                </div>
+              );
             })
           )}
         </div>

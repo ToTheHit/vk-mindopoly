@@ -69,7 +69,7 @@ const Effect = (props) => {
 };
 
 Effect.propTypes = {
-  count: PropTypes.number.isRequired,
+  count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   currency: PropTypes.string.isRequired,
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   description: PropTypes.string.isRequired,

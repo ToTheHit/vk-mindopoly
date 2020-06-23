@@ -77,8 +77,10 @@ const StartPanel = (props) => {
               setTimeout(() => {
                 console.info(err);
               }, 1000);
-              setReadyToShow(true);
-              popoutState.setPopoutIsActive(false);
+              nextView(globalVariables.view.connectionLost);
+
+              // setReadyToShow(true);
+              // popoutState.setPopoutIsActive(false);
             });
         } else {
           setReadyToShow(true);
@@ -89,6 +91,8 @@ const StartPanel = (props) => {
       .catch((error) => {
         setTimeout(() => {
           console.info(error);
+          nextView(globalVariables.view.connectionLost);
+
         }, 1000);
         requestIsCompleted = false;
         setReadyToShow(true);

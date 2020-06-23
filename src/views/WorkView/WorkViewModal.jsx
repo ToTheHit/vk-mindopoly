@@ -1,9 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './workViewModal.css';
-import { ModalCard, ModalRoot } from '@vkontakte/vkui';
+import {
+  FormLayout, ModalCard, ModalRoot, Textarea,
+} from '@vkontakte/vkui';
 import Icon56ErrorOutline from '@vkontakte/icons/dist/56/error_outline';
+import Icon56CheckCircleOutline from '@vkontakte/icons/dist/56/check_circle_outline';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import globalVariables from '../../GlobalVariables';
 
 const WorkViewModal = (props) => {
@@ -11,22 +15,23 @@ const WorkViewModal = (props) => {
   const modalIsActive = useSelector((state) => state.workViewModal.modalIsActive);
   const questionsLength = useSelector((state) => state.workViewModal.questionsLength);
   const answersLength = useSelector((state) => state.quiz.quizResult.length);
+  const reportQuestionID = useSelector((state) => state.quiz.reportQuestionID);
+  const userToken = useSelector((state) => state.userToken.token);
+
   const dispatch = useDispatch();
   const [buttonTitle, setButtonTitle] = useState('Продолжить');
   const [modalText, setModalText] = useState('');
-
-  const controlHardwareBackButton = useCallback(() => {
-    nextView(globalVariables.view.main);
-    // window.history.back();
-  }, []);
+  const [reportContent, setReportContent] = useState('');
+  const [reportContentError, setReportContentError] = useState(false);
+  const [reportSent, setReportSent] = useState(false);
 
   useEffect(() => {
-    // document.body.style.overflow = 'hidden';
+    setReportContentError(false);
+  }, [reportContent]);
 
-/*    if (modalIsActive) {
-      document.body.style.overflow = 'hidden';
-    } else document.body.style.overflow = 'auto';*/
-  }, [modalIsActive]);
+  useEffect(() => {
+    setReportContent('');
+  }, [reportQuestionID]);
 
   useEffect(() => {
     if (answersLength > 0) {
@@ -43,6 +48,7 @@ const WorkViewModal = (props) => {
   }, [answersLength, questionsLength]);
 
   function closeModal(isStart) {
+    setReportSent(false);
     dispatch({
       type: 'UPDATE_WORK-VIEW-MODAL',
       payload: {
@@ -52,9 +58,82 @@ const WorkViewModal = (props) => {
     });
   }
 
+  function closeReportModal(send) {
+    if (send) {
+      const urlParams = new URLSearchParams(window.location.search);
+      // console.info(`Send report for question ${reportQuestionID}`);
+      // console.info('Report text: ', reportContent);
+      // console.info('User token:', userToken);
+      if (reportContent.length === 0) {
+        setReportContentError(true);
+      } else {
+        const data = {
+          questionID: reportQuestionID,
+          reportText: reportContent,
+        };
+        axios.post(`${globalVariables.serverURL}/api/reportQuestion`, data, {
+          params: {
+            id: urlParams.get('vk_user_id'),
+          },
+          headers: {
+            'X-Access-Token': userToken,
+          },
+        })
+          .catch((error) => {
+            console.info('Erorr: /api/reportQuestion', error);
+          });
+
+        dispatch({
+          type: 'UPDATE_QUIZ_RESULT',
+          payload: {
+            confirmReportByQuestionID: reportQuestionID,
+          },
+        });
+        setReportSent(true);
+        /*        dispatch({
+          type: 'UPDATE_WORK-VIEW-MODAL',
+          payload: {
+            modalIsActive: false,
+          },
+        }); */
+      }
+    } else {
+      dispatch({
+        type: 'UPDATE_WORK-VIEW-MODAL',
+        payload: {
+          modalIsActive: false,
+        },
+      });
+    }
+  }
+
+  function getActiveModal() {
+    if (modalIsActive && reportQuestionID) {
+      dispatch({
+        type: 'UPDATE_WORK-VIEW-MODAL',
+        payload: {
+          isStartModal: false,
+        },
+      });
+
+      if (reportSent) return 'Work--reportSent';
+      return 'Work--report';
+    }
+    if (modalIsActive && questionsLength > 0) {
+      dispatch({
+        type: 'UPDATE_WORK-VIEW-MODAL',
+        payload: {
+          isStartModal: true,
+        },
+      });
+      return 'Work--readyCheck';
+    }
+    return null;
+  }
+
   return (
     <ModalRoot
-      activeModal={(modalIsActive && questionsLength > 0) ? 'Work--readyCheck' : null}
+      activeModal={getActiveModal()}
       onClose={() => closeModal()}
     >
       <ModalCard
@@ -78,6 +157,54 @@ const WorkViewModal = (props) => {
         ]}
         onClose={() => closeModal(true)}
       />
+
+      <ModalCard
+        id="Work--report"
+        header="Плохой вопрос"
+        actions={[
+          {
+            title: 'Отмена',
+            mode: 'secondary',
+            action: () => {
+              closeReportModal(false);
+            },
+          },
+          {
+            title: 'Отправить',
+            mode: 'primary',
+            action: () => closeReportModal(true),
+          },
+        ]}
+        onClose={() => closeReportModal(false)}
+      >
+        <FormLayout className="WorkView__modal--report__form">
+          <Textarea
+            top="Почему вопрос некорректен?"
+            onChange={(e) => setReportContent(e.target.value)}
+            status={(reportContentError && 'error')}
+            bottom={(reportContentError && 'Нельзя отправить пустое сообщение')}
+          />
+        </FormLayout>
+      </ModalCard>
+
+
+      <ModalCard
+        id="Work--reportSent"
+        icon={<Icon56CheckCircleOutline />}
+        actions={[
+          {
+            title: 'Закрыть',
+            mode: 'secondary',
+            action: () => closeModal(true),
+          },
+        ]}
+        onClose={() => closeModal(true)}
+      >
+        <div style={{ textAlign: 'center' }}>
+          Благодарим за обращение. Мы рассмотрим его в ближайшее время.
+        </div>
+      </ModalCard>
+
     </ModalRoot>
   );
 };
