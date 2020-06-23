@@ -4,10 +4,11 @@ import {
   Card, classNames, Div, SimpleCell,
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
-import globalVariables from '../../../../GlobalVariables';
-import bridge from "@vkontakte/vk-bridge";
+import bridge from '@vkontakte/vk-bridge';
+import globalVariables from '../../../../../../GlobalVariables';
+import './effect.css';
 
-const BalanceItem = (props) => {
+const Effect = (props) => {
   const {
     count, currency, icon, description, name,
   } = props;
@@ -30,7 +31,7 @@ const BalanceItem = (props) => {
       render = (
         <div
           style={{ backgroundImage: `url(${icon})` }}
-          className="Balance__icon"
+          className="Effect__icon"
         />
       );
     } else {
@@ -43,37 +44,37 @@ const BalanceItem = (props) => {
     <Card
       mode="shadow"
       onClick={() => openModal()}
-      className={classNames('Balance__cardEffect', { 'Balance__cardEffect-dark': scheme === 'space_gray' })}
+      className={classNames('Effect__cardEffect', { 'Effect__cardEffect-dark': scheme === 'space_gray' })}
     >
-        <SimpleCell
-          className="Balance__effect"
-          disabled
-          before={(
-            <div className="Balance__icon">
-              {renderedIcon}
-            </div>
-        )}
-          description={(
-            <div className="Balance__effect--description">
-              {description}
-            </div>
-          )}
-        >
-          <div>
-            {`${count} ${currency}`}
+      <SimpleCell
+        className="Effect__content"
+        disabled
+        before={(
+          <div className="Effect__icon">
+            {renderedIcon}
           </div>
-        </SimpleCell>
+        )}
+        description={(
+          <div className="Effect__content--description">
+            {description}
+          </div>
+        )}
+      >
+        <div>
+          {`${count} ${currency}`}
+        </div>
+      </SimpleCell>
     </Card>
   );
 };
 
-BalanceItem.propTypes = {
+Effect.propTypes = {
   count: PropTypes.number.isRequired,
   currency: PropTypes.string.isRequired,
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   description: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 };
-BalanceItem.defaultProps = {
+Effect.defaultProps = {
 };
-export default BalanceItem;
+export default Effect;

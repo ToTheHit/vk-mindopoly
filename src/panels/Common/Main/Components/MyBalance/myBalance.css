@@ -1,0 +1,73 @@
+.MyBalance__header .Header__content {
+  padding-top: 10px !important;
+}
+.MyBalance__cardRow {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-top: 3px;
+  padding-bottom: 0;
+}
+.MyBalance__card {
+  height: 76px;
+  width: 50%;
+}
+.MyBalance__card:nth-child(1) {
+  margin-right: 5px;
+}
+.MyBalance__card:nth-child(2) {
+  margin-left: 5px;
+}
+.MyBalance__card--content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.MyBalance__card--iconPlace {
+  width: 32px;
+  height: 32px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.MyBalance__card--iconPlace_coins {
+  background-color: #ff9f0a;
+}
+.MyBalance__card--iconPlace_GP {
+  background-color: #5856d6;
+}
+.MyBalance__card--icon {
+  color: #FFFFFF;
+}
+.MyBalance__card--title {
+  font-family: "SF Pro Text", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.08px;
+  color: var(--tabbar_tablet_text_secondary);
+  line-height: 1.38;
+  margin-top: 2px;
+}
+.MyBalance__card--counter {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.38px;
+}
+/*# sourceMappingURL=myBalance.css.map */

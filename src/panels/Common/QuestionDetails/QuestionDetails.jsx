@@ -29,11 +29,15 @@ const QuestionDetails = (props) => {
   const { id, setActivePanel, selectedQuestion } = props;
   const platform = usePlatform();
   const scheme = useSelector((state) => state.schemeChanger.scheme);
-
+  const selectedCategory = useSelector((state) => state.userQuestions.category);
   const [activeTab, setActiveTab] = useState('Today');
 
   const controlHardwareBackButton = useCallback(() => {
-    setActivePanel(globalVariables.commonView.panels.main);
+    if (selectedCategory === 'All') {
+      setActivePanel(globalVariables.commonView.panels.main);
+    } else {
+      setActivePanel(globalVariables.commonView.panels.questionsList);
+    }
     // window.history.back();
   }, []);
 
@@ -57,7 +61,13 @@ const QuestionDetails = (props) => {
         left={(
           <PanelHeaderBack
             label={(platform === IOS && 'Назад')}
-            onClick={() => setActivePanel('Main')}
+            onClick={() => {
+              if (selectedCategory === 'All') {
+                setActivePanel(globalVariables.commonView.panels.main);
+              } else {
+                setActivePanel(globalVariables.commonView.panels.questionsList);
+              }
+            }}
           />
         )}
       >

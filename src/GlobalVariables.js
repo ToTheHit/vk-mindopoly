@@ -9,12 +9,16 @@ const globalVariables = {
   commonView: {
     roots: {
       main: 'MainRoot',
+      homework: 'HomeworkRoot',
       shop: 'ShopRoot',
       leaderboard: 'LeaderboardRoot',
     },
     panels: {
       main: 'Main',
+      questionsList: 'QuestionsList',
       questionDetails: 'QuestionDetails',
+      rejectedQuestion: 'RejectedQuestion',
+      homework: 'Homework',
       shop: 'Shop',
       shopQuestion: 'ShopQuestion',
       leaderboard: 'Leaderboard',
@@ -104,6 +108,26 @@ const globalVariables = {
     master: 'leaderboardBadgeMaster',
   },
   maxUnapprovedQuestionCount: 12,
+
+  getReasonByCode(code) {
+    switch (code) {
+      case 1: return 'Копия чужого вопроса';
+      case 2: return 'Нет образовательно подтекста';
+      case 3: return 'Особое решение модерации';
+      default: return null;
+    }
+  },
+  getReasonDescriptionByCode(code) {
+    switch (code) {
+      case 1: return 'К сожалению, подобный вопрос зарегистрировал другой пользователь. Мы вернули потраченные монеты на Ваш счёт.';
+      case 2: return 'Тестовое пояснение';
+      default: return null;
+    }
+  },
+  notificationType: {
+    QuestionResult: 'QuestionResult',
+    Achievement: 'Achievement',
+  },
 };
 
 export default globalVariables;
