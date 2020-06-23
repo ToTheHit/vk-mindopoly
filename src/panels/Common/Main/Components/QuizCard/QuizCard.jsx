@@ -56,7 +56,7 @@ const QuizCard = (props) => {
                 multiline
                 description={(
                   <div className="QuizCard--description">
-                    Дайте 4 правильных ответа, чтобы
+                    Дайте 5 правильных ответов, чтобы
                     не платить мозговой налог и заработать монеты.
                   </div>
                 )}

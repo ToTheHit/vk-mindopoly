@@ -4,6 +4,9 @@
 .QuestionDetails__answer {
   margin-top: 10px;
 }
+.QuestionDetails__explanation .Header__content {
+  padding-bottom: 3px !important;
+}
 .QuestionDetails__generalInfo--card-dark {
   background: var(--content_tint_background);
 }

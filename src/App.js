@@ -10,6 +10,7 @@ import CommonView from './views/CommonView/CommonView';
 import TestView from './views/TestView/TestView';
 import globalVariables from './GlobalVariables';
 import WorkView from './views/WorkView/WorkView';
+import ConnectionLost from './views/ConnectionLost/ConnectionLost';
 
 const App = () => {
   const [activeView, setActiveView] = useState(globalVariables.view.start);
@@ -98,6 +99,7 @@ const App = () => {
         <StartView id={globalVariables.view.start} nextView={setActiveView} />
         <CommonView id={globalVariables.view.main} nextView={setActiveView} />
         <WorkView id={globalVariables.view.work} nextView={setActiveView} />
+        <ConnectionLost id={globalVariables.view.connectionLost} nextView={setActiveView} />
 
         <TestView id={globalVariables.view.test} />
       </Root>

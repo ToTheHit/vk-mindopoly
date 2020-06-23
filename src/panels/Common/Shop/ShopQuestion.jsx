@@ -43,14 +43,23 @@ const ShopQuestion = (props) => {
   const userToken = useSelector((state) => state.userToken.token);
   const storedQuestion = useSelector((state) => state.shopQuestion.question);
   const unapprovedQuestions = useSelector((state) => state.userQuestions.unapprovedQuestions);
+  const scrollListener = useSelector((state) => state.scrollTo);
+
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSnackbar1, setShowSnackbar1] = useState({ state: false, msg: '' });
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const controlHardwareBackButton = useCallback(() => {
-    console.info('SHOP QUESTION', window.history.state);
-
     setActivePanel(globalVariables.commonView.panels.shop);
   }, []);
+
+  useEffect(() => {
+    if (isFirstRender) setIsFirstRender(false);
+    else if (scrollListener.scrollableElement === globalVariables.commonView.roots.shop) {
+      setActivePanel(globalVariables.commonView.panels.shop);
+    }
+  }, [scrollListener]);
+
   useEffect(() => {
     // Алгоритм для обработки аппаратной кнопки "Назад" на андроидах
     if (window.history.state) {

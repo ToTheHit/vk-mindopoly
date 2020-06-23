@@ -2,13 +2,36 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './myBalance.css';
 import {
-  Card, Div, Group, Header,
+  Card, Div, Group, Header, Tooltip,
 } from '@vkontakte/vkui';
 import Icon28BrainOutline from '@vkontakte/icons/dist/28/brain_outline';
+import { useDispatch, useSelector } from 'react-redux';
+import bridge from "@vkontakte/vk-bridge";
+import globalVariables from "../../../../../GlobalVariables";
 
 
 const MyBalance = (props) => {
-  const { GP, coins } = props;
+  const { GP, coins, popoutMainView } = props;
+  const tooltipsStory1 = useSelector((state) => state.tooltip.story1);
+  const dispatch = useDispatch();
+
+  function onCloseTooltipBalance() {
+    dispatch({
+      type: 'TOOLTIP_UPDATE_STORY1',
+      payload: {
+        balance: false,
+        quizBlock: true,
+      },
+    });
+  }
+  function openModal(name) {
+    bridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
+    dispatch({
+      type: 'OPEN_MODAL',
+      payload: globalVariables.mainViewModal(name),
+    });
+  }
+
   return (
     <Group
       className="MyBalance"
@@ -19,19 +42,14 @@ const MyBalance = (props) => {
         </Header>
       )}
     >
-      <Div
-        className="MyBalance__cardRow"
-      >
+      <Div className="MyBalance__cardRow">
         <Card
           className="MyBalance__card"
+          onClick={() => openModal('CoinsToday')}
         >
-          <Div
-            className="MyBalance__card--content"
-          >
+          <Div className="MyBalance__card--content">
             <div>
-              <div
-                className="MyBalance__card--iconPlace MyBalance__card--iconPlace_coins"
-              >
+              <div className="MyBalance__card--iconPlace MyBalance__card--iconPlace_coins">
                 <svg width="10px" height="18px" viewBox="0 0 10 18" version="1.1" xmlns="http://www.w3.org/2000/svg">
                   <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                     <g id="icn32_mindocoins" transform="translate(-11.000000, -7.000000)" fill="#FFFFFF" fillRule="nonzero">
@@ -46,41 +64,41 @@ const MyBalance = (props) => {
                 монеты
               </div>
             </div>
-            <div
-              className="MyBalance__card--counter"
-            >
+            <div className="MyBalance__card--counter">
               {coins.toLocaleString('ru-RU')}
             </div>
           </Div>
-
         </Card>
+
+        <Tooltip
+          text="Ваш баланс состоит из Монет и Очков Гения. Последние отражают Ваш рейтинг Мозгополиста."
+          offsetX={-123}
+          cornerOffset={90}
+          isShown={tooltipsStory1.balance && !popoutMainView}
+          onClose={() => onCloseTooltipBalance()}
+        >
+          <div />
+        </Tooltip>
 
         <Card
           className="MyBalance__card"
+          onClick={() => openModal('GPtoday')}
         >
-          <Div
-            className="MyBalance__card--content"
-          >
+          <Div className="MyBalance__card--content">
             <div>
-              <div
-                className="MyBalance__card--iconPlace MyBalance__card--iconPlace_GP"
-              >
+              <div className="MyBalance__card--iconPlace MyBalance__card--iconPlace_GP">
                 <Icon28BrainOutline className="MyBalance__card--icon" width={24} height={24} />
               </div>
               <div className="MyBalance__card--title">
                 очки гения
               </div>
             </div>
-            <div
-              className="MyBalance__card--counter"
-            >
+            <div className="MyBalance__card--counter">
               {GP.toLocaleString('ru-RU')}
             </div>
           </Div>
-
         </Card>
       </Div>
-
     </Group>
   );
 };
@@ -88,6 +106,7 @@ const MyBalance = (props) => {
 MyBalance.propTypes = {
   GP: PropTypes.number.isRequired,
   coins: PropTypes.number.isRequired,
+  popoutMainView: PropTypes.bool.isRequired,
 };
 MyBalance.defaultProps = {};
 export default MyBalance;

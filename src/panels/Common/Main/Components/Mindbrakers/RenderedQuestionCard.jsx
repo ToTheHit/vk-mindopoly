@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
   Card, classNames, SimpleCell, Subhead, Text, Div
@@ -30,11 +30,7 @@ const RenderedQuestionCard = (props) => {
           className="RenderedQuestionCard--card__background"
           style={{ background: globalVariables.categoryColor(item.category) }}
         />*/}
-        <Div
-          // multiline
-          // expandable
-          // disabled
-        >
+        <Div>
           {(showCategoryType && (
             <div
               className={

@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import {
-  Avatar, Panel, PanelHeader, PullToRefresh, Text,
+  ANDROID,
+  Avatar, Panel, PanelHeader, PullToRefresh, Text, usePlatform,
 } from '@vkontakte/vkui';
 import axios from 'axios';
 
@@ -29,6 +30,12 @@ const Main = (props) => {
   const mainViewModalName = useSelector((state) => state.mainViewModal.modalName);
   const scrollListener = useSelector((state) => state.scrollTo);
   let appIsClosed = false;
+  const platform = usePlatform();
+
+  const CancelToken1 = axios.CancelToken;
+  const source = CancelToken1.source();
+
+  const cancelSource = React.useRef(null);
 
   const {
     id, setActivePanel,
@@ -41,6 +48,8 @@ const Main = (props) => {
   const [questions, setQuestions] = useState(userQuestions.questions);
   const [VKuser, setVKuser] = useState(userInfo);
   const [updatingView, setUpdatingView] = useState(false);
+  // const [networkErrorCount, setNetworkErrorCount] = useState(0);
+  let networkErrorCount = 0;
 
   useEffect(() => {
     if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {
@@ -56,11 +65,15 @@ const Main = (props) => {
       console.info('Main, Get /api/, Token not found');
       setTimeout(() => {
         nextView(globalVariables.view.start);
-      }, 3000);
+      }, 1500);
     } else {
       // console.info(urlParams.get('vk_user_id'), userToken)
+      cancelSource.current = axios.CancelToken.source();
       axios.all([
         axios.get(`${globalVariables.serverURL}/api/userInfo`, {
+          cancelToken: source.token,
+          timeout: 10000,
+          timeoutErrorMessage: 'Timeout',
           params: {
             id: urlParams.get('vk_user_id'),
           },
@@ -69,6 +82,9 @@ const Main = (props) => {
           },
         }),
         axios.get(`${globalVariables.serverURL}/api/allUserQuestions`, {
+          cancelToken: source.token,
+          timeout: 10000,
+          timeoutErrorMessage: 'Timeout',
           params: {
             id: urlParams.get('vk_user_id'),
           },
@@ -78,9 +94,13 @@ const Main = (props) => {
         }),
       ])
         .then((data) => {
+          // setNetworkErrorCount(0);
+          networkErrorCount = 0;
           const srvData = data[0].data.attachment;
           // console.info('user', srvData);
-          console.info('questions', data[1].data.attachment);
+          // console.info('questions', data[1].data.attachment);
+          // console.info('token', userToken);
+          const tax = (Math.round(srvData.coins.overall * srvData.tax) >= 10 ? Math.round(srvData.coins.overall * srvData.tax) : 10);
           bridge.send('VKWebAppGetUserInfo', {})
             .then((bridgeData) => {
               const user = {
@@ -90,7 +110,7 @@ const Main = (props) => {
                 GP: srvData.bp,
                 GPgrowth: srvData.bp.today,
                 coins: srvData.coins,
-                tax: srvData.tax,
+                tax,
                 isExamAvailable: srvData.isExamAvailable,
                 isExamSuccess: srvData.isExamSuccess,
                 isStoryConfirmed: srvData.isStoryConfirmed,
@@ -105,6 +125,7 @@ const Main = (props) => {
                   value: srvData.msToNextExam.value,
                   isUpdating: srvData.msToNextExam.isUpdating,
                 },
+                notifications: srvData.notifications.reverse(),
               };
               if (!tooltipsState && !user.isExamAvailable) {
                 dispatch({
@@ -334,15 +355,23 @@ const Main = (props) => {
         })
         .catch((err) => {
           setPopoutMainView(true);
-          setTimeout(() => {
-            console.info('Main, Get /api/, Server response Error');
-            console.info('Main, Get /api/', err);
-            if (appIsClosed) {
-              console.info('Main, Get /api/, Error was in hidden app');
-            } else {
-              nextView(globalVariables.view.start);
-            }
-          }, 3000);
+          // setNetworkErrorCount(((prevState) => prevState + 1));
+          networkErrorCount += 1;
+          console.info('Main, Get /api/, Server response Error');
+          console.info('Main, Get /api/', err);
+          if (err.message === 'Unmount panel') {
+            // nextView(globalVariables.view.connectionLost);
+          } else if (appIsClosed) {
+            console.info('Main, Get /api/, Error was in hidden app');
+          } else {
+            console.info(networkErrorCount);
+            if (networkErrorCount === 2) {
+              setTimeout(() => {
+                nextView(globalVariables.view.connectionLost);
+              }, 1000);
+            } else updateView();
+            // nextView(globalVariables.view.connectionLost);
+          }
           // Сервер не нашёл токен в БД.
           // Перемещение на стартовый экран
         });
@@ -450,7 +479,9 @@ const Main = (props) => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if ((platform === ANDROID) && (window.history.length > 1)) {
+      window.history.back();
+    }
 
     if (userInfo.date === 0) {
       setPopoutMainView(true);
@@ -480,6 +511,8 @@ const Main = (props) => {
       bridge.unsubscribe(bridgeOnRestore);
       window.removeEventListener('popstate', controlHardwareBackButton);
       window.removeEventListener('focus', onRestore);
+      // cancelSource.current.cancel('Unmount panel');
+      source.cancel('Unmount panel');
     };
   }, []);
 
@@ -508,9 +541,10 @@ const Main = (props) => {
           <MyBalance
             GP={VKuser.GP.overall}
             coins={VKuser.coins.overall}
+            popoutMainView={popoutMainView}
           />
 
-          <EffectsRow effects={effects} />
+          <EffectsRow effects={effects} popoutMainView={popoutMainView} />
 
           <div>
             {VKuser.isExamAvailable ? (
@@ -521,7 +555,6 @@ const Main = (props) => {
                   popoutMainView={popoutMainView}
                 />
               )}
-
           </div>
 
           <MyQuestions
@@ -533,24 +566,30 @@ const Main = (props) => {
             notifications={[
               {
                 type: 'QuestionResult',
-                code: 0,
-                text: 'Когда Юрий Гагарин полетел в космос?',
-                questionID: '5ece45e786835c9d220f86b1',
                 id: '1',
+                notificationObject: {
+                  code: 0,
+                  text: 'Когда Юрий Гагарин полетел в космос?',
+                  questionID: '5ece45e786835c9d220f86b1',
+                },
               },
               {
                 type: 'QuestionResult',
-                code: 1,
-                text: 'Кем был Менделеев?',
-                reason: '',
                 id: '2',
+                notificationObject: {
+                  code: 1,
+                  text: 'Кем был Менделеев?',
+                  reason: '',
+                },
               },
               {
                 type: 'QuestionResult',
-                code: 3,
-                text: 'На вашем там может быть что-то, если программировать большой проетк скоро  неудобно а потом выяняется что',
-                reason: 'Нельзя цитировать Великих людей',
                 id: '3',
+                notificationObject: {
+                  code: 3,
+                  text: 'На вашем там может быть что-то, если программировать большой проетк скоро  неудобно а потом выяняется что',
+                  reason: 'Нельзя цитировать Великих людей',
+                },
               },
             ]}
             setActivePanel={setActivePanel}

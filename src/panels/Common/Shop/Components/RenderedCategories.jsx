@@ -70,7 +70,7 @@ const RenderedCategories = (props) => {
         disabled
         after={(
           <Tooltip
-            text="Покупая вопрос, Вы увеличиваете ежедневный прирост очков GP и доход монет."
+            text="Покупая вопрос, Вы увеличиваете ежедневный прирост очков гения и доход монет."
             alignX="right"
             isShown={tooltipState && (index === 0)}
             onClose={onCloseTooltipBalance}

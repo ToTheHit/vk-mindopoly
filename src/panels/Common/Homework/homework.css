@@ -19,9 +19,6 @@
 .Homework__list {
   padding-bottom: 20px;
 }
-.Homework__list:last-child {
-  background-color: lightcoral;
-}
 .Homework__card--content-hidden {
   visibility: hidden;
   height: 0;

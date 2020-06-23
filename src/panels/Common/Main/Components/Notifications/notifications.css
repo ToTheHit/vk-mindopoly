@@ -1,3 +1,6 @@
+.Notifications {
+  padding-bottom: 20px;
+}
 .Notifications__header .Header__content {
   padding-top: 20px !important;
   padding-bottom: 10px !important;
