@@ -17,7 +17,7 @@ const QuestionsList = (props) => {
   const scrollListener = useSelector((state) => state.scrollTo);
 
   const [isFirstRender, setIsFirstRender] = useState(true);
-
+  
   useEffect(() => {
     if (isFirstRender) setIsFirstRender(false);
     else if (scrollListener.scrollableElement === globalVariables.commonView.roots.main) {

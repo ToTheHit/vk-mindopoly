@@ -364,7 +364,6 @@ const Main = (props) => {
           } else if (appIsClosed) {
             console.info('Main, Get /api/, Error was in hidden app');
           } else {
-            console.info(networkErrorCount);
             if (networkErrorCount === 2) {
               setTimeout(() => {
                 nextView(globalVariables.view.connectionLost);
@@ -454,7 +453,6 @@ const Main = (props) => {
     }
   }, []);
   const controlHardwareBackButton = useCallback(() => {
-    console.info('main', window.history.state);
     // setActivePanel(globalVariables.commonView.panels.main);
   }, []);
   const [closeApp, setCloseApp] = useState(false);
@@ -497,9 +495,6 @@ const Main = (props) => {
     updateView();
     dispatch({
       type: 'CLEAR_QUIZ_RESULT',
-    });
-    dispatch({
-      type: 'RESET_SELECTED_CATEGORY',
     });
 
     bridge.subscribe(bridgeOnRestore);
