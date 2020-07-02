@@ -126,9 +126,9 @@ const TestView = (props) => {
       type: 'CLEAR_QUIZ_RESULT',
     });*/
 
-    bridge.send('VKWebAppStorageSet', {
+/*    bridge.send('VKWebAppStorageSet', {
       key: globalVariables.tooltips,
-/*      value: JSON.stringify({
+/!*      value: JSON.stringify({
         mainScreenComplete: false,
         story1: {
           balance: false,
@@ -140,9 +140,9 @@ const TestView = (props) => {
           notifications: false,
         },
         shop: true,
-      }),*/
+      }),*!/
       value: '',
-    });
+    });*/
 
     /*    bridge.send('VKWebAppGetAuthToken', { app_id: 7441788, scope: 'stories' })
           .then((data) => {

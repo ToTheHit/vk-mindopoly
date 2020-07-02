@@ -361,6 +361,7 @@ const Main = (props) => {
           console.info('Main, Get /api/', err);
           if (err.message === 'Unmount panel') {
             // nextView(globalVariables.view.connectionLost);
+            setPopoutMainView(false);
           } else if (appIsClosed) {
             console.info('Main, Get /api/, Error was in hidden app');
           } else {

@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeader, SimpleCell } from "@vkontakte/vkui";
-import axios from "axios";
-import globalVariables from "../../GlobalVariables";
-import Shop from "../../panels/Common/Shop/Shop";
+import { Panel, PanelHeader, SimpleCell } from '@vkontakte/vkui';
+import axios from 'axios';
+import globalVariables from '../../GlobalVariables';
+import Shop from '../../panels/Common/Shop/Shop';
 import './testView.css';
-import ProgressRing from "../../panels/CustomComponents/ProgressRing/ProgressRing";
-import WorkViewModal from "../WorkView/WorkViewModal";
+import ProgressRing from '../../panels/CustomComponents/ProgressRing/ProgressRing';
+import WorkViewModal from '../WorkView/WorkViewModal';
 
 const TestPanel = (props) => {
   const { setActivePanel, id } = props;
   const [counter, setCounter] = useState(0);
   const [questions, setQuestions] = useState([]);
+  const [stop, setStop] = useState(false);
 
 
   useEffect(() => {
@@ -21,6 +22,33 @@ const TestPanel = (props) => {
     }, 3000);
   }, []);
 
+  function redirect() {
+    console.info('test');
+    window.open('https://vk.com/tothehit', '_blank');
+  }
+
+  function openInNewTab(url) {
+    const win = window.open(url, '_blank');
+    console.info(win);
+    if (win != null) {
+      win.focus();
+    }
+  }
+
+  function makeHref() {
+    return null;
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setStop(true);
+    }, 5000);
+  }, []);
+  const makeHref1 = useCallback(() => {
+    if (stop) return 'https://vk.com/tothehit';
+    return null;
+  }, [stop]);
+
   return (
     <Panel id={id}>
       <PanelHeader>
@@ -28,23 +56,28 @@ const TestPanel = (props) => {
       </PanelHeader>
       <SimpleCell
         onClick={() => {
-          setActivePanel('2')
+          setActivePanel('2');
         }}
       >
         Go to View #2
       </SimpleCell>
+      {stop}
       <ProgressRing
         radius={34}
         stroke={5}
         initialStrokeDashoffest={151}
         progress={-70}
-        stokeColor={'red'}
+        stokeColor="red"
       />
-      <a target="_blank" rel="noopener noreferrer" href="https://vk.com/tothehit">Link</a>
+
+      {/*      <div onClick={() => openInNewTab('https://vk.com/tothehit')}>
+        Link
+      </div> */}
+      <a target="_blank" rel="noopener noreferrer" href={makeHref1()}>Link</a>
 
     </Panel>
 
-  )
+  );
 };
 
 TestPanel.propTypes = {
@@ -52,5 +85,5 @@ TestPanel.propTypes = {
   id: PropTypes.string.isRequired,
 
 };
-TestPanel.defaultProps = {}
+TestPanel.defaultProps = {};
 export default TestPanel;

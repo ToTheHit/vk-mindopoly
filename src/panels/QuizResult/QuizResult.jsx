@@ -56,7 +56,10 @@ const QuizResult = (props) => {
     isCorrectAnswer: false,
   });
   const [storySent, setStorySent] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    isShow: false,
+    content: '',
+  });
 
   const sourceAxios = axios.CancelToken.source();
 
@@ -159,21 +162,32 @@ const QuizResult = (props) => {
               'X-Access-Token': userToken,
             },
           })
-            .then((result) => {
-              console.info(result);
+            .then(() => {
               bridge.send('VKWebAppStorageSet', { key: globalVariables.quizResult, value: '[]' })
                 .catch((err) => {
                   console.info('BridgeError_quizResult_StorageSet#1', err);
-                  nextView(globalVariables.view.start);
+/*                  setShowSnackbar({
+                    isShow: true,
+                    content: 'Ошибка: нет доступа к VK Storage',
+                  });*/
+                  nextView(globalVariables.view.connectionLost);
                 });
               bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' })
                 .catch((err) => {
                   console.info('BridgeError_quizResult_StorageSet#2', err);
-                  nextView(globalVariables.view.start);
+/*                  setShowSnackbar({
+                    isShow: true,
+                    content: 'Ошибка: нет доступа к VK Storage',
+                  });*/
+                  nextView(globalVariables.view.connectionLost);
                 });
             })
             .catch((err) => {
               console.info('QuizResult, post/examResults', err);
+              setShowSnackbar({
+                isShow: true,
+                content: 'Ошибка: нет связи с сервером',
+              });
               if (err.response) {
                 console.info(err.response.status);
               } else {
@@ -182,11 +196,20 @@ const QuizResult = (props) => {
             });
         } else {
           // Перемещение на стартовый экран
+/*          setShowSnackbar({
+            isShow: true,
+            content: 'Ошибка: нет доступа к токену',
+          });*/
+          nextView(globalVariables.view.start);
         }
       })
       .catch((err) => {
         console.info('BridgeError_quizResult_StorageGetSecret', err);
-        nextView(globalVariables.view.start);
+/*        setShowSnackbar({
+          isShow: true,
+          content: 'Ошибка: нет доступа к секретному ключу',
+        });*/
+        nextView(globalVariables.view.connectionLost);
       });
 
     return () => {
@@ -250,73 +273,7 @@ const QuizResult = (props) => {
                     transform: {
                       gravity: 'center_top',
                       relation_width: 0.7,
-                      // translation_y: 0.0,
                     },
-                    /* clickable_zones: [
-                      {
-                        action_type: 'link',
-                        action: {
-                          link: 'https://vk.com/app7441788',
-                          // tooltip_text_key: 'tooltip_open_post',
-                        },
-                        clickable_area: [
-                          {
-                            x: 0,
-                            y: 0,
-                          },
-                          {
-                            x: 824,
-                            y: 0,
-                          },
-                          {
-                            x: 824,
-                            y: 644,
-                          },
-                          {
-                            x: 0,
-                            y: 644,
-                          },
-                        ],
-                      },
-                      {
-                        action_type: 'link',
-                        action: {
-                          link: 'https://vk.com/app7441788',
-                          // tooltip_text_key: 'tooltip_open_post',
-                        },
-                        clickable_area: [
-                          {
-                            x: 16,
-                            y: stickerAnswersData[1].offset * 2,
-                          },
-                          {
-                            x: 550 * 2 - 16,
-                            y: stickerAnswersData[1].offset * 2,
-                          },
-                          {
-                            x: 550 * 2 - 16,
-                            y: (stickerAnswersData[1].offset + stickerAnswersData[1].height) * 2,
-                          },
-                          {
-                            x: 16,
-                            y: (stickerAnswersData[1].offset + stickerAnswersData[1].height) * 2,
-                          },
-                        ],
-                      },
-                      {
-                        action_type: 'link',
-                        action: {
-                          link: 'https://vk.com/app7441788',
-                          // tooltip_text_key: 'tooltip_open_post',
-                        },
-                        clickable_area: [
-                          {
-                            x: 16,
-                            y: stickerAnswersData[2].offset * 2,
-                          },
-                        ],
-                      },
-                    ], */
                   },
                 },
                 {
@@ -373,40 +330,14 @@ const QuizResult = (props) => {
                 console.info('storyError', err);
                 setPopoutShadowIsActive(false);
               });
-
-
           };
           i.src = reader.result;
-
-
         };
       })
       .catch((err) => {
         console.info('ConvertStickerError', err);
         setPopoutShadowIsActive(false);
       });
-
-    /*    axios.get(`${globalVariables.serverURL}/api/sticker`, {
-      timeout: 15000,
-      timeoutErrorMessage: 'timeout',
-      cancelToken: sourceAxios.token,
-      params: {
-        questionID: storyQuestion._id,
-        id: urlParams.get('vk_user_id'),
-      },
-      headers: {
-        'X-Access-Token': userToken,
-      },
-    })
-      .then((data) => {
-      })
-      .catch((error) => {
-        console.info('StoryServerError', error);
-        if (error.code === 'ECONNABORTED') {
-          setShowSnackbar(true);
-        }
-        setPopoutShadowIsActive(false);
-      }); */
   }
 
   return (
@@ -440,17 +371,20 @@ const QuizResult = (props) => {
 
       ))}
 
-      {showSnackbar && (
+      {showSnackbar.isShow && (
         <Snackbar
           duration={2000}
           onClose={() => {
-            setShowSnackbar(false);
+            setShowSnackbar({
+              isShow: false,
+              content: '',
+            });
           }}
           before={(
             <Icon28ErrorOutline height={24} width={24} style={{ color: 'var(--destructive)' }} />
           )}
         >
-          Ошибка при запросе к серверу: Timeout
+          {showSnackbar.content}
         </Snackbar>
       )}
 
@@ -478,7 +412,7 @@ const QuizResult = (props) => {
         <Card
           mode="outline"
         >
-          <Div className="QuizResult--rowContainer" style={{paddingLeft: 0, paddingRight: 0}}>
+          <Div className="QuizResult--rowContainer" style={{ paddingLeft: 0, paddingRight: 0 }}>
             <SimpleCell
               disabled
               before={(
