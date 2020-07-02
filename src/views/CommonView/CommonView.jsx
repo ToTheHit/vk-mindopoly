@@ -22,6 +22,8 @@ import globalVariables from '../../GlobalVariables';
 import QuestionsList from '../../panels/Common/QuestionsList/QuestionsList';
 import RejectedQuestion from '../../panels/Common/RejectedQuestion/RejectedQuestion';
 import Homework from '../../panels/Common/Homework/Homework';
+import ShopQuestion1 from '../../panels/Common/Shop/ShopQuestion1';
+import ShopResult from '../../panels/Common/Shop/ShopResult';
 
 // const scroll = Scroll.animateScroll;
 
@@ -42,7 +44,9 @@ const CommonView = (props) => {
       setMainHistory(['Main']);
       bridge.send('VKWebAppDisableSwipeBack');
     } else if (mainActivePanel !== mainHistory[mainHistory.length - 1]) {
-      setMainHistory(((prevState) => [...prevState, mainActivePanel]));
+      if (mainActivePanel === mainHistory[mainHistory.length - 2]) {
+        setMainHistory(((prevState) => prevState.splice(0, prevState.length - 1)));
+      } else setMainHistory(((prevState) => [...prevState, mainActivePanel]));
       bridge.send('VKWebAppEnableSwipeBack');
     }
   }, [mainActivePanel]);
@@ -52,18 +56,30 @@ const CommonView = (props) => {
   const [questionData, setQuestionData] = useState({});
   const [popoutShopView, setPopoutShopView] = useState(true);
   const [shopHistory, setShopHistory] = useState(['Shop']);
+  const [shopResultType, setShopResultType] = useState('');
+
   useEffect(() => {
-    if (shopActivePanel === 'Shop') {
-      setShopHistory(['Shop']);
+    if (shopActivePanel === 'Main') {
+      setShopHistory(['Main']);
       bridge.send('VKWebAppDisableSwipeBack');
-    } else {
-      setShopHistory(((prevState) => [...prevState, shopActivePanel]));
+    } else if (shopActivePanel !== shopHistory[shopHistory.length - 1]) {
+      if (shopActivePanel === shopHistory[shopHistory.length - 2]) {
+        setShopHistory(((prevState) => prevState.splice(0, prevState.length - 1)));
+      } else setShopHistory(((prevState) => [...prevState, shopActivePanel]));
       bridge.send('VKWebAppEnableSwipeBack');
     }
   }, [shopActivePanel]);
 
   // Homework activity
   const [popoutHomeworkView, setPopoutHomeworkView] = useState(true);
+
+  useEffect(() => {
+    if (activeStory !== globalVariables.commonView.roots.shop) {
+      if (shopActivePanel === globalVariables.commonView.panels.shopResult) {
+        setShopActivePanel(globalVariables.commonView.panels.shop);
+      }
+    }
+  }, [activeStory]);
 
   function changeStory(e) {
     dispatch({
@@ -203,11 +219,28 @@ const CommonView = (props) => {
             setActiveStory={setActiveStory}
             nextView={nextView}
           />
-          <ShopQuestion
+          <ShopQuestion1
             id={globalVariables.commonView.panels.shopQuestion}
+            questionData={questionData}
+            setQuestionData={setQuestionData}
+            setActivePanel={setShopActivePanel}
+            resultType={shopResultType}
+            setShopResultType={setShopResultType}
+            setPopoutShopView={setPopoutShopView}
+          />
+          <ShopResult
+            id={globalVariables.commonView.panels.shopResult}
+            resultType={shopResultType}
+            setShopResultType={setShopResultType}
             questionData={questionData}
             setActivePanel={setShopActivePanel}
           />
+
+          {/*          <ShopQuestion
+            id={globalVariables.commonView.panels.shopQuestion}
+            questionData={questionData}
+            setActivePanel={setShopActivePanel}
+          /> */}
         </View>
       </Root>
       <Root id={globalVariables.commonView.roots.leaderboard} activeView="LeaderboardView">

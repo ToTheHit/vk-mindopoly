@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useState, useMemo,
+  useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import './quizBlock.css';
@@ -121,10 +121,24 @@ const QuizBlock = (props) => {
     return 'disabled';
   }
 
+  const redirectToProfile = useCallback(() => {
+    if (stop) return `https://vk.com/id${data.requestedBy.user_id}`;
+    return null;
+  }, [stop]);
+
   const renderedContent = useMemo(() => {
     let author = null;
     if (data.requestedBy !== 0) {
-      if (!stop) {
+      author = (
+        <a target="_blank" rel="noopener noreferrer" href={redirectToProfile()} className="Work--question__author">
+          <Avatar size={24} src={data.requestedBy.photo} />
+          <div className="Work--question__author-name">
+            {`${data.requestedBy.first_name} ${data.requestedBy.last_name} - автор вопроса`}
+          </div>
+        </a>
+      );
+
+      /*      if (!stop) {
         author = (
           <div className="Work--question__author">
             <Avatar size={24} src={data.requestedBy.photo} />
@@ -142,7 +156,7 @@ const QuizBlock = (props) => {
             </div>
           </a>
         );
-      }
+      } */
     }
     return (
       <div style={{ paddingTop: 0 }}>

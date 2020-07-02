@@ -21,6 +21,7 @@ const globalVariables = {
       homework: 'Homework',
       shop: 'Shop',
       shopQuestion: 'ShopQuestion',
+      shopResult: 'ShopResult',
       leaderboard: 'Leaderboard',
     },
   },
