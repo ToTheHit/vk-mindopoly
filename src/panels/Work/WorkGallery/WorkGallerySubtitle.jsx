@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Cell, Div, Text, Title,
 } from '@vkontakte/vkui';
-import Icon28ArrowRightOutline from '@vkontakte/icons/dist/28/arrow_right_outline';
+import { useDispatch, useSelector } from 'react-redux';
+import Icon28ReportOutline from '@vkontakte/icons/dist/28/report_outline';
 import ProgressRing from '../../CustomComponents/ProgressRing/ProgressRing';
 
 const WorkGallerySubtitle = (props) => {
   const {
-    questionIndex, category, goToNextQuestion, showArrowNext, time, totalQuestions, timeProgress,
+    questionIndex, category, isAnswered, time, totalQuestions, timeProgress, questionID,
   } = props;
-  const [isUsed, setIsUsed] = useState(false);
+  const dispatch = useDispatch();
+  const [reportIsAvailable, setReportIsAvailable] = useState(true);
+  const confirmReportByQuestionID = useSelector((state) => state.quiz.confirmReportByQuestionID);
+
+  useEffect(() => {
+    if (confirmReportByQuestionID === questionID) {
+      setReportIsAvailable(false);
+    }
+  }, [confirmReportByQuestionID]);
+
+  function openModalCard() {
+    dispatch({
+      type: 'UPDATE_QUIZ_RESULT',
+      payload: {
+        reportQuestionID: questionID,
+      },
+    });
+    dispatch({
+      type: 'UPDATE_WORK-VIEW-MODAL',
+      payload: {
+        modalIsActive: true,
+      },
+    });
+  }
+
   return (
     <Div className="Work--subTitle">
       {(questionIndex === 0 ? (
@@ -39,20 +64,19 @@ const WorkGallerySubtitle = (props) => {
         </Cell>
       ))}
 
-      {showArrowNext ? (
-        <div className="Work--arrowNext">
-          <Button
-            mode="secondary"
-            onClick={() => {
-              if (!isUsed) {
-                setIsUsed(true);
-                goToNextQuestion();
-              }
-            }}
-          >
-            <Icon28ArrowRightOutline />
-          </Button>
-        </div>
+      {isAnswered ? (
+        (reportIsAvailable && (
+          <div className="Work--arrowNext">
+            <Button
+              mode="secondary"
+              onClick={() => {
+                openModalCard();
+              }}
+            >
+              <Icon28ReportOutline style={{ color: 'var(--field_error_border)' }} />
+            </Button>
+          </div>
+        ))
       ) : (
         <div className="Work--timer">
           <div className="Work--timer__gradient" />
@@ -76,11 +100,11 @@ const WorkGallerySubtitle = (props) => {
 
 WorkGallerySubtitle.propTypes = {
   time: PropTypes.number.isRequired,
-  showArrowNext: PropTypes.bool.isRequired,
+  isAnswered: PropTypes.bool.isRequired,
   questionIndex: PropTypes.number.isRequired,
+  questionID: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   totalQuestions: PropTypes.number.isRequired,
-  goToNextQuestion: PropTypes.func.isRequired,
   timeProgress: PropTypes.number.isRequired,
 };
 WorkGallerySubtitle.defaultProps = {};
