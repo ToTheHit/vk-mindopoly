@@ -349,8 +349,7 @@ const ShopQuestion1 = (props) => {
           'X-Access-Token': userToken,
         },
       })
-        .then((srvData) => {
-          console.info(srvData);
+        .then(() => {
           setPopoutShopView(false);
           setShopResultType(resultTypeOptions.accepted);
           setActivePanel(globalVariables.commonView.panels.shopResult);

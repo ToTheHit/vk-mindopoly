@@ -5,18 +5,27 @@ import WorkGallerySubtitle from './WorkGallerySubtitle';
 
 const WorkGalleryPanel = (props) => {
   const {
-    id, questionIndex, data, totalQuestions, timeToAnswer, setResult, start, goToNextQuestion, lastQuestionInStorage,
+    id,
+    questionIndex,
+    data,
+    totalQuestions,
+    timeToAnswer,
+    setResult,
+    start,
+    goToNextQuestion,
+    lastQuestionInStorage,
   } = props;
 
   const panelRef = useRef(null);
-  const [showArrowNext, setShowArrowNext] = useState(false);
+  const [isAnswered, setIsAnswered] = useState(false);
   const [time, setTime] = useState(timeToAnswer);
-  const [systemTime, setSystemTime] = useState(0);
   const [startInterval, setStartInterval] = useState(false);
   const [timeProgress, setTimeProgress] = useState(0);
+
   useEffect(() => {
-    setSystemTime(Date.now());
-    setStartInterval(start);
+    if (!isAnswered) {
+      setStartInterval(start);
+    }
   }, [start]);
 
   useEffect(() => {
@@ -44,13 +53,13 @@ const WorkGalleryPanel = (props) => {
     //
     if (time <= 0) {
       setStartInterval(false);
-      setShowArrowNext(true);
+      setIsAnswered(true);
     }
   }, [time]);
 
   useEffect(() => {
     if (data._id === lastQuestionInStorage.id) {
-      setShowArrowNext(true);
+      setIsAnswered(true);
     }
   }, [lastQuestionInStorage.id]);
 
@@ -64,7 +73,7 @@ const WorkGalleryPanel = (props) => {
     correctAnswerNumber,
   ) {
     setStartInterval(false);
-    setShowArrowNext(true);
+    setIsAnswered(true);
 
     if (questionIndex !== 0) {
       setResult((prevResult) => [...prevResult, {
@@ -83,8 +92,9 @@ const WorkGalleryPanel = (props) => {
     <div id={id} className="WorkGalleryPanel" ref={panelRef}>
       <WorkGallerySubtitle
         time={time}
-        showArrowNext={showArrowNext}
+        isAnswered={isAnswered}
         questionIndex={questionIndex}
+        questionID={data._id}
         category={data.theme}
         totalQuestions={totalQuestions}
         goToNextQuestion={goToNextQuestion}
@@ -104,6 +114,7 @@ const WorkGalleryPanel = (props) => {
           time={time}
           onComplete={onCompleteQuestion}
           lastQuestionInStorage={lastQuestionInStorage}
+          goToNextQuestion={goToNextQuestion}
         />
 
       </div>
