@@ -73,26 +73,34 @@ const StartPanel = (props) => {
             })
             .catch((err) => {
               requestIsCompleted = false;
-              // Сервер не нашёл токен в БД. Продолжаем регистрацию
               setTimeout(() => {
                 console.info(err);
               }, 1000);
+              dispatch({
+                type: 'UPDATE_ERROR_LOG',
+                payload: {
+                  log: err,
+                  message: 'Start panel error: /api/getTest',
+                },
+              });
               nextView(globalVariables.view.connectionLost);
-
-              // setReadyToShow(true);
-              // popoutState.setPopoutIsActive(false);
             });
         } else {
           setReadyToShow(true);
           popoutState.setPopoutIsActive(false);
         }
-        // popoutState.setPopoutIsActive(false);
       }))
       .catch((error) => {
         setTimeout(() => {
           console.info(error);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: error,
+              message: 'Start panel error: bridge timeout',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
-
         }, 1000);
         requestIsCompleted = false;
         setReadyToShow(true);

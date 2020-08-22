@@ -76,9 +76,15 @@ const Shop = (props) => {
         setPopoutShopView(false);
       })
       .catch((err) => {
-        console.info('Main, get/userQuestions', err);
+        console.info('Shop, /api/getCategoriesState', err);
         if (!err.response) {
-          // nextView(globalVariables.view.start);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: err,
+              message: 'Shop error: /api/getCategoriesState',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
         }
       });

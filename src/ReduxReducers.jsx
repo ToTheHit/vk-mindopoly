@@ -266,3 +266,15 @@ export function scrollTo(state = {
       return state;
   }
 }
+
+export function connectionErrorLog(state = {
+  log: '',
+  message: '',
+}, action) {
+  switch (action.type) {
+    case 'UPDATE_ERROR_LOG':
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+}

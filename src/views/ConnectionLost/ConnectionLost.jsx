@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Panel, Placeholder, ScreenSpinner, View,
+  Button, Panel, Placeholder, ScreenSpinner, Snackbar, View,
 } from '@vkontakte/vkui';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import './connectionLost.css';
+import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar';
+import Icon16Done from '@vkontakte/icons/dist/16/done';
 import globalVariables from '../../GlobalVariables';
-import axios from "axios";
-import { useSelector } from "react-redux";
 
 const ConnectionLost = (props) => {
   const { id, nextView } = props;
   const [popoutIsActive, setPopoutIsActive] = useState(false);
+  const [snackbarIsShow, setSnackbarIsShow] = useState(false);
+
   const userToken = useSelector((state) => state.userToken.token);
+  const logError = useSelector((state) => state.connectionErrorLog);
+
 
   function pingToServer() {
     setPopoutIsActive(true);
@@ -29,17 +36,22 @@ const ConnectionLost = (props) => {
           nextView(globalVariables.view.start);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.info(error);
         setTimeout(() => {
           setPopoutIsActive(false);
         }, 2000);
+      });
+  }
 
-      })
-/*    setTimeout(() => {
-      nextView(globalVariables.view.start);
-      setPopoutIsActive(false);
-    }, 2000);*/
+  function copyLog() {
+    const el = document.createElement('textarea');
+    el.value = JSON.stringify(logError);
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackbarIsShow(true);
   }
 
   return (
@@ -72,6 +84,27 @@ const ConnectionLost = (props) => {
           Потеряно соединение с сервером.
           Проверьте доступность сети Интернет и обновите соединение.
         </Placeholder>
+        <div
+          className="ConnectionLost__copyLog"
+        >
+          <Button
+            size="l"
+            mode="tertiary"
+            onClick={copyLog}
+          >
+            Скопировать ошибку
+          </Button>
+        </div>
+
+        {snackbarIsShow && (
+          <Snackbar
+            layout="vertical"
+            onClose={() => setSnackbarIsShow(false)}
+            before={<Avatar size={24} style={{ backgroundColor: 'var(--accent)' }}><Icon16Done fill="#fff" width={14} height={14} /></Avatar>}
+          >
+            Ошибка скопирована в буфер обмена
+          </Snackbar>
+        )}
       </Panel>
     </View>
   );

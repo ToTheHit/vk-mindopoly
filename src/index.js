@@ -21,6 +21,7 @@ import {
   tooltip,
   shopQuestion,
   scrollTo,
+  connectionErrorLog,
 } from './ReduxReducers';
 
 const rootReducer = combineReducers({
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   tooltip,
   shopQuestion,
   scrollTo,
+  connectionErrorLog,
 });
 
 const store = createStore(rootReducer, {});
