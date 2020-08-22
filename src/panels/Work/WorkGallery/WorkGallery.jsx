@@ -310,8 +310,13 @@ const WorkGallery = (props) => {
               console.info('Work, Get /api/exam', err);
               console.info(err);
               // Сервер не нашёл токен в БД.
-              // Перемещение на стартовый экран
-              // nextView(globalVariables.view.main);
+              dispatch({
+                type: 'UPDATE_ERROR_LOG',
+                payload: {
+                  log: err,
+                  message: 'Work, Get /api/exam',
+                },
+              });
               setTimeout(() => {
                 nextView(globalVariables.view.connectionLost);
               }, 1000);
@@ -320,6 +325,13 @@ const WorkGallery = (props) => {
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
           // nextView(globalVariables.view.start);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: bridgeError,
+              message: 'bridgeError_WorkGallery',
+            },
+          });
           setTimeout(() => {
             nextView(globalVariables.view.connectionLost);
           }, 1000);
@@ -361,6 +373,13 @@ const WorkGallery = (props) => {
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
           // nextView(globalVariables.view.start);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: bridgeError,
+              message: 'bridgeError_WorkGallery, send quiz result',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
         });
     }
@@ -405,8 +424,14 @@ const WorkGallery = (props) => {
         }))
         .catch((bridgeError) => {
           console.info('bridgeError_WorkGallery', bridgeError);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: bridgeError,
+              message: 'bridgeError_WorkGallery, next question',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
-          // nextView(globalVariables.view.start);
         });
     }
   }

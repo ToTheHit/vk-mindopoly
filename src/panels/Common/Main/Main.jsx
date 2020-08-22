@@ -100,7 +100,7 @@ const Main = (props) => {
           // console.info('user', srvData);
           // console.info('questions', data[1].data.attachment);
           // console.info('token', userToken);
-          const tax = (Math.round(srvData.coins.overall * srvData.tax) >= 10 ? Math.round(srvData.coins.overall * srvData.tax) : 10);
+          const tax = Math.round(srvData.coins.overall * srvData.tax);
           bridge.send('VKWebAppGetUserInfo', {})
             .then((bridgeData) => {
               const user = {
@@ -360,17 +360,22 @@ const Main = (props) => {
           console.info('Main, Get /api/, Server response Error');
           console.info('Main, Get /api/', err);
           if (err.message === 'Unmount panel') {
-            // nextView(globalVariables.view.connectionLost);
             setPopoutMainView(false);
           } else if (appIsClosed) {
             console.info('Main, Get /api/, Error was in hidden app');
           } else {
             if (networkErrorCount === 2) {
+              dispatch({
+                type: 'UPDATE_ERROR_LOG',
+                payload: {
+                  log: err,
+                  message: 'Main error: timeout',
+                },
+              });
               setTimeout(() => {
                 nextView(globalVariables.view.connectionLost);
               }, 1000);
             } else updateView();
-            // nextView(globalVariables.view.connectionLost);
           }
           // Сервер не нашёл токен в БД.
           // Перемещение на стартовый экран

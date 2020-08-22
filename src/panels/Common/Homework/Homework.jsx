@@ -9,7 +9,7 @@ import Icon28DeleteOutline from '@vkontakte/icons/dist/28/delete_outline';
 import {
   Button, Card, classNames, Div, Panel, PanelHeader, Placeholder, Subhead, Text, Title,
 } from '@vkontakte/vkui';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import globalVariables from '../../../GlobalVariables';
 
@@ -17,6 +17,8 @@ const Homework = (props) => {
   const {
     id, nextView, setPopoutHomeworkView, setActiveStory,
   } = props;
+  const dispatch = useDispatch();
+
   const scrollListener = useSelector((state) => state.scrollTo);
   const userToken = useSelector((state) => state.userToken.token);
 
@@ -74,6 +76,13 @@ const Homework = (props) => {
         })
         .catch((error) => {
           console.info('Homework error', error);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: error,
+              message: 'Homework error: get wrong questions',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
         });
     }
@@ -112,6 +121,13 @@ const Homework = (props) => {
         })
         .catch((error) => {
           console.info('Erorr: /api/wrongQuestion', error);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: error,
+              message: 'Homework error: confirm all tasks',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
         });
     }
@@ -138,6 +154,13 @@ const Homework = (props) => {
       })
         .catch((error) => {
           console.info('Erorr: /api/wrongQuestion', error);
+          dispatch({
+            type: 'UPDATE_ERROR_LOG',
+            payload: {
+              log: error,
+              message: 'Homework error: confirm task',
+            },
+          });
           nextView(globalVariables.view.connectionLost);
         });
     }

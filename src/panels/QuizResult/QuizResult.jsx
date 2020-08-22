@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import './quizResult.css';
 import htmlToImage from 'html-to-image';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 import Icon28ErrorOutline from '@vkontakte/icons/dist/28/error_outline';
@@ -39,6 +39,7 @@ const QuizResult = (props) => {
   const userToken = useSelector((state) => state.userToken.token);
   const quizResult = useSelector((state) => state.quiz.quizResult);
   const questions = useSelector((state) => state.quiz.questions);
+  const dispatch = useDispatch();
 
   const stickerRef = useRef(null);
   const [stickerBase64, setStickerBase64] = useState('');
@@ -170,6 +171,13 @@ const QuizResult = (props) => {
                     isShow: true,
                     content: 'Ошибка: нет доступа к VK Storage',
                   });*/
+                  dispatch({
+                    type: 'UPDATE_ERROR_LOG',
+                    payload: {
+                      log: err,
+                      message: 'Quiz result error: VK bridge - clear quiz result',
+                    },
+                  });
                   nextView(globalVariables.view.connectionLost);
                 });
               bridge.send('VKWebAppStorageSet', { key: globalVariables.quizQuestions, value: '[]' })
@@ -179,6 +187,13 @@ const QuizResult = (props) => {
                     isShow: true,
                     content: 'Ошибка: нет доступа к VK Storage',
                   });*/
+                  dispatch({
+                    type: 'UPDATE_ERROR_LOG',
+                    payload: {
+                      log: err,
+                      message: 'Quiz result error: VK bridge - clear questions',
+                    },
+                  });
                   nextView(globalVariables.view.connectionLost);
                 });
             })
@@ -209,6 +224,13 @@ const QuizResult = (props) => {
           isShow: true,
           content: 'Ошибка: нет доступа к секретному ключу',
         });*/
+        dispatch({
+          type: 'UPDATE_ERROR_LOG',
+          payload: {
+            log: err,
+            message: 'Quiz result error: VK bridge - get secret',
+          },
+        });
         nextView(globalVariables.view.connectionLost);
       });
 

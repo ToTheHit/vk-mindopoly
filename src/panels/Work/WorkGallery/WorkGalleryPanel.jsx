@@ -10,8 +10,7 @@ const WorkGalleryPanel = (props) => {
     data,
     totalQuestions,
     timeToAnswer,
-    setResult,
-    start,
+    setResult, start,
     goToNextQuestion,
     lastQuestionInStorage,
   } = props;
