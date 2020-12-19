@@ -50,7 +50,6 @@ const StartPanel = (props) => {
             timeoutErrorMessage: 'Timeout',
             params: {
               id: urlParams.get('vk_user_id'),
-              // token: bridgeData.keys[0].value,
             },
             headers: {
               // 'Content-Type': 'application/json',
@@ -72,18 +71,21 @@ const StartPanel = (props) => {
               }, 900);
             })
             .catch((err) => {
-              requestIsCompleted = false;
-              setTimeout(() => {
-                console.info(err);
-              }, 1000);
-              dispatch({
-                type: 'UPDATE_ERROR_LOG',
-                payload: {
-                  log: err,
-                  message: 'Start panel error: /api/getTest',
-                },
-              });
-              nextView(globalVariables.view.connectionLost);
+              if (err.response.data.reason) {
+                setReadyToShow(true);
+                popoutState.setPopoutIsActive(false);
+              } else {
+                requestIsCompleted = false;
+
+                dispatch({
+                  type: 'UPDATE_ERROR_LOG',
+                  payload: {
+                    log: err || err.response,
+                    message: 'Start panel error: /api/getTest',
+                  },
+                });
+                nextView(globalVariables.view.connectionLost);
+              }
             });
         } else {
           setReadyToShow(true);
