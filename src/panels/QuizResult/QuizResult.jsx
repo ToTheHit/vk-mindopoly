@@ -20,7 +20,7 @@ import {
 import bridge from '@vkontakte/vk-bridge';
 import PropTypes from 'prop-types';
 import './quizResult.css';
-import htmlToImage from 'html-to-image';
+import * as htmlToImage from 'html-to-image';
 
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
